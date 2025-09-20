@@ -1,6 +1,8 @@
 # Will It Rain On My Parade?
 
-Read about the project before getting started: [PROJECT.md](https://github.com/SoAp9035/selcuk-space-app/blob/main/PROJECT.md)
+Read about the project before getting started: [ABOUT THE PROJECT](https://github.com/SoAp9035/selcuk-space-app/blob/main/PROJECT.md)
+
+Read the notes taken by team members: [NOTES](https://github.com/SoAp9035/selcuk-space-app/blob/main/NOTES.md)
 
 ## Getting Started
 
@@ -17,6 +19,10 @@ uv run main.py
 ```
 
 To stop the running project, press: CTRL + C
+
+## How to run the frontend
+
+...
 
 ## How to update the project
 
