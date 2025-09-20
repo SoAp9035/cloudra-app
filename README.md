@@ -1,4 +1,8 @@
-# Getting Started
+# Will It Rain On My Parade?
+
+Read about the project before getting started: [PROJECT.md](https://github.com/SoAp9035/selcuk-space-app/blob/main/PROJECT.md)
+
+## Getting Started
 
 Run these commands to start building:
 ```
@@ -6,7 +10,7 @@ git clone https://github.com/SoAp9035/selcuk-space-app.git
 cd selcuk-space-app
 ```
 
-## How to run
+## How to run the backend
 
 ```
 uv run main.py
