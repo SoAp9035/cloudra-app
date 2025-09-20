@@ -8,3 +8,8 @@ wheels/
 
 # Virtual environments
 .venv
+
+# SoAp9035
+api_test.py
+test_data.csv
+test_data.ipynb
