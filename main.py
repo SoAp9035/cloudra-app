@@ -1,7 +1,7 @@
 from flask_cors import CORS
 from flask import Flask, request, jsonify
 from nasa_client import NASAPowerAPI, POWER_PARAMETERS
-# from nasa_data_processor import *
+from nasa_data_processor import calculate_temperature
 
 
 # Flask ayarları
@@ -32,7 +32,7 @@ def weather_probability():
         day = int(data["day"])
         day_range = int(data["day_range"])
         years_back = int(data["years_back"])
-        parameters = list(data["parameters"])
+        parameters = str(data["parameters"]).split(",")
         format = str(data["format"])
 
         power_data = power_api.get_multi_year_data_for_day(
@@ -46,15 +46,19 @@ def weather_probability():
             format=format
         )
 
+        if not power_api:
+            return jsonify({"is_ok": False, "error": "No data available for the specified location and date."})
+
         # TODO: Veri işleyecek ve anlamlı sonuçlar çıkarılacak fonksiyon 
         # data = get_weather_probability(power_data)
 
         # return jsonify(data)
 
         # Test için geçici
-        return jsonify({"is_ok": True})
+        temperature = calculate_temperature(power_data)
+        return jsonify({"is_ok": True, "temperature": f"{temperature} °C"})
     except Exception as e:
-        return jsonify({"error": f"Something went wrong with weather_probability API. Error: {e}"})
+        return jsonify({"is_ok": False, "error": f"Something went wrong with weather_probability API endpoint. Error: {e}"})
 
 
 if __name__ == "__main__":
