@@ -1,6 +1,7 @@
 from flask_cors import CORS
 from flask import Flask, request, jsonify
 from nasa_client import NASAPowerAPI, POWER_PARAMETERS
+# from nasa_data_processor import *
 
 
 # Flask ayarları
@@ -13,7 +14,12 @@ power_api = NASAPowerAPI()
 
 @app.route("/")
 def home():
-    return "<h1>Welcome to Selcuk Space App!</h1><p>/api/weather_probability</p>"
+    return "<h1>Welcome to Selcuk Space App!</h1>"
+
+
+@app.route("/api/docs")
+def docs():
+    return "<h1>Welcome to Selcuk Space App DOCS!</h1><hr><h2>Endpoints</h2><h3>/api/weather_probability</h3>"
 
 
 @app.route("/api/weather_probability", methods=["GET", "POST"])
