@@ -33,7 +33,7 @@ Projenizi geliştirirken uymanız gereken temel kurallar ve beklentiler şunlard
 *   **Değişken Seçimi:** Kullanıcıya sunulacak hava durumu değişkenlerini (sıcaklık, yağış, rüzgar vb.) dikkatli seçmelisiniz. Çok fazla teknik değişken sunmak kafa karıştırıcı olabilir. Açık hava etkinlikleri için en alakalı olanlara odaklanılmalıdır.
 *   **Metadata (Üst Veri) Sağlama (Önerilen):** İndirilen dosyalarda, verinin birimi (örn: Celsius, km/s), hangi NASA kaynağından alındığı gibi bilgilerin (metadata) bulunması tavsiye edilir.
 
----
+<!-- ---
 
 ### 3. Backend'in Frontend'e Vermesi Gereken Çıktı Nedir?
 
@@ -107,4 +107,4 @@ Backend'in bu isteğe yanıt olarak frontend'e göndermesi gereken JSON çıktı
 *   **`analysis_summary`**: Frontend'in doğrudan kullanıcıya gösterebileceği özet metin, başlık ve veri kaynağı gibi bilgileri içerir.
 *   **`weather_probabilities`**: Projenin ana çıktısıdır. Her bir hava durumu kategorisi (sıcaklık, yağış vb.) için hesaplanmış olasılık ve ortalama değerleri içerir. Frontend bu verileri alıp gösterge panellerinde, kartlarda veya metin olarak gösterebilir.
 *   **`visualizations`**: Frontend'in grafik çizmek için kullanabileceği, hazır hale getirilmiş veri setlerini içerir. Örneğin, `temperature_history_timeseries` verisi ile geçmiş yıllardaki sıcaklık değişimini gösteren bir çizgi grafiği kolayca oluşturulabilir.
-*   **`download_links`**: Kullanıcının verileri CSV veya JSON olarak indirmesini sağlayacak API endpoint'lerini içerir.
+*   **`download_links`**: Kullanıcının verileri CSV veya JSON olarak indirmesini sağlayacak API endpoint'lerini içerir. -->
