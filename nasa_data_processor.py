@@ -42,7 +42,7 @@ def calculate_temperature(data: StringIO) -> float:
     """
     Tahmin edilen hava sıcaklığı
     """
-    df = pd.read_csv(data)
+    df = pd.read_json(data)
     return round(df.T2M.mean(), 2)
 
 

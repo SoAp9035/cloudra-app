@@ -17,12 +17,7 @@ def home():
     return "<h1>Welcome to Selcuk Space App!</h1>"
 
 
-@app.route("/api/docs")
-def docs():
-    return "<h1>Welcome to Selcuk Space App DOCS!</h1><hr><h2>Endpoints</h2><h3>/api/weather_probability</h3>"
-
-
-@app.route("/api/weather_probability", methods=["GET", "POST"])
+@app.route("/api/weather_probability", methods=["GET"])
 def weather_probability():
     try:
         data = request.args
@@ -30,10 +25,17 @@ def weather_probability():
         lat = float(data["lat"])
         month = int(data["month"])
         day = int(data["day"])
-        day_range = int(data["day_range"])
-        years_back = int(data["years_back"])
-        parameters = str(data["parameters"]).split(",")
-        format = str(data["format"])
+
+        # day_range = int(data["day_range"])
+        # years_back = int(data["years_back"])
+        # parameters = str(data["parameters"]).split(",")
+        # format = str(data["format"])
+
+        # Bazı parametreleri API isteğinden alıp almamakla kararsızım
+        # Geçici
+        day_range = 3
+        years_back = 2
+        parameters = POWER_PARAMETERS
 
         power_data = power_api.get_multi_year_data_for_day(
             lon=lon,
@@ -42,8 +44,7 @@ def weather_probability():
             day=day,
             day_range=day_range,
             years_back=years_back,
-            parameters=parameters,
-            format=format
+            parameters=parameters
         )
 
         if not power_api:
@@ -52,10 +53,9 @@ def weather_probability():
         # TODO: Veri işleyecek ve anlamlı sonuçlar çıkarılacak fonksiyon 
         # data = get_weather_probability(power_data)
 
-        # return jsonify(data)
-
         # Test için geçici
         temperature = calculate_temperature(power_data)
+        
         return jsonify({"is_ok": True, "temperature": f"{temperature} °C"})
     except Exception as e:
         return jsonify({"is_ok": False, "error": f"Something went wrong with weather_probability API endpoint. Error: {e}"})

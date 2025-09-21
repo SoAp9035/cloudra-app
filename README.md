@@ -20,16 +20,25 @@ cd selcuk-space-app
 uv run main.py
 ```
 
-To stop the running project, press: CTRL + C
-
 ## How to run the frontend
 
-...
+Not forget to install dependinceise first:
+
+```
+cd frontend
+npm install
+```
+
+To run:
+
+```
+npm run dev
+```
 
 ## How to update the project
 
 ```
-git pull https://github.com/SoAp9035/selcuk-space-app.git
+git pull
 ```
 
 ## How to push the changes you made
