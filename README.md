@@ -6,6 +6,8 @@ Read the notes taken by team members: [NOTES](https://github.com/SoAp9035/selcuk
 
 ## Getting Started
 
+You will need to install [uv](https://docs.astral.sh/uv/) in your system.
+
 Run these commands to start building:
 ```
 git clone https://github.com/SoAp9035/selcuk-space-app.git
