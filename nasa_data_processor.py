@@ -1,6 +1,7 @@
 # NASA verilerini işlemek için kullanılacak ortam
 
 import pandas as pd
+from io import StringIO
 
 
 # Kullanılabilir parametreler
@@ -36,30 +37,28 @@ POWER_PARAMETERS = {
     "ALLSKY_SFC_UV_INDEX": "Günlük Ortalama UV İndeksi",
 }
 
-# Projede hesaplanacak endeksler (Fikir olsun diye yapay zekadan alınmıştır.)
-DERIVED_INDICES = {
-    # "Çok sıcak / rahatsız"
-    "HEAT_INDEX":        {"label": "Isı İndeksi (HI)", "requires": ["T2M", "RH2M"]},
-    "APPARENT_TEMP":     {"label": "Hissedilen Sıcaklık (AT)", "requires": ["T2M", "RH2M", "WS10M", "ALLSKY_SFC_SW_DWN"]},
-    "HUMIDEX":           {"label": "Humidex", "requires": ["T2M", "T2MDEW"]},
-    "WET_BULB_TEMP":     {"label": "Islak Termometre Sıcaklığı", "requires": ["T2M", "RH2M", "PS"]},
-    "WBGT_APPROX":       {"label": "WBGT (yaklaşık)", "requires": ["T2M", "RH2M", "WS10M", "ALLSKY_SFC_SW_DWN"]},
+# Örnek fonksiyon
+def calculate_temperature(data: StringIO) -> float:
+    """
+    Tahmin edilen hava sıcaklığı
+    """
+    df = pd.read_csv(data)
+    return round(df.T2M.mean(), 2)
 
-    # "Çok soğuk"
-    "WIND_CHILL":        {"label": "Rüzgar Soğuğu", "requires": ["T2M", "WS10M"]},
 
-    # Nem konfor metrikleri
-    "VPD":               {"label": "Buhar Basıncı Açığı (VPD)", "requires": ["T2M", "RH2M"]},
-
-    # Olasılık / eşik tabanlı göstergeler (tarihsel seriden hesaplanır)
-    "HOT_DAY_PROB":      {"label": "Sıcak Gün Olasılığı (Tmax > eşik)", "requires": ["T2M_MAX"]},
-    "COLD_DAY_PROB":     {"label": "Soğuk Gün Olasılığı (Tmin < eşik)", "requires": ["T2M_MIN"]},
-    "WINDY_DAY_PROB":    {"label": "Rüzgarlı Gün Olasılığı (WS10M > eşik)", "requires": ["WS10M"]},
-    "RAIN_DAY_PROB":     {"label": "Yağışlı Gün Olasılığı (P > eşik)", "requires": ["PRECTOTCORR"]},
-    "HEAVY_RAIN_PROB":   {"label": "Kuvvetli Yağış Olasılığı (P > yüksek eşik)", "requires": ["PRECTOTCORR"]},
-    "CONSEC_WET_DAYS":   {"label": "Art Arda Islak Günler (CWD)", "requires": ["PRECTOTCORR"]},
-    "DRY_SPELL":         {"label": "Kuru Periyot Uzunluğu (CDD)", "requires": ["PRECTOTCORR"]},
-}
+# Analiz sonuçlarının hesaplanıp gönderileceği fonksiyon
+def get_weather_probability(data: StringIO) -> dict:
+    """
+    Bilgi Sunumu:
+        Seçilen konum ve tarih için aşağıdaki gibi bilgileri sunmalıdır:
+    Olasılıklar:
+        "Çok sıcak", "çok soğuk", "çok rüzgarlı", "çok yağışlı" veya "çok rahatsız edici" gibi koşulların yüzde olarak olasılığı.
+    Ortalama Değerler:
+        O gün için ortalama sıcaklık, rüzgar hızı gibi istatistiksel veriler.
+    Aşırı Hava Olayları:
+        Belirli eşik değerlerini aşma olasılığı (örneğin, sıcaklığın 32°C'yi geçme ihtimali %10 gibi).
+    """
+    return {}
 
 
 if __name__ == "__main__":
