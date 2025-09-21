@@ -14,5 +14,9 @@ You can write anything you want here to inform other developers. Write simple an
 
 ---
 
+- Frontend map için kullanılacaklar: OpenStreetMap + Leaflet
+
+---
+
 - Projede kullanılan API ve benzeri veri setleri için atıf yapılması gerekiyor. Aşağıdakiler yazılacak.
     - NASA POWER API data has been used (NASA Langley Research Center, https://power.larc.nasa.gov).
