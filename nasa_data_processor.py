@@ -1,7 +1,7 @@
+# NASA verilerini işlemek için kullanılacak ortam
+
 import pandas as pd
 
-
-# NASA verilerini işlemek için kullanılacak ortam
 
 # Kullanılabilir parametreler
 POWER_PARAMETERS = {
@@ -33,10 +33,10 @@ POWER_PARAMETERS = {
     "ALLSKY_SFC_SW_DWN": "Tüm-Gökyüzü Yüzeye İnen Kısa Dalga Radyasyon (kWh/m²/gün)",
     "CLRSKY_SFC_SW_DWN": "Açık-Gökyüzü Yüzeye İnen Kısa Dalga Radyasyon (kWh/m²/gün)",
     "ALLSKY_SFC_LW_DWN": "Tüm-Gökyüzü Yüzeye İnen Uzun Dalga Radyasyon",
-    "ALLSKY_SFC_UV_INDEX": "Günlük Maksimum UV İndeksi",
+    "ALLSKY_SFC_UV_INDEX": "Günlük Ortalama UV İndeksi",
 }
 
-# Projede hesaplanacak endeksler
+# Projede hesaplanacak endeksler (Fikir olsun diye yapay zekadan alınmıştır.)
 DERIVED_INDICES = {
     # "Çok sıcak / rahatsız"
     "HEAT_INDEX":        {"label": "Isı İndeksi (HI)", "requires": ["T2M", "RH2M"]},
@@ -60,3 +60,7 @@ DERIVED_INDICES = {
     "CONSEC_WET_DAYS":   {"label": "Art Arda Islak Günler (CWD)", "requires": ["PRECTOTCORR"]},
     "DRY_SPELL":         {"label": "Kuru Periyot Uzunluğu (CDD)", "requires": ["PRECTOTCORR"]},
 }
+
+
+if __name__ == "__main__":
+    pass

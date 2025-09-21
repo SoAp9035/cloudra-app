@@ -1,3 +1,5 @@
+# DO NOT CHANGE ANYTHING HERE! INFORM AHMET!!!
+
 import time
 import requests
 import pandas as pd
@@ -5,6 +7,7 @@ from io import StringIO
 from datetime import datetime, timedelta
 
 
+# Genel parametreler
 POWER_PARAMETERS = {
     # Sıcaklık
     "T2M": "2 m Ortalama Sıcaklık (°C)",
@@ -34,7 +37,7 @@ POWER_PARAMETERS = {
     "ALLSKY_SFC_SW_DWN": "Tüm-Gökyüzü Yüzeye İnen Kısa Dalga Radyasyon (kWh/m²/gün)",
     "CLRSKY_SFC_SW_DWN": "Açık-Gökyüzü Yüzeye İnen Kısa Dalga Radyasyon (kWh/m²/gün)",
     "ALLSKY_SFC_LW_DWN": "Tüm-Gökyüzü Yüzeye İnen Uzun Dalga Radyasyon",
-    "ALLSKY_SFC_UV_INDEX": "Günlük Ortalama UV İndeksi"
+    "ALLSKY_SFC_UV_INDEX": "Günlük Ortalama UV İndeksi",
 }
 
 
