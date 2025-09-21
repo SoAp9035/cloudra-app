@@ -4,6 +4,8 @@ Read about the project before getting started: [ABOUT THE PROJECT](https://githu
 
 Read the notes taken by team members: [NOTES](https://github.com/SoAp9035/selcuk-space-app/blob/main/NOTES.md)
 
+Read the API documentation here: [DOCS](https://github.com/SoAp9035/selcuk-space-app/blob/main/DOCS.md)
+
 ## Getting Started
 
 You will need to install [uv](https://docs.astral.sh/uv/) in your system.
