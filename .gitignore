@@ -13,3 +13,4 @@ wheels/
 api_test.py
 test_data.csv
 test_data.ipynb
+PROJECT_NOTES.md
