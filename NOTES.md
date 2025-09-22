@@ -6,7 +6,7 @@ You can write anything you want here to inform other developers. Write simple an
 
 - [main.py](https://github.com/SoAp9035/selcuk-space-app/blob/main/main.py) Flask web sunucusunun dosyası.
 
-- [nasa_client.py](https://github.com/SoAp9035/selcuk-space-app/blob/main/nasa_client.py) dosyası verilerin çekilmesi için kullanılıyor. (ELLEMEYİN HABER AHMET'E VERİN!!!)
+- [nasa_client.py](https://github.com/SoAp9035/selcuk-space-app/blob/main/nasa_client.py) dosyası verilerin çekilmesi için kullanılıyor. (ELLEMEYİN AHMET'E HABER VERİN!!!)
 
 ---
 
