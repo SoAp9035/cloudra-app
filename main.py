@@ -11,6 +11,10 @@ CORS(app) # Flask ile React kullanabilmek için gerekli
 # NASA POWER API'si
 power_api = NASAPowerAPI()
 
+# NASAPowerAPI için parametreler
+DAY_RANGE = 3
+YEARS_BACK = 2
+
 
 @app.route("/")
 def home():
@@ -21,8 +25,8 @@ def home():
 def weather_probability():
     try:
         data = request.args
-        lon = float(data["lon"])
         lat = float(data["lat"])
+        lon = float(data["lon"])
         month = int(data["month"])
         day = int(data["day"])
 
@@ -33,13 +37,13 @@ def weather_probability():
 
         # Bazı parametreleri API isteğinden alıp almamakla kararsızım
         # Geçici
-        day_range = 3
-        years_back = 2
+        day_range = DAY_RANGE
+        years_back = YEARS_BACK
         parameters = POWER_PARAMETERS
 
         power_data = power_api.get_multi_year_data_for_day(
-            lon=lon,
             lat=lat,
+            lon=lon,
             month=month,
             day=day,
             day_range=day_range,
@@ -50,7 +54,9 @@ def weather_probability():
         if not power_api:
             return jsonify({"is_ok": False, "error": "No data available for the specified location and date."})
 
-        # TODO: Veri işleyecek ve anlamlı sonuçlar çıkarılacak fonksiyon 
+        ### İşlenmiş verileri bu fonksiyon içinde birleştirip JSON oluşturulabilir
+        
+        # TODO: ? Veri işleyecek ve anlamlı sonuçlar çıkarılacak fonksiyon
         # data = get_weather_probability(power_data)
 
         # Test için geçici
