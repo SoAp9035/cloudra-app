@@ -7,8 +7,8 @@
 This endpoint retrieves weather data for a specific location and date range, then calculates weather probability statistics based on historical data.
 
 ### Parameters
-- `lon` (float, required): Longitude coordinate of the location
 - `lat` (float, required): Latitude coordinate of the location  
+- `lon` (float, required): Longitude coordinate of the location
 - `month` (int, required): Month number (1-12)
 - `day` (int, required): Day of the month
 <!-- - `day_range` (int, required): Number of days to include in the range
