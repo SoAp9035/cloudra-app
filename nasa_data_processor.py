@@ -37,6 +37,83 @@ POWER_PARAMETERS = {
     "ALLSKY_SFC_UV_INDEX": "Günlük Ortalama UV İndeksi",
 }
 
+
+# Aşağıdaki iki fonksiyon her iklim bölgeleri için ayrı eşik değeri döndürmek için yazıldı
+def get_climate_zone(lat: float, lon: float):
+    """
+    Konumun iklim bölgesini döndürür.
+    """
+    # Kutup bölgeleri
+    if abs(lat) > 66.5:
+        return "polar"
+    
+    # Subarktik
+    elif abs(lat) > 55:
+        return "subarctic"
+    
+    # Ilıman bölgeler
+    elif abs(lat) > 35:
+        return "temperate"
+    
+    # Subtropikal
+    elif abs(lat) > 23.5:
+        return "subtropical"
+    
+    # Tropikal
+    else:
+        return "tropical"
+
+
+def get_thresholds_by_climate_zone(climate_zone: str) -> dict[str, int]:
+    """
+    İklim bölgesine göre eşik değerleri döndürür.
+    """
+    thresholds = {
+        "polar": {
+            "very_hot": 15,
+            "very_cold": -25,
+            "heavy_rain": 5,
+            "very_windy": 20,
+            "very_cloudy": 80,
+            # "very_uncomfortable": 28
+        },
+        "subarctic": {
+            "very_hot": 25,
+            "very_cold": -20,
+            "heavy_rain": 8,
+            "very_windy": 18,
+            "very_cloudy": 80,
+            # "very_uncomfortable": 30
+        },
+        "temperate": {
+            "very_hot": 32,
+            "very_cold": -5,
+            "heavy_rain": 10,
+            "very_windy": 15,
+            "very_cloudy": 85,
+            # "very_uncomfortable": 32
+        },
+        "subtropical": {
+            "very_hot": 38,
+            "very_cold": 5,
+            "heavy_rain": 15,
+            "very_windy": 20,
+            "very_cloudy": 85,
+            # "very_uncomfortable": 38
+        },
+        "tropical": {
+            "very_hot": 40,
+            "very_cold": 15,
+            "heavy_rain": 20,
+            "very_windy": 25,
+            "very_cloudy": 90,
+            # "very_uncomfortable": 40
+        }
+    }
+
+    return thresholds.get(climate_zone, thresholds["temperate"])
+
+
 # Örnek fonksiyon
 def calculate_temperature(data: StringIO) -> float:
     """
@@ -58,7 +135,32 @@ def get_weather_probability(data: StringIO) -> dict:
     Aşırı Hava Olayları:
         Belirli eşik değerlerini aşma olasılığı (örneğin, sıcaklığın 32°C'yi geçme ihtimali %10 gibi).
     """
-    return {}
+
+    ### Kodlar buraya! ###
+
+    return {
+        "query": {
+            "location": {
+                "latitude": 0,
+                "longitude": 0
+            },
+            "date": {
+                "month": 0,
+                "day": 0
+            },
+        },
+        "analysis_summary": {
+            "title": "Weather Probabilities for X/X",
+            "data_source": "NASA POWER MERRA-2 Dataset"
+        },
+        "weather_probabilities": {
+
+        },
+        "thresholds_info": {
+            "climate_zone": "X",
+            "thresholds_data": get_thresholds_by_climate_zone(get_climate_zone(0, 0))
+        }
+    }
 
 
 if __name__ == "__main__":
