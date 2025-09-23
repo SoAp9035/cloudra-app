@@ -13,12 +13,11 @@ POWER_PARAMETERS = {
     "T2M": "2 m Ortalama Sıcaklık (°C)",
     "T2M_MAX": "2 m Maksimum Sıcaklık (°C)",
     "T2M_MIN": "2 m Minimum Sıcaklık (°C)",
-    "T2M_RANGE": "2 m Günlük Sıcaklık Aralığı (°C)",
-    "T2MDEW": "2 m Çiğ Noktası (°C)",
+    "T2M_RANGE": "2 m Günlük Sıcaklık Aralığı (°C)", # Sıcaklığın gün içinde çok değiştiği hk.
+    "T2MDEW": "2 m Çiğ Noktası (°C)", # Havanın nem bakımından rahatsız ediciliği için
 
     # Nem / Basınç
     "RH2M": "2 m Bağıl Nem (%)",
-    "QV2M": "2 m Spesifik Nem (g/kg)",
     "PS": "Yüzey Basıncı (kPa)",
 
     # Yağış
@@ -26,7 +25,6 @@ POWER_PARAMETERS = {
     "PRECSNOLAND": "Kar Yağışı (mm/gün)",
 
     # Rüzgar
-    "WS10M_MAX": "10 m Maksimum Rüzgar Hızı (m/s)",
     "WS10M": "10 m Rüzgar Hızı (m/s)",
     "WS2M": "2 m Rüzgar Hızı (m/s)",
 
@@ -36,10 +34,7 @@ POWER_PARAMETERS = {
     # Güneşlilik
     "PSH": "Güneş Işığı Yoğunluğu (MJ/m^2/day)",
 
-    # Radyasyon / UV (rahatsızlık ve ısı stresi endeksleri için)
-    "ALLSKY_SFC_SW_DWN": "Tüm-Gökyüzü Yüzeye İnen Kısa Dalga Radyasyon (kWh/m²/gün)",
-    "CLRSKY_SFC_SW_DWN": "Açık-Gökyüzü Yüzeye İnen Kısa Dalga Radyasyon (kWh/m²/gün)",
-    "ALLSKY_SFC_LW_DWN": "Tüm-Gökyüzü Yüzeye İnen Uzun Dalga Radyasyon",
+    # UV
     "ALLSKY_SFC_UV_INDEX": "Günlük Ortalama UV İndeksi",
 }
 
