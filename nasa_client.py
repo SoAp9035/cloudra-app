@@ -33,6 +33,9 @@ POWER_PARAMETERS = {
     # Bulutluluk
     "CLOUD_AMT": "Toplam Bulut Örtüsü (%)",
 
+    # Güneşlilik
+    "PSH": "Güneş Işığı Yoğunluğu (MJ/m^2/day)",
+
     # Radyasyon / UV (rahatsızlık ve ısı stresi endeksleri için)
     "ALLSKY_SFC_SW_DWN": "Tüm-Gökyüzü Yüzeye İnen Kısa Dalga Radyasyon (kWh/m²/gün)",
     "CLRSKY_SFC_SW_DWN": "Açık-Gökyüzü Yüzeye İnen Kısa Dalga Radyasyon (kWh/m²/gün)",

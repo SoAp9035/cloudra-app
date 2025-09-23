@@ -57,7 +57,25 @@ def weather_probability():
         ### İşlenmiş verileri bu fonksiyon içinde birleştirip JSON oluşturulabilir
         
         # TODO: ? Veri işleyecek ve anlamlı sonuçlar çıkarılacak fonksiyon
-        # data = get_weather_probability(power_data)
+        # analysis = analyze_weather_probability(power_data)
+
+        # response = {
+        #     "query": {
+        #         "location": {"latitude": lat, "longitude": lon},
+        #         "date": {"month": f"{month:02d}", "day": f"{day:02d}"},
+        #     },
+        #     "analysis_summary": {
+        #         "title": "Weather Probabilities for X/X",
+        #         "data_source": "NASA POWER MERRA-2 Dataset",
+        #     },
+        #     "weather_probabilities": {
+
+        #     },
+        #     "thresholds_info": {
+        #         "climate_zone": "X",
+        #         "thresholds_data": "X",
+        #     },
+        # }
 
         # Test için geçici
         temperature = calculate_temperature(power_data)
