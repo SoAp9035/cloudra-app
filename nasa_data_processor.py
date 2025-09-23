@@ -10,12 +10,11 @@ POWER_PARAMETERS = {
     "T2M": "2 m Ortalama Sıcaklık (°C)",
     "T2M_MAX": "2 m Maksimum Sıcaklık (°C)",
     "T2M_MIN": "2 m Minimum Sıcaklık (°C)",
-    "T2M_RANGE": "2 m Günlük Sıcaklık Aralığı (°C)",
-    "T2MDEW": "2 m Çiğ Noktası (°C)",
+    "T2M_RANGE": "2 m Günlük Sıcaklık Aralığı (°C)", # Sıcaklığın gün içinde çok değiştiği hk.
+    "T2MDEW": "2 m Çiğ Noktası (°C)", # Havanın nem bakımından rahatsız ediciliği için
 
     # Nem / Basınç
     "RH2M": "2 m Bağıl Nem (%)",
-    "QV2M": "2 m Spesifik Nem (g/kg)",
     "PS": "Yüzey Basıncı (kPa)",
 
     # Yağış
@@ -23,7 +22,6 @@ POWER_PARAMETERS = {
     "PRECSNOLAND": "Kar Yağışı (mm/gün)",
 
     # Rüzgar
-    "WS10M_MAX": "10 m Maksimum Rüzgar Hızı (m/s)",
     "WS10M": "10 m Rüzgar Hızı (m/s)",
     "WS2M": "2 m Rüzgar Hızı (m/s)",
 
@@ -33,10 +31,7 @@ POWER_PARAMETERS = {
     # Güneşlilik
     "PSH": "Güneş Işığı Yoğunluğu (MJ/m^2/day)",
 
-    # Radyasyon / UV (rahatsızlık ve ısı stresi endeksleri için)
-    "ALLSKY_SFC_SW_DWN": "Tüm-Gökyüzü Yüzeye İnen Kısa Dalga Radyasyon (kWh/m²/gün)",
-    "CLRSKY_SFC_SW_DWN": "Açık-Gökyüzü Yüzeye İnen Kısa Dalga Radyasyon (kWh/m²/gün)",
-    "ALLSKY_SFC_LW_DWN": "Tüm-Gökyüzü Yüzeye İnen Uzun Dalga Radyasyon",
+    # UV
     "ALLSKY_SFC_UV_INDEX": "Günlük Ortalama UV İndeksi",
 }
 
@@ -73,51 +68,54 @@ def get_thresholds_by_climate_zone(climate_zone: str) -> dict[str, int]:
     """
     thresholds = {
         "polar": {
-            "very_hot": 15,
             "comfortable_max": 10,
+            "very_hot": 15,
             "very_cold": -25,
             "heavy_rain": 5,
             "very_windy": 20,
-            "very_cloudy": 80,
+            "very_cloudy": 75,
         },
         "subarctic": {
-            "very_hot": 25,
             "comfortable_max": 20,
+            "very_hot": 25,
             "very_cold": -20,
             "heavy_rain": 8,
+            "very_windy": 16,
+            "very_cloudy": 75,
+        },
+        "temperate": {
+            "comfortable_max": 25,
+            "very_hot": 32,
+            "very_cold": -5,
+            "heavy_rain": 10,
+            "very_windy": 14,
+            "very_cloudy": 80,
+        },
+        "subtropical": {
+            "comfortable_max": 30,
+            "very_hot": 38,
+            "very_cold": 5,
+            "heavy_rain": 15,
             "very_windy": 18,
             "very_cloudy": 80,
         },
-        "temperate": {
-            "very_hot": 32,
-            "comfortable_max": 25,
-            "very_cold": -5,
-            "heavy_rain": 10,
-            "very_windy": 15,
-            "very_cloudy": 85,
-        },
-        "subtropical": {
-            "very_hot": 38,
-            "comfortable_max": 30,
-            "very_cold": 5,
-            "heavy_rain": 15,
-            "very_windy": 20,
-            "very_cloudy": 85,
-        },
         "tropical": {
-            "very_hot": 40,
             "comfortable_max": 32,
+            "very_hot": 40,
             "very_cold": 15,
             "heavy_rain": 20,
-            "very_windy": 25,
-            "very_cloudy": 90,
+            "very_windy": 24,
+            "very_cloudy": 85,
         },
     }
 
     return thresholds.get(climate_zone, thresholds["temperate"])
+ 
 
+### Kullanıcıya gösterilecek ortalama verileri
 
-# Örnek fonksiyon
+# TODO: Ortalama Rüzgar Hızı eklenecek.
+
 def calculate_avg_temperature(data: StringIO) -> float:
     """
     Ortalama sıcaklık
@@ -131,8 +129,48 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
     """
     Tarihsel verileri analiz ederek hava durumu olasılıklarını hesaplar.
     """
-    return 
+    # Veriyi data frame olarak al
+    df = pd.read_json(data)
+
+    # Bulunan konumun iklim bölgesini ve eşik değerlerini al
+    climate_zone = get_climate_zone(lat, lon)
+    thresholds = get_thresholds_by_climate_zone(climate_zone)
+
+    ### HESAPLAMALAR ###
+
+    ### HESAPLANAN VERİLERİN GÖNDERİLMESİ ###
+
+    return
 
 
 if __name__ == "__main__":
-    pass
+    import time
+    from nasa_client import NASAPowerAPI
+
+    power_api = NASAPowerAPI()
+    
+    # Konum, ay/gün
+    lat = 38.423733
+    lon = 27.142826
+    month=9
+    day=23
+
+    start_time = time.time()
+
+    power_data = power_api.get_multi_year_data_for_day(
+        lat=lat,
+        lon=lon,
+        month=9,
+        day=23,
+        day_range=0,
+        years_back=5,
+        parameters=POWER_PARAMETERS
+    )
+
+    analyse = analyze_weather_probability(power_data, lat, lon)
+
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print(f"Anaylze took: {execution_time:.2f} seconds.")
+
+    print(analyse)
