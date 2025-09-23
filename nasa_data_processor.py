@@ -112,9 +112,9 @@ def get_thresholds_by_climate_zone(climate_zone: str) -> dict[str, int]:
     return thresholds.get(climate_zone, thresholds["temperate"])
  
 
-### Kullanıcıya gösterilecek ortalama verileri
+### Kullanıcıya gösterilecek ortalama veriler
 
-# TODO: Ortalama Rüzgar Hızı eklenecek.
+# TODO: Sıcaklık Aralığı, Ortalama Rüzgar Hızı ve Ortalama Nem eklenecek.
 
 def calculate_avg_temperature(data: StringIO) -> float:
     """
