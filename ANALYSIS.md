@@ -6,6 +6,8 @@ Parametre bilgileri:
 POWER_PARAMETERS = {
     # Sıcaklık
     "T2M": "2 m Ortalama Sıcaklık (°C)",
+    "T2M_MAX": "2 m Maksimum Sıcaklık (°C)",
+    "T2M_MIN": "2 m Minimum Sıcaklık (°C)",
     "T2M_RANGE": "2 m Günlük Sıcaklık Aralığı (°C)", # Sıcaklığın gün içinde çok değiştiği hk.
     "T2MDEW": "2 m Çiğ Noktası (°C)", # Havanın nem bakımından rahatsız ediciliği için
 
@@ -57,9 +59,9 @@ Bu bölüm, kullanıcının o gün için "normal" olarak ne beklemesi gerektiği
 Kullanıcının belirli hava koşullarıyla karşılaşma ihtimalini yüzde olarak gösterir. Verilen iklime özel eşik değer bilgileri ile hesaplanacak.
 
 - **Çok Rahatsız Edici (very_uncomfortable)**
-    - **Kullanılacak parametreler**: T2M (°C), RH2M (%), ALLSKY_SFC_UV_INDEX
-    - **Formül**:
-    <!-- - **Formül**: ((T2M > 35 AND RH2M > 70) OR (ALLSKY_SFC_UV_INDEX > 8) olan günlerin sayısı) / Toplam gün sayısı × 100 -->
+    - **Kullanılacak parametreler**: T2MDEW (°C)
+    - **Formül**: T2MDEW > 24 olan günlerin sayısı / Toplam gün sayısı × 100
+    - > Not: Bu, sıcak ve nemli koşullarda rahatsızlık hissini ifade eder. Farklı parametreler ve eşik değerler kullanılabilir.
 
 - **Çok Sıcak (very_hot)**
     - **Kullanılacak parametre**: T2M (°C)
@@ -67,15 +69,15 @@ Kullanıcının belirli hava koşullarıyla karşılaşma ihtimalini yüzde olar
 
 - **Çok Soğuk (very_cold)**
     - **Kullanılacak parametre**: T2M (°C)
-    - **Formül**: -
+    - **Formül**: T2M < -10 olan günlerin sayısı / Toplam gün sayısı × 100
 
 - **Çok Yağışlı (heavy_rain)**
-    - **Kullanılacak parametreler**: PRECTOTCORR (mm/gün), PRECSNOLAND (mm/gün)
-    - **Formül**: -
+    - **Kullanılacak parametreler**: PRECTOTCORR (mm/gün)
+    - **Formül**: PRECTOTCORR > 20 olan günlerin sayısı / Toplam gün sayısı × 100
 
 - **Çok Kar Yağışlı (heavy_snowfall)**
     - **Kullanılacak parametreler**: PRECSNOLAND (mm/gün)
-    - **Formül**: -
+    - **Formül**: PRECSNOLAND > 10 olan günlerin sayısı / Toplam gün sayısı × 100
 
 - **Çok Rüzgarlı (very_windy)**
     - **Kullanılacak parametreler**: WS10M (m/s)
