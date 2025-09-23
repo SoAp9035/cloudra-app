@@ -6,6 +6,8 @@ Read the notes taken by team members: [NOTES](https://github.com/SoAp9035/selcuk
 
 Read the API documentation here: [DOCS](https://github.com/SoAp9035/selcuk-space-app/blob/main/DOCS.md)
 
+Read the [ANALYSIS](https://github.com/SoAp9035/selcuk-space-app/blob/main/ANALYSIS.md)
+
 ## Getting Started
 
 You will need to install [uv](https://docs.astral.sh/uv/) in your system.
