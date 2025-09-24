@@ -68,7 +68,7 @@ class NASAPowerAPI:
             "format": format,
         }
 
-        response = requests.get(self.BASE_URL, params=params)
+        response = requests.get(self.BASE_URL, params=params, timeout=120)
         return response.json() if format == "JSON" else response.text
 
     def get_multi_year_data_for_day(
