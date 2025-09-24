@@ -16,6 +16,10 @@ DAY_RANGE = 3
 YEARS_BACK = 2
 
 
+def test_response():
+    return "18.1°C"
+
+
 @app.route("/")
 def home():
     return "<h1>Welcome to Selcuk Space App!</h1>"
@@ -65,22 +69,24 @@ def weather_probability():
         #         "date": {"month": f"{month:02d}", "day": f"{day:02d}"},
         #     },
         #     "analysis_summary": {
-        #         "title": "Weather Probabilities for X/X",
+        #         "title": f"Weather Probabilities for {month:02d}/{day:02d}",
         #         "data_source": "NASA POWER MERRA-2 Dataset",
+        #         "data_points": "X"
         #     },
         #     "weather_probabilities": {
-
+        #         "statistics": "X",
+        #         "probabilities": "X"
         #     },
         #     "thresholds_info": {
         #         "climate_zone": "X",
-        #         "thresholds_data": "X",
+        #         "thresholds_used": "X",
         #     },
         # }
 
         # Test için geçici
-        temperature = calculate_temperature(power_data)
+        response = test_response()
         
-        return jsonify({"is_ok": True, "temperature": f"{temperature} °C"})
+        return jsonify({"is_ok": True, "temperature": f"{response}°C"})
     except Exception as e:
         return jsonify({"is_ok": False, "error": f"Something went wrong with weather_probability API endpoint. Error: {e}"})
 
