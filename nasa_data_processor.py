@@ -114,14 +114,16 @@ def get_thresholds_by_climate_zone(climate_zone: str) -> dict[str, int]:
 
 ### Kullanıcıya gösterilecek ortalama veriler
 
-# TODO: Sıcaklık Aralığı, Ortalama Rüzgar Hızı ve Ortalama Nem eklenecek.
+# TODO: Sıcaklık Aralığı, Ortalama Yağış, Ortalama Rüzgar Hızı ve Ortalama Nem eklenecek.
 
-def calculate_avg_temperature(data: StringIO) -> float:
+def calculate_avg_temperature(df: pd.DataFrame) -> float | None:
     """
     Ortalama sıcaklık
     """
-    df = pd.read_json(data)
-    return round(df.T2M.mean(), 2)
+    if "T2M" in df.columns:
+        return float(round(df.T2M.mean(), 1))
+    else:
+        return None
 
 
 # Analiz sonuçlarının hesaplanıp gönderileceği fonksiyon
@@ -137,10 +139,50 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
     thresholds = get_thresholds_by_climate_zone(climate_zone)
 
     ### HESAPLAMALAR ###
+    # TODO: Boş olan değerler fonksiyonlar ile doldurulacak
+
+    # Temel istatistikler
+    stats = {
+        "temperature": {
+            "unit": "Celcius",
+            "average": calculate_avg_temperature(df),
+            "average_range": ""
+        },
+        "precipitation": {
+            "unit": "mm/day",
+            "average": ""
+        },
+        "wind": {
+            "unit": "m/s",
+            "average_speed": ""
+        },
+        "humidity": {
+            "unit": "%",
+            "average": ""
+        }
+    }
+
+    # Olasılık hesaplamaları
+    probabilities = {}
+
+    probabilities["very_hot_percent"] = ""
+    probabilities["very_cold_percent"] = ""
+    probabilities["heavy_rain_percent"] = ""
+    probabilities["very_windy_percent"] = ""
+    probabilities["very_cloudy_percent"] = ""
+    probabilities["uncomfortable_percent"] = ""
 
     ### HESAPLANAN VERİLERİN GÖNDERİLMESİ ###
 
-    return
+    analysis = {
+        "climate_zone": climate_zone,
+        "thresholds_used": thresholds,
+        "statistics": stats,
+        "probabilities": probabilities,
+        "data_points": len(df)
+    }
+
+    return analysis
 
 
 if __name__ == "__main__":
@@ -153,7 +195,7 @@ if __name__ == "__main__":
     lat = 38.423733
     lon = 27.142826
     month=9
-    day=23
+    day=24
 
     start_time = time.time()
 
@@ -163,7 +205,7 @@ if __name__ == "__main__":
         month=9,
         day=23,
         day_range=0,
-        years_back=5,
+        years_back=3,
         parameters=POWER_PARAMETERS
     )
 
