@@ -46,6 +46,10 @@ Bu bölüm, kullanıcının o gün için "normal" olarak ne beklemesi gerektiği
 - **Sıcaklık Aralığı (°C)**
     - Maksimum ve minimum değerler.
 
+- **Ortalama Yağış (mm/gün)**
+    - **Formül**: (Tüm Yağış Miktarı Değerlerinin Toplamı) / (Toplam Veri Sayısı)
+    - **Not**: Yağış yoksa 0 mm/gün olarak gösterilir ve bu değer kullanıcıya gösterilmez.
+
 - **Ortalama Rüzgar Hızı (m/s)**
     - **Formül**: (Tüm Rüzgar Hızı Değerlerinin Toplamı) / (Toplam Veri Sayısı)
 
