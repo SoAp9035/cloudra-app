@@ -10,7 +10,7 @@ Read the [ANALYSIS](https://github.com/SoAp9035/selcuk-space-app/blob/main/ANALY
 
 ## Getting Started
 
-You will need to install [uv](https://docs.astral.sh/uv/) in your system.
+You will need to install [uv](https://docs.astral.sh/uv/) and [Node.js](https://nodejs.org/en/download) in your system.
 
 Run these commands to start building:
 ```
