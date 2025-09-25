@@ -1,7 +1,7 @@
 from flask_cors import CORS
 from flask import Flask, request, jsonify
 from nasa_client import NASAPowerAPI, POWER_PARAMETERS
-from nasa_data_processor import calculate_temperature
+from nasa_data_processor import analyze_weather_probability
 
 
 # Flask ayarları
@@ -10,14 +10,6 @@ CORS(app) # Flask ile React kullanabilmek için gerekli
 
 # NASA POWER API'si
 power_api = NASAPowerAPI()
-
-# NASAPowerAPI için parametreler
-DAY_RANGE = 3
-YEARS_BACK = 2
-
-
-def test_response():
-    return "18.1°C"
 
 
 @app.route("/")
@@ -33,6 +25,7 @@ def weather_probability():
         lon = float(data["lon"])
         month = int(data["month"])
         day = int(data["day"])
+        analysis_mode = str(data["analysis_mode"])
 
         # day_range = int(data["day_range"])
         # years_back = int(data["years_back"])
@@ -41,9 +34,30 @@ def weather_probability():
 
         # Bazı parametreleri API isteğinden alıp almamakla kararsızım
         # Geçici
-        day_range = DAY_RANGE
-        years_back = YEARS_BACK
+        day_range = 0
+        # years_back = YEARS_BACK
         parameters = POWER_PARAMETERS
+
+        # Validations
+        if abs(lat) > 90 or abs(lon) > 180:
+            return jsonify({
+                "error": "Invalid coordinates: latitude must be between -90 and 90, longitude must be between -180 and 180."
+            })
+        
+        if (month < 1 or month > 12) or (day < 1 or day > 31):
+            return jsonify({
+                "error": "Invalid date: month must be between 1 and 12, day must be valid for the given month."
+            })
+
+        if day_range < 0 or day_range > 182:
+            return jsonify({
+                "error": "Invalid day range: must be between 0 and 182."
+            })
+
+        if analysis_mode == "detailed_analysis":
+            years_back = 30
+        else:
+            years_back = 10
 
         power_data = power_api.get_multi_year_data_for_day(
             lat=lat,
@@ -56,39 +70,35 @@ def weather_probability():
         )
 
         if not power_api:
-            return jsonify({"is_ok": False, "error": "No data available for the specified location and date."})
-
-        ### İşlenmiş verileri bu fonksiyon içinde birleştirip JSON oluşturulabilir
+            return jsonify({"error": "No data available for the specified location and date."})
         
-        # TODO: ? Veri işleyecek ve anlamlı sonuçlar çıkarılacak fonksiyon
-        # analysis = analyze_weather_probability(power_data)
+        analysis = analyze_weather_probability(power_data, lat, lon)
 
-        # response = {
-        #     "query": {
-        #         "location": {"latitude": lat, "longitude": lon},
-        #         "date": {"month": f"{month:02d}", "day": f"{day:02d}"},
-        #     },
-        #     "analysis_summary": {
-        #         "title": f"Weather Probabilities for {month:02d}/{day:02d}",
-        #         "data_source": "NASA POWER MERRA-2 Dataset",
-        #         "data_points": "X"
-        #     },
-        #     "weather_probabilities": {
-        #         "statistics": "X",
-        #         "probabilities": "X"
-        #     },
-        #     "thresholds_info": {
-        #         "climate_zone": "X",
-        #         "thresholds_used": "X",
-        #     },
-        # }
-
-        # Test için geçici
-        response = test_response()
+        response = {
+            "query": {
+                "location": {"latitude": lat, "longitude": lon},
+                "date": {"month": f"{month:02d}", "day": f"{day:02d}"},
+                "analysis_mode": analysis_mode if analysis_mode == "detailed_analysis" else "quick_analysis",
+            },
+            "analysis_summary": {
+                "title": f"Weather Probabilities for {month:02d}/{day:02d}",
+                "analysis_mode": analysis_mode if analysis_mode == "detailed_analysis" else "quick_analysis",
+                "data_source": "NASA POWER MERRA-2 Dataset",
+                "data_points": analysis["data_points"],
+            },
+            "weather_probabilities": {
+                "statistics": analysis["statistics"],
+                "probabilities": analysis["probabilities"],
+            },
+            "thresholds_info": {
+                "climate_zone": analysis["climate_zone"],
+                "thresholds_used": analysis["thresholds_used"],
+            },
+        }
         
-        return jsonify({"is_ok": True, "temperature": f"{response}°C"})
+        return jsonify(response)
     except Exception as e:
-        return jsonify({"is_ok": False, "error": f"Something went wrong with weather_probability API endpoint. Error: {e}"})
+        return jsonify({"error": f"Something went wrong with weather_probability API endpoint. Error: {e}"})
 
 
 if __name__ == "__main__":
