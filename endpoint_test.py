@@ -7,7 +7,7 @@ params = {
     "lon": 27.128347,
     "month": 9,
     "day": 25,
-    "analysis_mode": "detailed_analysis",# "quick_analysis",
+    "analysis_mode": "quick_analysis" # "detailed_analysis" also available
 }
 
 start_time = time.time()

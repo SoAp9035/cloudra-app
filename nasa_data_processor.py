@@ -124,7 +124,51 @@ def calculate_avg_temperature(df: pd.DataFrame) -> float | None:
         return float(round(df.T2M.mean(), 1))
     else:
         return None
+    
+def temperature_range(df: pd.DataFrame) -> float | None:
+    """
+    Sıcaklık aralığı
+    """
+    max_value = float(round(df.T2M_MAX.mean(), 1))
+    min_value = float(round(df.T2M_MIN.mean(), 1))
 
+    if "T2M_MAX" in df.columns and "T2M_MIN" in df.columns:
+        return max_value, min_value
+    else:
+        return None
+
+#ortalama yağış
+
+def precipitation_avg(df: pd.DataFrame) -> float | None:
+    """
+    Ortalama yağış
+    """
+    if "PRECTOTCORR" in df.columns:
+        return float(round(df.PRECTOTCORR.mean(), 1))
+    else:
+        return None
+
+#ortalama rüzgar hızı
+
+def average_wind_speed(df: pd.DataFrame) -> float | None:
+    """
+    Ortalama rüzgar hızı
+    """
+    if "WS10M" in df.columns:
+        return float(round(df.WS10M.mean(), 1))
+    else:
+        return None
+    
+#ortalama nem
+
+def average_humidity(df: pd.DataFrame) -> float | None:
+    """
+    Ortalama nem
+    """
+    if "RH2M" in df.columns:
+        return float(round(df.RH2M.mean(), 1))
+    else:
+        return None
 
 # Analiz sonuçlarının hesaplanıp gönderileceği fonksiyon
 def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
@@ -146,19 +190,19 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
         "temperature": {
             "unit": "Celcius",
             "average": calculate_avg_temperature(df),
-            "average_range": ""
+            "average_range": temperature_range(df)
         },
         "precipitation": {
             "unit": "mm/day",
-            "average": ""
+            "average": precipitation_avg(df)
         },
         "wind": {
             "unit": "m/s",
-            "average_speed": ""
+            "average_speed": average_wind_speed(df)
         },
         "humidity": {
             "unit": "%",
-            "average": ""
+            "average": average_humidity(df)
         }
     }
 
