@@ -113,10 +113,9 @@ def get_thresholds_by_climate_zone(climate_zone: str) -> dict[str, int]:
  
 
 ### Kullanıcıya gösterilecek ortalama veriler
+# TODO: Ortalama değerlerin hepsi test edilip doğru formüller ile değiştirilecek
 
-# TODO: Sıcaklık Aralığı, Ortalama Yağış, Ortalama Rüzgar Hızı ve Ortalama Nem eklenecek.
-
-def calculate_avg_temperature(df: pd.DataFrame) -> float | None:
+def avg_temperature(df: pd.DataFrame) -> float | None:
     """
     Ortalama sıcaklık
     """
@@ -124,8 +123,8 @@ def calculate_avg_temperature(df: pd.DataFrame) -> float | None:
         return float(round(df.T2M.mean(), 1))
     else:
         return None
-    
-def temperature_range(df: pd.DataFrame) -> float | None:
+
+def avg_temperature_range(df: pd.DataFrame) -> float | None:
     """
     Sıcaklık aralığı
     """
@@ -133,13 +132,11 @@ def temperature_range(df: pd.DataFrame) -> float | None:
     min_value = float(round(df.T2M_MIN.mean(), 1))
 
     if "T2M_MAX" in df.columns and "T2M_MIN" in df.columns:
-        return max_value, min_value
+        return [max_value, min_value]
     else:
         return None
 
-#ortalama yağış
-
-def precipitation_avg(df: pd.DataFrame) -> float | None:
+def avg_precipitation(df: pd.DataFrame) -> float | None:
     """
     Ortalama yağış
     """
@@ -148,9 +145,7 @@ def precipitation_avg(df: pd.DataFrame) -> float | None:
     else:
         return None
 
-#ortalama rüzgar hızı
-
-def average_wind_speed(df: pd.DataFrame) -> float | None:
+def avg_wind_speed(df: pd.DataFrame) -> float | None:
     """
     Ortalama rüzgar hızı
     """
@@ -158,10 +153,8 @@ def average_wind_speed(df: pd.DataFrame) -> float | None:
         return float(round(df.WS10M.mean(), 1))
     else:
         return None
-    
-#ortalama nem
 
-def average_humidity(df: pd.DataFrame) -> float | None:
+def avg_humidity(df: pd.DataFrame) -> float | None:
     """
     Ortalama nem
     """
@@ -169,6 +162,7 @@ def average_humidity(df: pd.DataFrame) -> float | None:
         return float(round(df.RH2M.mean(), 1))
     else:
         return None
+
 
 # Analiz sonuçlarının hesaplanıp gönderileceği fonksiyon
 def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
@@ -189,20 +183,20 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
     stats = {
         "temperature": {
             "unit": "Celcius",
-            "average": calculate_avg_temperature(df),
-            "average_range": temperature_range(df)
+            "average": avg_temperature(df),
+            "average_range": avg_temperature_range(df)
         },
         "precipitation": {
             "unit": "mm/day",
-            "average": precipitation_avg(df)
+            "average": avg_precipitation(df)
         },
         "wind": {
             "unit": "m/s",
-            "average_speed": average_wind_speed(df)
+            "average_speed": avg_wind_speed(df)
         },
         "humidity": {
             "unit": "%",
-            "average": average_humidity(df)
+            "average": avg_humidity(df)
         }
     }
 
@@ -235,9 +229,9 @@ if __name__ == "__main__":
 
     power_api = NASAPowerAPI()
     
-    # Konum, ay/gün - İzmirim
-    lat = 38.401088
-    lon = 27.128347
+    # Konum, ay/gün
+    lat = 37.874641
+    lon = 32.493156
     month=9
     day=25
 
@@ -249,7 +243,7 @@ if __name__ == "__main__":
         month=9,
         day=23,
         day_range=0,
-        years_back=10,
+        years_back=30,
         parameters=POWER_PARAMETERS
     )
 

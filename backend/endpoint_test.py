@@ -3,8 +3,8 @@ import requests
 
 
 params = {
-    "lat": 38.401088,
-    "lon": 27.128347,
+    "lat": 37.874641,
+    "lon": 32.493156,
     "month": 9,
     "day": 25,
     "analysis_mode": "quick_analysis" # "detailed_analysis" also available
