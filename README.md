@@ -6,7 +6,7 @@ Read the notes taken by team members: [NOTES](https://github.com/SoAp9035/selcuk
 
 Read the API documentation here: [DOCS](https://github.com/SoAp9035/selcuk-space-app/blob/main/DOCS.md)
 
-Read the [ANALYSIS](https://github.com/SoAp9035/selcuk-space-app/blob/main/ANALYSIS.md)
+Read the analysis here: [ANALYSIS](https://github.com/SoAp9035/selcuk-space-app/blob/main/ANALYSIS.md)
 
 ## Getting Started
 
@@ -19,6 +19,10 @@ cd selcuk-space-app
 ```
 
 ## How to run the backend
+
+```
+cd backend
+```
 
 ```
 uv run main.py
