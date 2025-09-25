@@ -191,11 +191,11 @@ if __name__ == "__main__":
 
     power_api = NASAPowerAPI()
     
-    # Konum, ay/gün
-    lat = 38.423733
-    lon = 27.142826
+    # Konum, ay/gün - İzmirim
+    lat = 38.401088
+    lon = 27.128347
     month=9
-    day=24
+    day=25
 
     start_time = time.time()
 
@@ -205,7 +205,7 @@ if __name__ == "__main__":
         month=9,
         day=23,
         day_range=0,
-        years_back=3,
+        years_back=10,
         parameters=POWER_PARAMETERS
     )
 
