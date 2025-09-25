@@ -4,38 +4,6 @@ import pandas as pd
 from io import StringIO
 
 
-# Kullanılabilir parametreler
-POWER_PARAMETERS = {
-    # Sıcaklık
-    "T2M": "2 m Ortalama Sıcaklık (°C)",
-    "T2M_MAX": "2 m Maksimum Sıcaklık (°C)",
-    "T2M_MIN": "2 m Minimum Sıcaklık (°C)",
-    "T2M_RANGE": "2 m Günlük Sıcaklık Aralığı (°C)", # Sıcaklığın gün içinde çok değiştiği hk.
-    "T2MDEW": "2 m Çiğ Noktası (°C)", # Havanın nem bakımından rahatsız ediciliği için
-
-    # Nem / Basınç
-    "RH2M": "2 m Bağıl Nem (%)",
-    "PS": "Yüzey Basıncı (kPa)",
-
-    # Yağış
-    "PRECTOTCORR": "Düzeltilmiş Toplam Yağış (mm/gün)",
-    "PRECSNOLAND": "Kar Yağışı (mm/gün)",
-
-    # Rüzgar
-    "WS10M": "10 m Rüzgar Hızı (m/s)",
-    "WS2M": "2 m Rüzgar Hızı (m/s)",
-
-    # Bulutluluk
-    "CLOUD_AMT": "Toplam Bulut Örtüsü (%)",
-
-    # Güneşlilik
-    "PSH": "Güneş Işığı Yoğunluğu (MJ/m^2/day)",
-
-    # UV
-    "ALLSKY_SFC_UV_INDEX": "Günlük Ortalama UV İndeksi",
-}
-
-
 # Aşağıdaki iki fonksiyon her iklim bölgeleri için ayrı eşik değeri döndürmek için yazıldı
 def get_climate_zone(lat: float, lon: float):
     """
@@ -225,7 +193,7 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
 
 if __name__ == "__main__":
     import time
-    from nasa_client import NASAPowerAPI
+    from nasa_client import NASAPowerAPI, POWER_PARAMETERS
 
     power_api = NASAPowerAPI()
     
