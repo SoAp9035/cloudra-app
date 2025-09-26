@@ -135,3 +135,27 @@ class NASAPowerAPI:
         except Exception as e:
             print(f"Something went wrong with Pandas/get_multi_year_data_for_day. Error: {e}")
             return None
+
+
+if __name__ == "__main__":
+    power_api = NASAPowerAPI()
+
+    # Konum, ay/gün
+    lat = 37.874641
+    lon = 32.493156
+    month=9
+    day=25
+
+    power_data = power_api.get_multi_year_data_for_day(
+        lat=lat,
+        lon=lon,
+        month=9,
+        day=26,
+        day_range=0,
+        years_back=30,
+        parameters=POWER_PARAMETERS
+    )
+
+    df = pd.read_json(power_data)
+    # df.to_csv("backend/test_data.csv")
+    print(df.head())
