@@ -92,7 +92,7 @@ def avg_temperature(df: pd.DataFrame) -> float | None:
     else:
         return None
 
-def avg_temperature_range(df: pd.DataFrame) -> float | None:
+def avg_temperature_range(df: pd.DataFrame) -> list[float] | None:
     """
     Sıcaklık aralığı
     """
@@ -100,9 +100,9 @@ def avg_temperature_range(df: pd.DataFrame) -> float | None:
     min_value = float(round(df.T2M_MIN.mean(), 1))
 
     if "T2M_MAX" in df.columns and "T2M_MIN" in df.columns:
-        return [max_value, min_value]
+        return [min_value, max_value]
     else:
-        return None
+        return [None, None]
 
 def avg_precipitation(df: pd.DataFrame) -> float | None:
     """
@@ -148,11 +148,13 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
     # TODO: Boş olan değerler fonksiyonlar ile doldurulacak
 
     # Temel istatistikler
+    temp_range = avg_temperature_range(df)
+
     stats = {
         "temperature": {
             "unit": "Celcius",
             "average": avg_temperature(df),
-            "average_range": avg_temperature_range(df)
+            "average_range": {"min": temp_range[0], "max": temp_range[1]}
         },
         "precipitation": {
             "unit": "mm/day",
