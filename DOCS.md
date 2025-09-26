@@ -38,6 +38,8 @@ Returns JSON object with:
             - `unit` (string): Temperature unit (Celsius)
             - `average` (float): Average temperature value
             - `average_range` (float): Temperature range information
+              - `max` (float): Maximum average temperature
+              - `min` (float): Minimum average temperature
         - `precipitation` (object): Precipitation statistics
             - `unit` (string): Precipitation unit (mm/day)
             - `average` (float): Average precipitation value
@@ -84,7 +86,10 @@ GET /api/weather_probability?lat=40.7589&lon=-73.9851&month=6&day=15&analysis_mo
       "temperature": {
         "unit": "Celsius",
         "average": 24.5,
-        "average_range": 3.2
+        "average_range": {
+          "max": 26.7,
+          "min": 18.3
+        }
       },
       "precipitation": {
         "unit": "mm/day",
