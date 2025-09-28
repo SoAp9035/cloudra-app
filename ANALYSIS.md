@@ -8,29 +8,22 @@ POWER_PARAMETERS = {
     "T2M": "2 m Ortalama Sıcaklık (°C)",
     "T2M_MAX": "2 m Maksimum Sıcaklık (°C)",
     "T2M_MIN": "2 m Minimum Sıcaklık (°C)",
-    "T2M_RANGE": "2 m Günlük Sıcaklık Aralığı (°C)", # Sıcaklığın gün içinde çok değiştiği hk.
     "T2MDEW": "2 m Çiğ Noktası (°C)", # Havanın nem bakımından rahatsız ediciliği için
 
-    # Nem / Basınç
+    # Nem
     "RH2M": "2 m Bağıl Nem (%)",
-    "PS": "Yüzey Basıncı (kPa)",
 
     # Yağış
     "PRECTOTCORR": "Düzeltilmiş Toplam Yağış (mm/gün)",
     "PRECSNOLAND": "Kar Yağışı (mm/gün)",
+    "SNODP": "Kar Örtüsü (cm)",
 
     # Rüzgar
     "WS10M": "10 m Rüzgar Hızı (m/s)",
-    "WS2M": "2 m Rüzgar Hızı (m/s)",
+    "WS10M_MAX": "10 m Maksimum Rüzgar Hızı (m/s)",
 
     # Bulutluluk
     "CLOUD_AMT": "Toplam Bulut Örtüsü (%)",
-
-    # Güneşlilik
-    "PSH": "Güneş Işığı Yoğunluğu (MJ/m^2/day)",
-
-    # UV
-    "ALLSKY_SFC_UV_INDEX": "Günlük Ortalama UV İndeksi",
 }
 ```
 
@@ -46,15 +39,18 @@ Bu bölüm, kullanıcının o gün için "normal" olarak ne beklemesi gerektiği
 - **Sıcaklık Aralığı (°C)**
     - Maksimum ve minimum değerler.
 
-- **Ortalama Yağış (mm/gün)**
-    - **Formül**: (Tüm Yağış Miktarı Değerlerinin Toplamı) / (Toplam Veri Sayısı)
-    - **Not**: Yağış yoksa 0 mm/gün olarak gösterilir ve bu değer kullanıcıya gösterilmez.
-
 - **Ortalama Rüzgar Hızı (m/s)**
     - **Formül**: (Tüm Rüzgar Hızı Değerlerinin Toplamı) / (Toplam Veri Sayısı)
 
 - **Ortalama Nem (%)**
     - **Formül**: (Tüm Nem Değerlerinin Toplamı) / (Toplam Veri Sayısı)
+
+- **Ortalama Bulutluluk (%)**
+    - **Formül**: (Tüm Bulutluluk Değerlerinin Toplamı) / (Toplam Veri Sayısı)
+
+- **Kar Örtüsü (cm)**
+    - **Formül**: (Tüm Kar Örtüsü Değerlerinin Toplamı) / (Toplam Veri Sayısı)
+    - > Not: Eğer 0 ise, kar örtüsü yok demektir. Gösterilmez.
 
 ---
 
@@ -68,12 +64,12 @@ Kullanıcının belirli hava koşullarıyla karşılaşma ihtimalini yüzde olar
     - > Not: Bu, sıcak ve nemli koşullarda rahatsızlık hissini ifade eder. Farklı parametreler ve eşik değerler kullanılabilir.
 
 - **Çok Sıcak (very_hot)**
-    - **Kullanılacak parametre**: T2M (°C)
-    - **Formül**: T2M > 40 olan günlerin sayısı / Toplam gün sayısı × 100
+    - **Kullanılacak parametre**: T2M_MAX (°C)
+    - **Formül**: T2M_MAX > 40 olan günlerin sayısı / Toplam gün sayısı × 100
 
 - **Çok Soğuk (very_cold)**
-    - **Kullanılacak parametre**: T2M (°C)
-    - **Formül**: T2M < -10 olan günlerin sayısı / Toplam gün sayısı × 100
+    - **Kullanılacak parametre**: T2M_MIN (°C)
+    - **Formül**: T2M_MIN < -10 olan günlerin sayısı / Toplam gün sayısı × 100
 
 - **Çok Yağışlı (heavy_rain)**
     - **Kullanılacak parametreler**: PRECTOTCORR (mm/gün)
@@ -84,9 +80,7 @@ Kullanıcının belirli hava koşullarıyla karşılaşma ihtimalini yüzde olar
     - **Formül**: PRECSNOLAND > 10 olan günlerin sayısı / Toplam gün sayısı × 100
 
 - **Çok Rüzgarlı (very_windy)**
-    - **Kullanılacak parametreler**: WS10M (m/s)
-    - **Formül**: (WS10M > 15 olan günlerin sayısı) / (Toplam gün sayısı) × 100
+    - **Kullanılacak parametreler**: WS10M_MAX (m/s)
+    - **Formül**: (WS10M_MAX > 15 olan günlerin sayısı) / (Toplam gün sayısı) × 100
 
-- **Çok Bulutlu (very_cloudy)**
-    - **Kullanılacak parametreler**: CLOUD_AMT (%)
-    - **Formül**: (CLOUD_AMT > 80 olan günlerin sayısı) / (Toplam gün sayısı) × 100
+> Not: Eşik değerler, iklime ve bölgeye göre ayarlanacak. Örneğin, tropikal bölgelerde "çok sıcak" eşiği 35°C olarak belirlenecektir.

@@ -49,12 +49,20 @@ Returns JSON object with:
         - `humidity` (object): Humidity statistics
             - `unit` (string): Humidity unit (%)
             - `average` (float): Average humidity value
+        - `cloud` (object): Cloudiness statistics
+            - `unit` (string): Cloudiness unit (%)
+            - `average` (float): Average cloudiness value
+        - `snow_cover` (object): Snow cover statistics
+            - `unit` (string): Snow cover unit (%)
+            - `average` (float): Average snow cover value
     - `probabilities` (object): Calculated weather probabilities
         - > In Development
 - `thresholds_info` (object): Information about analysis thresholds
     - `climate_zone` (string): Climate zone classification
     - `thresholds_used` (object): Threshold values used in analysis
 - `error` (string): Error message if request fails
+
+**Note:** All values return `None` if data is missing or unavailable.
 
 ### Example Request
 ```
@@ -102,6 +110,14 @@ GET /api/weather_probability?lat=40.7589&lon=-73.9851&month=6&day=15&analysis_mo
       "humidity": {
         "unit": "%",
         "average": 68.3
+      },
+      "cloud": {
+        "unit": "%",
+        "average": 55.2
+      },
+      "snow_cover": {
+        "unit": "%",
+        "average": 0.0
       }
     },
     "probabilities": {
@@ -116,7 +132,6 @@ GET /api/weather_probability?lat=40.7589&lon=-73.9851&month=6&day=15&analysis_mo
       "very_cold": -5,
       "heavy_rain": 10,
       "very_windy": 14,
-      "very_cloudy": 80,
     }
   }
 }
