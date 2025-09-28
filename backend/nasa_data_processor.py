@@ -249,7 +249,6 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
     probabilities["very_cold_percent"] = ""
     probabilities["heavy_rain_percent"] = ""
     probabilities["very_windy_percent"] = ""
-    probabilities["very_cloudy_percent"] = ""
 
     ### GÖRSELLEŞTİRME İÇİN VERİLERİN HAZIRLANMASI ###
     # TODO: TARİH - VERİ ikilileri oluşturulacak
