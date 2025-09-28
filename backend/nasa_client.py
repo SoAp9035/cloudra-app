@@ -24,6 +24,7 @@ POWER_PARAMETERS = {
 
     # Rüzgar
     "WS10M": "10 m Rüzgar Hızı (m/s)",
+    "WS10M_MAX": "10 m Maksimum Rüzgar Hızı (m/s)",
 
     # Bulutluluk
     "CLOUD_AMT": "Toplam Bulut Örtüsü (%)",
