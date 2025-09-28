@@ -7,35 +7,26 @@ from io import StringIO
 from datetime import datetime, timedelta
 
 
-# Genel parametreler
 POWER_PARAMETERS = {
     # Sıcaklık
     "T2M": "2 m Ortalama Sıcaklık (°C)",
     "T2M_MAX": "2 m Maksimum Sıcaklık (°C)",
     "T2M_MIN": "2 m Minimum Sıcaklık (°C)",
-    "T2M_RANGE": "2 m Günlük Sıcaklık Aralığı (°C)", # Sıcaklığın gün içinde çok değiştiği hk.
     "T2MDEW": "2 m Çiğ Noktası (°C)", # Havanın nem bakımından rahatsız ediciliği için
 
-    # Nem / Basınç
+    # Nem
     "RH2M": "2 m Bağıl Nem (%)",
-    "PS": "Yüzey Basıncı (kPa)",
 
     # Yağış
     "PRECTOTCORR": "Düzeltilmiş Toplam Yağış (mm/gün)",
     "PRECSNOLAND": "Kar Yağışı (mm/gün)",
+    "SNODP": "Kar Örtüsü (cm)",
 
     # Rüzgar
     "WS10M": "10 m Rüzgar Hızı (m/s)",
-    "WS2M": "2 m Rüzgar Hızı (m/s)",
 
     # Bulutluluk
     "CLOUD_AMT": "Toplam Bulut Örtüsü (%)",
-
-    # Güneşlilik
-    "PSH": "Güneş Işığı Yoğunluğu (MJ/m^2/day)",
-
-    # UV
-    "ALLSKY_SFC_UV_INDEX": "Günlük Ortalama UV İndeksi",
 }
 
 
@@ -135,27 +126,3 @@ class NASAPowerAPI:
         except Exception as e:
             print(f"Something went wrong with Pandas/get_multi_year_data_for_day. Error: {e}")
             return None
-
-
-if __name__ == "__main__":
-    power_api = NASAPowerAPI()
-
-    # Konum, ay/gün
-    lat = 37.874641
-    lon = 32.493156
-    month=9
-    day=25
-
-    power_data = power_api.get_multi_year_data_for_day(
-        lat=lat,
-        lon=lon,
-        month=9,
-        day=26,
-        day_range=0,
-        years_back=30,
-        parameters=POWER_PARAMETERS
-    )
-
-    df = pd.read_json(power_data)
-    # df.to_csv("backend/test_data.csv")
-    print(df.head())
