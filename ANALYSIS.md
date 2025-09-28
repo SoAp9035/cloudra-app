@@ -39,18 +39,22 @@ Bu bölüm, kullanıcının o gün için "normal" olarak ne beklemesi gerektiği
 - **Sıcaklık Aralığı (°C)**
     - Maksimum ve minimum değerler.
 
-- **Ortalama Rüzgar Hızı (m/s)**
-    - **Formül**: (Tüm Rüzgar Hızı Değerlerinin Toplamı) / (Toplam Veri Sayısı)
-
 - **Ortalama Nem (%)**
     - **Formül**: (Tüm Nem Değerlerinin Toplamı) / (Toplam Veri Sayısı)
+
+- **Ortalama Rüzgar Hızı (m/s)**
+    - **Formül**: (Tüm Rüzgar Hızı Değerlerinin Toplamı) / (Toplam Veri Sayısı)
 
 - **Ortalama Bulutluluk (%)**
     - **Formül**: (Tüm Bulutluluk Değerlerinin Toplamı) / (Toplam Veri Sayısı)
 
-- **Kar Örtüsü (cm)**
-    - **Formül**: (Tüm Kar Örtüsü Değerlerinin Toplamı) / (Toplam Veri Sayısı)
-    - > Not: Eğer 0 ise, kar örtüsü yok demektir. Gösterilmez.
+- **Yağmur Olasılığı (%)**
+    - **Formül**: (Yağışlı Gün Sayısı) / (Toplam Gün Sayısı) × 100
+    - > Not: Yağışlı gün, PRECTOTCORR > 0.1 mm/gün olarak tanımlanır.
+
+- **Kar Örtüsü Olasılığı (%)**
+    - **Formül**: (Kar Örtülü Gün Sayısı) / (Toplam Gün Sayısı) × 100
+    - > Not: Kar örtülü gün, SNODP > 0 cm olarak tanımlanır.
 
 ---
 

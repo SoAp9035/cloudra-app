@@ -145,6 +145,15 @@ def avg_temperature_range(df: pd.DataFrame) -> list[float] | None:
     min_value = float(round(df.T2M_MIN.mean(), 1))
     return [min_value, max_value]
 
+def avg_humidity(df: pd.DataFrame) -> float | None:
+    """
+    Ortalama nem
+    """
+    if "RH2M" in df.columns:
+        return float(round(df.RH2M.mean(), 1))
+    else:
+        return None
+
 def avg_wind_speed(df: pd.DataFrame) -> float | None:
     """
     Ortalama rüzgar hızı
@@ -154,15 +163,6 @@ def avg_wind_speed(df: pd.DataFrame) -> float | None:
     else:
         return None
 
-def avg_humidity(df: pd.DataFrame) -> float | None:
-    """
-    Ortalama nem
-    """
-    if "RH2M" in df.columns:
-        return float(round(df.RH2M.mean(), 1))
-    else:
-        return None
-    
 def avg_cloud(df: pd.DataFrame) -> float | None:
     """
     Ortalama bulutluluk
@@ -172,9 +172,19 @@ def avg_cloud(df: pd.DataFrame) -> float | None:
     else:
         return None
 
-def avg_snow_cover(df: pd.DataFrame) -> float | None:
+def rain_prob(df: pd.DataFrame) -> float | None:
     """
-    Ortalama kar örtüsü
+    Yağmur yağma olasılığı
+    """
+    if "PRECTOTCORR" not in df.columns:
+        return None
+    
+    percent = (df.PRECTOTCORR > 0.1).mean() * 100
+    return float(round(percent, 1))
+
+def snow_cover_prob(df: pd.DataFrame) -> float | None:
+    """
+    Kar örtüsü olma olasılığı
     """
     if "SNODP" not in df.columns:
         return None
@@ -223,21 +233,25 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
             "average": avg_temperature(df),
             "average_range": {"min": temp_range[0], "max": temp_range[1]}
         },
-        "wind": {
-            "unit": "m/s",
-            "average_speed": avg_wind_speed(df)
-        },
         "humidity": {
             "unit": "%",
             "average": avg_humidity(df)
+        },
+        "wind": {
+            "unit": "m/s",
+            "average_speed": avg_wind_speed(df)
         },
         "cloud": {
             "unit": "%",
             "average": avg_cloud(df)
         },
+        "rain": {
+            "unit": "%",
+            "probability": rain_prob(df)
+        },
         "snow_cover": {
             "unit": "%",
-            "average": avg_snow_cover(df)
+            "probability": snow_cover_prob(df)
         },
     }
 
