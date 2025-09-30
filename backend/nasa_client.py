@@ -99,7 +99,7 @@ class NASAPowerAPI:
                 )
                 all_data.append(data["properties"]["parameter"])
             except Exception as e:
-                print(f"Something went wrong with NASAPowerAPI/get_multi_year_data_for_day. Error: {e}")
+                print(f"Something went wrong with NASAPowerAPI/get_historical_data. Error: {e}")
                 continue
 
             time.sleep(.1) # API'den banlanmamak için gecikme
