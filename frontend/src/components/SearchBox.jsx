@@ -1,5 +1,10 @@
+import { FiSearch } from "react-icons/fi";
 
-export default function SearchBox({ onEnter, placeholder = "Search place… (Enter)", className = "" }) {
+export default function SearchBox({
+  onEnter,
+  placeholder = "Search…",
+  className = "",
+}) {
   function handleKeyDown(e) {
     if (e.key !== "Enter") return;
     const q = e.currentTarget.value.trim();
@@ -8,13 +13,24 @@ export default function SearchBox({ onEnter, placeholder = "Search place… (Ent
   }
 
   return (
-    <input
-      placeholder={placeholder}
-      onKeyDown={handleKeyDown}
+    <div
       className={
-        "w-full px-3 py-2 rounded-lg border border-gray-300 bg-white shadow " +
-        "outline-none focus:ring-2 focus:ring-blue-500 " + className
+        "flex items-center w-full px-3 py-2 rounded-full border " +
+        "border-gray-300 bg-gray-50 shadow-sm focus-within:ring-2 " +
+        "focus-within:ring-blue-500 " +
+        className
       }
-    />
+    >
+      {/* search icon */}
+      <FiSearch className="text-gray-400 mr-2 text-2xl" />
+
+      {/* input field */}
+      <input
+        type="text"
+        placeholder={placeholder}
+        onKeyDown={handleKeyDown}
+        className="flex-1 bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
+      />
+    </div>
   );
 }

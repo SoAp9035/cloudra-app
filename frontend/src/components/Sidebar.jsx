@@ -18,10 +18,10 @@ export default function Sidebar({
   return (
     <aside
       className="
-        absolute z-[1001] top-1 left-1
+        absolute z-[1001]    
         w-[320px] max-w-[90vw] h-full
         bg-white/95 backdrop-blur
-        rounded-lg shadow-lg overflow-y-auto
+        shadow-lg overflow-y-auto
         pointer-events-auto flex flex-col
       "
     >
