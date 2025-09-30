@@ -6,15 +6,11 @@ from nasa_data_processor import analyze_weather_probability
 
 # Flask ayarları
 app = Flask(__name__)
+app.secret_key = "cloudra"
 CORS(app) # Flask ile React kullanabilmek için gerekli
 
 # NASA POWER API'si
 power_api = NASAPowerAPI()
-
-
-@app.route("/")
-def home():
-    return "<h1>Welcome to Selcuk Space App!</h1>"
 
 
 @app.route("/api/weather_probability", methods=["GET"])
