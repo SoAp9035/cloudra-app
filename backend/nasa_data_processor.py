@@ -39,35 +39,35 @@ def get_thresholds_by_climate_zone(climate_zone: str) -> dict[str, int]:
             "comfortable_max": 10,
             "very_hot": 15,
             "very_cold": -25,
-            "heavy_rain": 5,
+            "heavy_precipitation": 5,
             "very_windy": 20,
         },
         "subarctic": {
             "comfortable_max": 20,
             "very_hot": 25,
             "very_cold": -20,
-            "heavy_rain": 8,
+            "heavy_precipitation": 8,
             "very_windy": 16,
         },
         "temperate": {
             "comfortable_max": 25,
             "very_hot": 32,
             "very_cold": -5,
-            "heavy_rain": 10,
+            "heavy_precipitation": 10,
             "very_windy": 14,
         },
         "subtropical": {
             "comfortable_max": 30,
             "very_hot": 38,
             "very_cold": 5,
-            "heavy_rain": 15,
+            "heavy_precipitation": 15,
             "very_windy": 18,
         },
         "tropical": {
             "comfortable_max": 32,
             "very_hot": 40,
             "very_cold": 15,
-            "heavy_rain": 20,
+            "heavy_precipitation": 20,
             "very_windy": 24,
         },
     }
@@ -158,8 +158,8 @@ def avg_wind_speed(df: pd.DataFrame) -> float | None:
     """
     Ortalama rüzgar hızı
     """
-    if "WS10M" in df.columns:
-        return float(round(df.WS10M.mean(), 1))
+    if "WS10M_MAX" in df.columns:
+        return float(round(df.WS10M_MAX.mean(), 1))
     else:
         return None
 
@@ -171,6 +171,24 @@ def avg_cloud(df: pd.DataFrame) -> float | None:
         return float(round(df.CLOUD_AMT.mean(), 1))
     else:
         return None
+    
+def avg_fog_status(df: pd.DataFrame) -> float | None:
+    """
+    Ortalama sis durumu
+    """
+    if "T2M" not in df.columns or "T2MDEW" not in df.columns:
+        return None
+
+    temp_diff = (df.T2M - df.T2MDEW).mean()
+
+    if temp_diff <= 1:
+        return 3
+    elif temp_diff <= 2:
+        return 2
+    elif temp_diff <= 3:
+        return 1
+    else:
+        return 0
 
 def rain_prob(df: pd.DataFrame) -> float | None:
     """
@@ -195,14 +213,64 @@ def snow_cover_prob(df: pd.DataFrame) -> float | None:
 
 ### Olasılık hesaplamaları
 
+def very_uncomfortable_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> int:
+    """
+    Çok rahatsız edici gün olma olasılığı
+    """
+    if "T2MDEW" not in df.columns:
+        return 0
+    
+    percent = (df["T2MDEW"] >= thresholds["comfortable_max"]).mean() * 100
+    return int(round(percent))
+
 def very_hot_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> int:
     """
-    Çok sıcak olma olasılığı
+    Çok sıcak gün olma olasılığı
     """
     if "T2M_MAX" not in df.columns:
         return 0
     
     percent = (df["T2M_MAX"] >= thresholds["very_hot"]).mean() * 100
+    return int(round(percent))
+
+def very_cold_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> int:
+    """
+    Çok soğuk gün olma olasılığı
+    """
+    if "T2M_MIN" not in df.columns:
+        return 0
+    
+    percent = (df["T2M_MIN"] <= thresholds["very_cold"]).mean() * 100
+    return int(round(percent))
+
+def heavy_precipitation_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> int:
+    """
+    Çok yağışlı gün olma olasılığı
+    """
+    if "PRECTOTCORR" not in df.columns:
+        return 0
+    
+    percent = (df["PRECTOTCORR"] >= thresholds["heavy_precipitation"]).mean() * 100
+    return int(round(percent))
+
+def heavy_snowfall_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> int:
+    """
+    Çok kar yağışlı gün olma olasılığı
+    """
+    if "PRECSNOLAND" not in df.columns:
+        return 0
+    
+    percent = (df["PRECSNOLAND"] >= thresholds["heavy_precipitation"]).mean() * 100
+    return int(round(percent))
+
+def very_windy_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> int:
+    """
+    Çok kar yağışlı gün olma olasılığı
+    """
+    if "WS10M_MAX" not in df.columns:
+        return 0
+    
+    percent = (df["WS10M_MAX"] >= thresholds["very_windy"]).mean() * 100
     return int(round(percent))
 
 
@@ -222,7 +290,6 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
     df = data_normalization(df)
 
     ### HESAPLAMALAR ###
-    # TODO: Boş olan değerler fonksiyonlar ile doldurulacak
 
     # Temel istatistikler
     temp_range = avg_temperature_range(df)
@@ -245,6 +312,10 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
             "unit": "%",
             "average": avg_cloud(df)
         },
+        "fog": {
+            "unit": "0-3 scale",
+            "status": avg_fog_status(df)
+        },
         "rain": {
             "unit": "%",
             "probability": rain_prob(df)
@@ -258,11 +329,12 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
     # Olasılık hesaplamaları
     probabilities = {}
 
-    probabilities["uncomfortable_percent"] = ""
+    probabilities["uncomfortable_percent"] = very_uncomfortable_percent(df, thresholds)
     probabilities["very_hot_percent"] = very_hot_percent(df, thresholds)
-    probabilities["very_cold_percent"] = ""
-    probabilities["heavy_rain_percent"] = ""
-    probabilities["very_windy_percent"] = ""
+    probabilities["very_cold_percent"] = very_cold_percent(df, thresholds)
+    probabilities["heavy_precipitation_percent"] = heavy_precipitation_percent(df, thresholds)
+    probabilities["heavy_snowfall_percent"] = heavy_snowfall_percent(df, thresholds)
+    probabilities["very_windy_percent"] = very_windy_percent(df, thresholds)
 
     ### GÖRSELLEŞTİRME İÇİN VERİLERİN HAZIRLANMASI ###
     # TODO: TARİH - VERİ ikilileri oluşturulacak
@@ -278,36 +350,3 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
     }
 
     return analysis
-
-
-if __name__ == "__main__":
-    import time
-    from nasa_client import NASAPowerAPI, POWER_PARAMETERS
-
-    power_api = NASAPowerAPI()
-    
-    # Konum, ay/gün
-    lat = 37.874641
-    lon = 32.493156
-    month=9
-    day=25
-
-    start_time = time.time()
-
-    power_data = power_api.get_multi_year_data_for_day(
-        lat=lat,
-        lon=lon,
-        month=9,
-        day=28,
-        day_range=0,
-        years_back=10,
-        parameters=POWER_PARAMETERS
-    )
-
-    analyse = analyze_weather_probability(power_data, lat, lon)
-
-    end_time = time.time()
-    execution_time = end_time - start_time
-    print(f"Anaylze took: {execution_time:.2f} seconds.")
-
-    print(analyse)
