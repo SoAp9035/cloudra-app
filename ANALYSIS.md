@@ -48,6 +48,10 @@ Bu bölüm, kullanıcının o gün için "normal" olarak ne beklemesi gerektiği
 - **Ortalama Bulutluluk (%)**
     - **Formül**: (Tüm Bulutluluk Değerlerinin Toplamı) / (Toplam Veri Sayısı)
 
+- **Sis Durumu (0-3 scale)**
+    - **Formül**: (T2MDEW - T2M) / (Toplam Veri Sayısı)
+    - > Not: Sisli gün, T2MDEW ile T2M arasındaki farkın 2°C'den az olduğu günler olarak tanımlanır.
+
 - **Yağmur Olasılığı (%)**
     - **Formül**: (Yağışlı Gün Sayısı) / (Toplam Gün Sayısı) × 100
     - > Not: Yağışlı gün, PRECTOTCORR > 0.1 mm/gün olarak tanımlanır.
