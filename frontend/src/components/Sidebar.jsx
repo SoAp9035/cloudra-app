@@ -23,21 +23,21 @@ export default function Sidebar({
         absolute z-[1001]
         w-[320px] max-w-[90vw] h-full
         bg-white/95 backdrop-blur
-        shadow-lg overflow-y-auto
+        shadow-lg overflow-y-auto rounded-tr-70 rounded-br-70
         pointer-events-auto flex flex-col
       "
     >
       {/* Header */}
       <div className="px-5 pt-5 pb-3 border-b border-gray-100">
-        <h2 className="text-lg font-semibold text-gray-800">Weather Analysis</h2>
-        <p className="text-xs text-gray-500 mt-0.5">Pick a location and a date</p>
+        <h2 className="text-lg font-semibold text-gray-800">Cloudra</h2>
+        <p className="text-xs text-gray-500 mt-0.5">Wanna know the weather? Welcome to Cloudra!</p>
       </div>
 
       {/* Body */}
       <div className="p-5 space-y-5 flex-1">
         {/* Location */}
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1">Location</label>
+          <label className="block text-center text-xs font-medium text-gray-600 mb-2">Enter your desired location</label>
           <SearchBox onEnter={onSearch} />
         </div>
 
