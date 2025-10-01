@@ -1,3 +1,6 @@
+// src/App.jsx
+import { fetchWeatherProbability } from "./components/apiClient";
+import ResultsPanel from "./components/ResultsPanel.jsx";
 import React, { useEffect, useState } from "react";
 import {
   MapContainer,
@@ -44,10 +47,54 @@ export default function App() {
   const [markerClick, setMarkerClick] = useState(null);
   const [markerSearch, setMarkerSearch] = useState(null);
 
-  // sidebar state
+  // UI state
   const [addressLabel, setAddressLabel] = useState("");
   const [selectedDate, setSelectedDate] = useState(todayISO());
-  const [mode, setMode] = useState("current"); // now | hourly | daily | air
+  const [mode, setMode] = useState("quick"); // "quick" | "detailed"
+
+  // API state
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  function mapAnalysisMode(uiMode) {
+    return uiMode === "quick" ? "quick_analysis" : "detailed_analysis";
+  }
+
+  // helper: split ISO date
+  function splitIso(iso /* "YYYY-MM-DD" */) {
+    if (!iso) return { month: null, day: null };
+    const [, m, d] = iso.split("-");
+    return { month: Number(m), day: Number(d) };
+  }
+
+  // Analyze action
+  async function onAnalyze() {
+    const point = (markerClick ?? markerSearch) || center;
+    if (!point) return alert("Pick a location first.");
+    const { month, day } = splitIso(selectedDate);
+    if (!month || !day) return alert("Pick a date first.");
+
+    const analysisMode = mapAnalysisMode(mode);
+    setLoading(true);
+    setError("");
+    try {
+      const json = await fetchWeatherProbability({
+        lat: point.lat,
+        lon: point.lng,
+        month,
+        day,
+        analysisMode,
+      });
+      console.log("API result:", json);
+      setResult(json);
+    } catch (e) {
+      console.error(e);
+      setError(e.message || "API request failed.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   // reverse geocode (coords -> address)
   async function reverseGeocode(coords) {
@@ -69,7 +116,6 @@ export default function App() {
     if (source === "search") setMarkerSearch(coords);
     setCenter(coords);
     reverseGeocode(coords);
-    // later: call Flask weather with { coords, selectedDate, mode }
     console.log("chosen:", coords, "date:", selectedDate, "mode:", mode);
   }
 
@@ -124,27 +170,31 @@ export default function App() {
 
   return (
     <div className="relative h-screen w-full">
-      {/* Sidebar overlay */}
+      {/* Controls sidebar (left) */}
       <Sidebar
         onSearch={onSearch}
         dateValue={selectedDate}
         onDateChange={setSelectedDate}
         mode={mode}
         onModeChange={setMode}
+        onAnalyze={onAnalyze}
+        analyzeLoading={loading}
+        analyzeError={error}
       />
 
-      {/* Address toast/card (top-right) */}
-      {addressLabel && (
-        <div className="absolute z-[1001] top-3 right-3 max-w-[360px]">
-          <div
-            className="bg-white border border-gray-200 rounded-lg p-3 shadow text-sm leading-tight"
-            title={addressLabel}
-          >
-            <div className="font-semibold mb-1">Location address</div>
-            <div className="text-gray-700 break-words">{addressLabel}</div>
-          </div>
-        </div>
-      )}
+ 
+      {/* Results panel (right) */}
+      <ResultsPanel
+        result={result}
+        loading={loading}
+        error={error}
+        selectedDate={selectedDate}
+        addressLabel={addressLabel}
+        mode={mode}
+        onViewFullReport={() => {
+          console.log("open full report");
+        }}
+      />
 
       {/* Map */}
       <MapContainer
