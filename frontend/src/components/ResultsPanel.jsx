@@ -103,13 +103,13 @@ export default function ResultsPanel({
                 <div className="grid grid-cols-2 gap-2">
                   <MiniMetric icon="🌧️" label="Rain" value={
                     nOrDashPct(rainProb)
-                  }/>
+                  } />
                   <MiniMetric icon="🌬️" label="Wind" value={
                     typeof windKmh === "number" ? `${windKmh.toFixed(1)} km/h` : "—"
-                  }/>
+                  } />
                   <MiniMetric icon="💧" label="Humidity" value={
                     nOrDashPct(humidity)
-                  }/>
+                  } />
                 </div>
 
                 <FooterLine dataPoints={dataPoints} mode={mode} />
