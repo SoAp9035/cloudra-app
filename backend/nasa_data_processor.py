@@ -176,16 +176,17 @@ def avg_fog_status(df: pd.DataFrame) -> float | None:
     """
     Ortalama sis durumu
     """
-    if "T2M" not in df.columns or "T2MDEW" not in df.columns:
+    if "T2M" not in df.columns or "T2MDEW" not in df.columns or "RH2M" not in df.columns:
         return None
 
     temp_diff = (df.T2M - df.T2MDEW).mean()
+    humidity = df.RH2M.mean()
 
-    if temp_diff <= 1:
+    if temp_diff <= 1 and humidity >= 80:
         return 3
-    elif temp_diff <= 2:
+    elif temp_diff <= 2 and humidity >= 70:
         return 2
-    elif temp_diff <= 3:
+    elif temp_diff <= 3 and humidity >= 60:
         return 1
     else:
         return 0
