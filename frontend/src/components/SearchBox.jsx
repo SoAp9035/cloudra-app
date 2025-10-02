@@ -16,8 +16,8 @@ export default function SearchBox({
     <div
       className={
         "flex items-center w-full px-3 py-2 rounded-full border-1" +
-        "border-gray-300 bg-gray-50 shadow-lg focus-within:ring-2 " +
-        "focus-within:ring-blue-500 " +
+        "border-gray-300 bg-stone-50 shadow-lg focus-within:ring-2 " +
+        "focus-within:ring-emerald-500 " +
         className
       }
     >
