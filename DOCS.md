@@ -166,3 +166,58 @@ GET /api/weather_probability?lat=40.7589&lon=-73.9851&month=6&day=15&analysis_mo
   "error": "Invalid coordinates: latitude must be between -90 and 90, longitude must be between -180 and 180."
 }
 ```
+
+
+**Endpoint:** `/api/find_optimal_days`
+**Methods:** GET
+
+### Description
+This endpoint helps users find the best days for outdoor activities based on weather probabilities and user-defined preferences.
+
+### Parameters
+
+- `lat` (float, required): Latitude coordinate of the location
+- `lon` (float, required): Longitude coordinate of the location
+- `month` (int, required): Month number (1-12)
+- `day` (int, required): Day of the month
+- `analysis_mode` (string, required): Analysis mode, either `detailed_analysis` or `quick_analysis`
+
+### Response
+
+Returns JSON object with:
+- `query` (object): Contains the input parameters
+  - `location` (object): Location coordinates
+    - `latitude` (float): Latitude value
+    - `longitude` (float): Longitude value
+  - `date` (object): Date information
+    - `month` (string): Month in MM format
+    - `day` (string): Day in DD format
+  - `analysis_mode` (string): Analysis mode type
+- `optimal_days` (array): List of optimal days for outdoor activities
+
+### Example Request
+```
+GET /api/find_optimal_days?lat=40.7589&lon=-73.9851&month=6&day=15&analysis_mode=detailed_analysis
+```
+
+### Example Response
+```json
+{
+  "query": {
+    "location": {
+      "latitude": 37.874641,
+      "longitude": 32.493156
+    },
+    "date": {
+      "month": "09",
+      "day": "30"
+    },
+    "analysis_mode": "detailed_analysis"
+  },
+  "optimal_days": [
+    "2025-09-15",
+    "2025-09-20",
+    "2025-09-10"
+  ]
+}
+```

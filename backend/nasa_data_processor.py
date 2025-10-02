@@ -2,6 +2,7 @@
 
 import pandas as pd
 from io import StringIO
+from datetime import datetime
 
 
 # Aşağıdaki iki fonksiyon her iklim bölgeleri için ayrı eşik değeri döndürmek için yazıldı
@@ -351,3 +352,77 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
     }
 
     return analysis
+
+
+### Öneri Sistemi
+
+def calculate_daily_avg(df: pd.DataFrame) -> pd.DataFrame | None:
+    """
+    Calculates the daily average for each column
+    """
+    try:
+        df["DATE"] = pd.to_datetime(df["DATE"])
+        df["Month"] = df["DATE"].dt.month
+        df["Day"] = df["DATE"].dt.day
+
+        # Create aggregation dictionary dynamically
+        agg_dict = {}
+        for col in ["T2M", "T2M_MAX", "T2M_MIN", "T2MDEW", "RH2M", "PRECTOTCORR", 
+               "PRECSNOLAND", "SNODP", "WS10M", "WS10M_MAX", "CLOUD_AMT"]:
+            method = choose_mean_or_median(df, col)
+            agg_dict[col] = method
+        
+        df_grouped = df.groupby(["Month", "Day"]).agg(agg_dict).reset_index()
+
+        df_grouped["DATE"] = pd.to_datetime(df_grouped[["Month", "Day"]].assign(Year=datetime.now().year))
+
+        df_grouped = df_grouped[["DATE", "T2M", "T2M_MAX", "T2M_MIN", "T2MDEW", "RH2M", 
+                                 "PRECTOTCORR", "PRECSNOLAND", "SNODP", "WS10M", "WS10M_MAX", "CLOUD_AMT"]]
+
+        return df_grouped
+    except Exception as e:
+        print(e)
+        return None
+
+def find_suitable_days(df: pd.DataFrame, thresholds: dict[str, int]) -> list | None:
+    """
+    Hava durumu normal düzeyde olan günleri seçer
+    """
+    df = calculate_daily_avg(df)
+    if df is None or df.empty:
+        return None
+    
+    comfort_ok = df["T2MDEW"] <= thresholds["comfortable_max"]
+    temp_hot_ok = df["T2M_MAX"] <= thresholds["very_hot"]
+    temp_cold_ok = df["T2M_MIN"] >= thresholds["very_cold"]
+    precipitation_ok = df["PRECTOTCORR"] <= thresholds["heavy_precipitation"]
+    wind_ok = df["WS10M_MAX"] <= thresholds["very_windy"]
+    cloud_ok = df["CLOUD_AMT"] <= 80
+
+    suitable = df[comfort_ok & temp_hot_ok & temp_cold_ok & precipitation_ok & wind_ok & cloud_ok]
+    if suitable.empty:
+        return None
+
+    return suitable["DATE"].dt.strftime("%Y-%m-%d").tolist()
+
+def check_day_and_suggest(
+    data: StringIO,
+    lat: float,
+    lon: float
+) -> list:
+    """
+    Hava durumu normal düzeyde olan günleri seçer
+    """
+    thresholds = get_thresholds_by_climate_zone(get_climate_zone(lat, lon))
+
+    df = pd.read_json(data)
+
+    df = data_normalization(df)
+    df['DATE'] = df.index
+
+    suitable_days = find_suitable_days(df, thresholds)
+
+    if suitable_days is None:
+        return []
+    
+    return suitable_days
