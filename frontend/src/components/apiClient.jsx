@@ -1,4 +1,3 @@
-// src/apiClient.js
 export async function fetchWeatherProbability({ lat, lon, month, day, analysisMode }) {
   const base = import.meta.env.VITE_API_BASE;
   const qs = new URLSearchParams({
