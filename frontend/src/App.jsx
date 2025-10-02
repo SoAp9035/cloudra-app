@@ -1,6 +1,8 @@
 // src/App.jsx
+
 import { fetchWeatherProbability } from "./components/apiClient";
 import ResultsPanel from "./components/ResultsPanel.jsx";
+import LoadingOverlay from "./components/LoadingOverlay.jsx";
 import React, { useEffect, useState } from "react";
 import {
   MapContainer,
@@ -168,8 +170,10 @@ export default function App() {
 
   if (!center) return <div className="grid h-screen place-items-center">Loading…</div>;
 
-  return (
+  return (<>
+      {loading && <LoadingOverlay message="Analyzing weather…" />}
     <div className="relative h-screen w-full">
+
       {/* Controls sidebar (left) */}
       <Sidebar
         onSearch={onSearch}
@@ -220,5 +224,6 @@ export default function App() {
         )}
       </MapContainer>
     </div>
+    </>
   );
 }
