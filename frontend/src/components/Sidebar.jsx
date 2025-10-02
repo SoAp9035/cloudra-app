@@ -92,7 +92,7 @@ export default function Sidebar({
           className={
             "w-full rounded-xl text-white py-2.5 text-sm font-medium shadow " +
             (analyzeLoading
-              ? "bg-gray-400 cursor-not-allowed"
+              ? "bg-gray-400 text-slate cursor-not-allowed"
               : "bg-gradient-to-br from-cyan-500 via-emerald-400 to-green-300 text-white shadow")
           }
         >
