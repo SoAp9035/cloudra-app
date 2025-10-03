@@ -42,15 +42,15 @@ Bu bölüm, kullanıcının o gün için "normal" olarak ne beklemesi gerektiği
 - **Ortalama Nem (%)**
     - **Formül**: (Tüm Nem Değerlerinin Toplamı) / (Toplam Veri Sayısı)
 
-- **Ortalama Rüzgar Hızı (m/s)**
+- **Ortalama Rüzgar Hızı (km/s)**
     - **Formül**: (Tüm Rüzgar Hızı Değerlerinin Toplamı) / (Toplam Veri Sayısı)
 
 - **Ortalama Bulutluluk (%)**
     - **Formül**: (Tüm Bulutluluk Değerlerinin Toplamı) / (Toplam Veri Sayısı)
 
 - **Sis Durumu (0-3 scale)**
-    - **Formül**: (T2MDEW - T2M) / (Toplam Veri Sayısı)
-    - > Not: Sisli gün, T2MDEW ile T2M arasındaki farkın 2°C'den az olduğu günler olarak tanımlanır.
+    - **Formül**: (T2M - T2MDEW) / (Toplam Veri Sayısı)
+    - > Not: Sisli gün, T2M ile T2MDEW arasındaki farkın 2°C'den az olduğu günler olarak tanımlanır.
 
 - **Yağmur Olasılığı (%)**
     - **Formül**: (Yağışlı Gün Sayısı) / (Toplam Gün Sayısı) × 100

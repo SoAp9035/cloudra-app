@@ -33,6 +33,7 @@ Returns JSON object with:
   - `analysis_mode` (string): Analysis mode used
   - `data_source` (string): Source of weather data (NASA POWER MERRA-2 Dataset)
   - `data_points` (int): Number of data points analyzed
+  - `time_taken` (float): Time taken to process the request in seconds
 - `weather_probabilities` (object): Weather probability data
   - `statistics` (object): Statistical analysis results
     - `temperature` (object): Temperature statistics
@@ -45,7 +46,7 @@ Returns JSON object with:
       - `unit` (string): Rain unit (%)
       - `probability` (float): Rain probability percentage
     - `wind` (object): Wind statistics
-      - `unit` (string): Wind speed unit (m/s)
+      - `unit` (string): Wind speed unit (km/h)
       - `average_speed` (float): Average wind speed value
     - `humidity` (object): Humidity statistics
       - `unit` (string): Humidity unit (%)
@@ -58,7 +59,8 @@ Returns JSON object with:
       - `probability` (float): Snow cover probability percentage
     - `fog` (object): Fog statistics
       - `unit` (string): Fog unit (0-3 scale)
-      - `status` (int): Fog status value
+      - `scale` (int): Fog scale value (0-3)
+      - `status` (string): Fog status value (No fog, Light fog, Moderate fog, Heavy fog)
   - `probabilities` (object): Calculated weather probabilities
     - `heavy_precipitation_percent` (int): Heavy precipitation probability
     - `heavy_snowfall_percent` (int): Heavy snowfall probability
@@ -67,13 +69,23 @@ Returns JSON object with:
     - `very_hot_percent` (int): Very hot weather probability
     - `very_windy_percent` (int): Very windy weather probability
 - `thresholds_info` (object): Information about analysis thresholds
-  - `climate_zone` (string): Climate zone classification
+  - `climate_zone` (string): Climate zone classification (polar, subarctic, temperate, subtropical, tropical)
   - `thresholds_used` (object): Threshold values used in analysis
-    - `comfortable_max` (int): Maximum comfortable temperature
-    - `very_hot` (int): Very hot temperature threshold
-    - `very_cold` (int): Very cold temperature threshold
-    - `heavy_precipitation` (int): Heavy precipitation threshold
-    - `very_windy` (int): Very windy threshold
+    - `comfort_temp_max` (object): Maximum comfortable temperature
+      - `value` (int): Temperature value
+      - `unit` (string): Temperature unit (°C)
+    - `very_hot` (object): Very hot temperature threshold
+      - `value` (int): Temperature value
+      - `unit` (string): Temperature unit (°C)
+    - `very_cold` (object): Very cold temperature threshold
+      - `value` (int): Temperature value
+      - `unit` (string): Temperature unit (°C)
+    - `heavy_precipitation` (object): Heavy precipitation threshold
+      - `value` (int): Precipitation value
+      - `unit` (string): Precipitation unit (mm/day)
+    - `very_windy` (object): Very windy threshold
+      - `value` (int): Wind speed value
+      - `unit` (string): Wind speed unit (m/s)
 - `error` (string): Error message if request fails
 
 **Note:** All values return `None` if data is missing or unavailable.
@@ -101,12 +113,13 @@ GET /api/weather_probability?lat=40.7589&lon=-73.9851&month=6&day=15&analysis_mo
     "title": "Weather Probabilities for 09/30",
     "analysis_mode": "detailed_analysis",
     "data_source": "NASA POWER MERRA-2 Dataset",
-    "data_points": 30
+    "data_points": 30,
+    "time_taken": 67.5
   },
   "weather_probabilities": {
     "statistics": {
       "temperature": {
-        "unit": "Celcius",
+        "unit": "°C",
         "average": 16.2,
         "average_range": {
           "max": 23.3,
@@ -118,8 +131,8 @@ GET /api/weather_probability?lat=40.7589&lon=-73.9851&month=6&day=15&analysis_mo
         "probability": 36.7
       },
       "wind": {
-        "unit": "m/s",
-        "average_speed": 5.2
+        "unit": "km/h",
+        "average_speed": 18.8
       },
       "humidity": {
         "unit": "%",
@@ -134,8 +147,9 @@ GET /api/weather_probability?lat=40.7589&lon=-73.9851&month=6&day=15&analysis_mo
         "probability": 0.0
       },
       "fog": {
-        "unit": "0-3",
-        "status": 0
+        "unit": "0-3 scale",
+        "scale": 0,
+        "status": "No fog"
       }
     },
     "probabilities": {
@@ -150,11 +164,26 @@ GET /api/weather_probability?lat=40.7589&lon=-73.9851&month=6&day=15&analysis_mo
   "thresholds_info": {
     "climate_zone": "temperate",
     "thresholds_used": {
-      "comfortable_max": 25,
-      "very_hot": 32,
-      "very_cold": -5,
-      "heavy_precipitation": 10,
-      "very_windy": 14
+      "comfort_temp_max": {
+        "value": 25,
+        "unit": "°C"
+      },
+      "very_hot": {
+        "value": 32,
+        "unit": "°C"
+      },
+      "very_cold": {
+        "value": -5,
+        "unit": "°C"
+      },
+      "heavy_precipitation": {
+        "value": 10,
+        "unit": "mm/day"
+      },
+      "very_windy": {
+        "value": 10,
+        "unit": "m/s"
+      }
     }
   }
 }
@@ -193,7 +222,7 @@ Returns JSON object with:
     - `month` (string): Month in MM format
     - `day` (string): Day in DD format
   - `analysis_mode` (string): Analysis mode type
-- `optimal_days` (array): List of optimal days for outdoor activities
+- `optimal_days` (array): List of optimal days for outdoor activities in YYYY-MM-DD format
 
 ### Example Request
 ```
