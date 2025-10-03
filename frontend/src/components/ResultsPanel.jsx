@@ -5,7 +5,6 @@ export default function ResultsPanel({
   result,
   loading,
   error,
-  selectedDate,
   addressLabel,
   mode, // "quick" | "detailed"
 }) {
