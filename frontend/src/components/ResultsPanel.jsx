@@ -62,16 +62,11 @@ export default function ResultsPanel({
   const dataPoints = result?.analysis_summary?.data_points ?? null;
   const placeShort = addressLabel ? addressLabel.split(",")[0] : "0";
 
-<<<<<<< HEAD
     return (
       <aside
      /* style={{ backgroundColor: "oklch(28.2% 0.091 267.935 / 0.4" }}*/
         className="
-=======
-  return (
-    <aside
-      className="
->>>>>>> 3a812945612c3c553fe538d2e3a5ec28023b94f0
+
           absolute right-0 top-0 z-[1001]
           h-full w-[340px] max-w-[88vw]
           backdrop-blur
