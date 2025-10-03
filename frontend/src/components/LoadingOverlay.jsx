@@ -1,30 +1,23 @@
 // src/components/LoadingOverlay.jsx
 import React, { useEffect, useState } from "react";
-import { FaCloudRain } from "react-icons/fa";
+import loadingIcon from "../assets/icons/loadingIcon.gif";
 
 export default function LoadingOverlay({
   message = "Analyzing weather…",
-  Icon = FaCloudRain,
   mode = "quick" // "quick" or "detailed"
 }) {
-  // Lock scroll when overlay is open
+  // Lock scroll
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
+    return () => (document.body.style.overflow = prev);
   }, []);
 
-  // Initialize countdown timer depending on mode
-  const [secondsLeft, setSecondsLeft] = useState(
-    mode === "quick" ? 30 : 60
-  );
-
-  // Countdown logic: decrease seconds every 1s
+  // Countdown timer
+  const [secondsLeft, setSecondsLeft] = useState(mode === "quick" ? 30 : 60);
   useEffect(() => {
-    if (secondsLeft <= 0) return;  
-    const id = setInterval(() => {
-      setSecondsLeft(s => s - 1);
-    }, 1000);
+    if (secondsLeft <= 0) return;
+    const id = setInterval(() => setSecondsLeft(s => s - 1), 1000);
     return () => clearInterval(id);
   }, [secondsLeft]);
 
@@ -46,51 +39,25 @@ export default function LoadingOverlay({
         }
       `}</style>
 
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label="Loading"
-        className="
-          fixed inset-0 z-[3000] 
-          flex items-center justify-center 
-          bg-black/40 backdrop-blur-sm
-          pointer-events-auto
-        "
-      >
-        <div className="rounded-2xl bg-white/90 shadow-xl p-6 w-[min(92vw,360px)]">
+      <div className="fixed inset-0 z-[3000] flex items-center justify-center bg-black/40 backdrop-blur-sm pointer-events-auto">
+        <div className="rounded-2xl bg-white/90 shadow-xl p-6 w-[min(92vw,360px)] text-center">
           
-          {/* Gradient Icon with bounce animation */}
-          <div
-            className="mx-auto mb-4 w-20 h-20 flex items-center justify-center animate-bounce-smooth"
-          >
-            <Icon
-              className="w-full h-full"
-              style={{ fill: "url(#gradient1)" }}
-            />
-            <svg width="0" height="0">
-              <defs>
-                <linearGradient id="gradient1" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#06b6d4" /> {/* cyan-500 */}
-                  <stop offset="50%" stopColor="#22c55e" /> {/* emerald-400 */}
-                  <stop offset="100%" stopColor="#a3e635" /> {/* green-300 */}
-                </linearGradient>
-              </defs>
-            </svg>
+          {/* GIF Icon with bounce animation */}
+          <div className="mx-auto mb-4 w-20 h-20 flex items-center justify-center animate-bounce-smooth">
+            <img src={loadingIcon} alt="Loading" className="w-full h-full" />
           </div>
 
-          {/* Loading text + countdown */}
-          <div className="text-center">
-            <div className="text-sm font-medium text-gray-800">{message}</div>
-            <div className="mt-2 text-xs text-gray-500">
-              Fetching historical NASA data
-              <span style={{ animation: "pulseDots 1.4s infinite" }}>.</span>
-              <span style={{ animation: "pulseDots 1.4s .2s infinite" }}>.</span>
-              <span style={{ animation: "pulseDots 1.4s .4s infinite" }}>.</span>
+          {/* Loading message */}
+          <div className="text-sm font-medium text-gray-800">{message}</div>
+          <div className="mt-2 text-xs text-gray-500">
+            Fetching historical NASA data
+            <span style={{ animation: "pulseDots 1.4s infinite" }}>.</span>
+            <span style={{ animation: "pulseDots 1.4s .2s infinite" }}>.</span>
+            <span style={{ animation: "pulseDots 1.4s .4s infinite" }}>.</span>
 
-              {/* Countdown timer */}
-              <div className="mt-3 text-sm font-semibold text-gray-700">
-                {secondsLeft > 0 ? `${secondsLeft}s remaining` : "Almost done…"}
-              </div>
+            {/* Countdown */}
+            <div className="mt-3 text-sm font-semibold text-gray-700">
+              {secondsLeft > 0 ? `${secondsLeft}s remaining` : "Almost done…"}
             </div>
           </div>
         </div>
