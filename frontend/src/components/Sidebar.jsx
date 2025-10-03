@@ -66,9 +66,9 @@ export default function Sidebar({
           <label className="block text-xs font-medium text-gray-600 mb-2">Analysis Mode</label>
           <div className="flex flex-wrap gap-2">
             {options.map((o) => (
-              <button
+              <label
                 key={o.key}
-                onClick={() => onModeChange?.(o.key)}
+                // onClick={() => onModeChange?.(o.key)}
                 className={
                   "px-3 py-1.5 text-sm rounded-full transition " +
                   (mode === o.key
@@ -76,8 +76,16 @@ export default function Sidebar({
                     : "bg-gray-50 text-gray-700 hover:bg-gray-100")
                 }
               >
+                <input
+                  type="radio"
+                  name="analysisMode"
+                  value={o.key}
+                  checked={mode == o.key}
+                  onChange={(e) => onModeChange?.(e.target.value)}
+                  className="mr-2" 
+                />
                 {o.label}
-              </button>
+              </label>
             ))}
           </div>
         </div>
