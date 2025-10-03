@@ -1,4 +1,12 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+
 @import "tailwindcss";
+
+
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('../assets/logo/fonts/Poppins/Poppins-Bold.ttf') format('truetype');
+  font-weight: 700; /* Bold */
+  font-style: normal;
+}
+

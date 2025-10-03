@@ -23,35 +23,42 @@ export default function Sidebar({
       className="
         absolute z-[1001]
         w-[320px] max-w-[90vw] h-full
-        bg-slate-950 backdrop-blur
-        shadow-lg overflow-y-auto 
-        pointer-events-auto flex flex-col 
+        backdrop-blur
+        shadow-lg overflow-y-auto rounded-tr-70 rounded-br-70
+        pointer-events-auto flex flex-col
       "
     >
-
-
       {/* Header */}
       <div className="px-5 pt-5 pb-3 border-b border-gray-100">
         <div className="flex items-center gap-2">
           <img src={logoClose} className="w-14 h-14 object-cover rounded-full -mt-2" />
           <div className="flex flex-col">
-            <h4 className="text-4xl font-bold">
-              <span className="bg-gradient-to-r from-cyan-500 via-emerald-400 to-green-300 bg-clip-text text-transparent">
+            <h4 className="text-5xl font-poppins font-bold">
+              <span
+                style={{
+                  background: "linear-gradient(90deg, #0D1321, #1E3A8A, #2563EB, #38BDF8, #A0E7FF)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  display: "inline-block",
+                }}
+              >
                 Cloudra
               </span>
             </h4>
-            <p className="text-xs text-emerald-50 mt-1">Wanna know the weather?</p>
+            <p className="text-sm font-bold mt-1 text-black">
+              Wanna know the weather?
+            </p>
           </div>
         </div>
       </div>
-
-
 
       {/* Body */}
       <div className="p-5 space-y-5 flex-1">
         {/* Location */}
         <div>
-          <label className="block text-center text-xs font-medium text-emerald-100 mb-2">Enter your desired location</label>
+          <label className="block text-center text-base font-bold text-black mb-2">
+            Enter your desired location
+          </label>
           <SearchBox onEnter={onSearch} />
         </div>
 
@@ -72,8 +79,15 @@ export default function Sidebar({
                 className={
                   "px-3 py-1.5 text-sm rounded-full transition " +
                   (mode === o.key
-                    ? "bg-gradient-to-br from-cyan-500 to-green-300 via-emerald-400 text-white shadow"
+                    ? "text-white shadow"
                     : "bg-gray-50 text-gray-700 hover:bg-gray-100")
+                }
+                style={
+                  mode === o.key
+                    ? {
+                        background: "linear-gradient(90deg,  #2563EB, #38BDF8, #A0E7FF)",
+                      }
+                    : {}
                 }
               >
                 {o.label}
@@ -85,19 +99,21 @@ export default function Sidebar({
 
       {/* Footer (Analyze) */}
       <div className="p-5 border-t border-gray-100">
-        <button
-          type="button"
-          onClick={onAnalyze}
-          disabled={analyzeLoading}
-          className={
-            "w-full rounded-xl text-white py-2.5 text-sm font-medium shadow " +
-            (analyzeLoading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-gradient-to-br from-cyan-500 via-emerald-400 to-green-300 text-white shadow")
-          }
-        >
-          {analyzeLoading ? "Analyzing…" : "Get Analysis"}
-        </button>
+       <button
+  type="button"
+  onClick={onAnalyze}
+  disabled={analyzeLoading}
+  className={
+    "w-full rounded-xl text-white py-2.5 text-sm font-medium shadow"
+  }
+  style={
+    analyzeLoading
+      ? { backgroundColor: "#9CA3AF", cursor: "not-allowed" } // gri ton disabled için
+      : { background: "linear-gradient(90deg, #2563EB, #38BDF8, #A0E7FF)" }
+  }
+>
+  {analyzeLoading ? "Analyzing…" : "Get Analysis"}
+</button>
 
         {analyzeError && (
           <div className="mt-2 text-xs text-red-600">Error: {analyzeError}</div>

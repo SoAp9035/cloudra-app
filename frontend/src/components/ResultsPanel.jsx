@@ -64,10 +64,11 @@
 
     return (
       <aside
+     /* style={{ backgroundColor: "oklch(28.2% 0.091 267.935 / 0.4" }}*/
         className="
           absolute right-0 top-0 z-[1001]
           h-full w-[340px] max-w-[88vw]
-          bg-white/95 backdrop-blur
+          backdrop-blur
           border-l border-gray-200
           shadow-xl flex flex-col
         "
