@@ -23,7 +23,7 @@ def weather_probability():
         day = int(data["day"])
         analysis_mode = str(data["analysis_mode"])
 
-        day_range = 7
+        day_range = 0
         parameters = POWER_PARAMETERS
 
         # Validations
