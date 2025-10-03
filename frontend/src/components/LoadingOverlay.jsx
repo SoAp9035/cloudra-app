@@ -1,5 +1,6 @@
 // src/components/LoadingOverlay.jsx
 import React, { useEffect } from "react";
+import loadingIcon from "../assets/icons/loadingIcon.gif";
 
 export default function LoadingOverlay({ message = "Analyzing weather…" }) {
  
@@ -35,9 +36,19 @@ export default function LoadingOverlay({ message = "Analyzing weather…" }) {
           pointer-events-auto
         "
       >
-        <div className="rounded-2xl bg-white/90 shadow-xl p-6 w-[min(92vw,360px)]">
+        <div className="rounded-2xl bg-white shadow-xl p-6 w-[min(92vw,360px)]">
           {/* Cloud icon */}
-          <div
+
+          <div className="mx-auto mb-4 w-20 h-20"
+          style={{animation: "floaty 2.2s ease-in-out infinite" }}>
+
+          <img src={loadingIcon}
+           className="w-full h-full"/>
+
+          </div>
+
+
+          {/* <div
             className="mx-auto mb-4 w-20 h-20"
             style={{ animation: "floaty 2.2s ease-in-out infinite" }}
           >
@@ -52,14 +63,14 @@ export default function LoadingOverlay({ message = "Analyzing weather…" }) {
                 d="M22 48h22a10 10 0 0 0 0-20h-1.2A14 14 0 1 0 22 48Z"
                 fill="url(#g1)"
               />
-              {/* drizzle lines */}
+               drizzle lines
               <g stroke="#334155" strokeWidth="2" strokeLinecap="round" opacity=".35">
                 <line x1="25" y1="50" x2="25" y2="56" />
                 <line x1="33" y1="50" x2="33" y2="56" />
                 <line x1="41" y1="50" x2="41" y2="56" />
               </g>
             </svg>
-          </div>
+          </div>  */}
 
           {/* Message */}
           <div className="text-center">
