@@ -2,3 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 @import "tailwindcss";
+
+
+
+body {
+      font-family: "Poppins", sans-serif;
+}
