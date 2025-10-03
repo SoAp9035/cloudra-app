@@ -37,7 +37,9 @@
 
 
 
- 
+
+    // detailed extras
+
     const cloud =
       stats?.cloud?.average ??
       stats?.cloud?.cover ??
@@ -256,4 +258,12 @@ function prettyKey(k) {
 }
 
 
- 
+  // function formatThresholds(t) {
+  //   if (!t || typeof t !== "object") return "0";
+  //   try {
+  //     const pairs = Object.entries(t).map(([k, v]) => `${k.replace(/_/g, " ")}: ${v}`);
+  //     return pairs.join(" • ");
+  //   } catch {
+  //     return "0";
+  //   }
+  // }
