@@ -1,23 +1,37 @@
 // src/components/LoadingOverlay.jsx
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import loadingIcon from "../assets/icons/loadingIcon.gif";
 
-export default function LoadingOverlay({ message = "Analyzing weather…" }) {
- 
+export default function LoadingOverlay({
+  message = "Analyzing weather…",
+  mode = "quick" // "quick" or "detailed"
+}) {
+  // Lock scroll
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
+    return () => (document.body.style.overflow = prev);
   }, []);
+
+  // Countdown timer
+  const [secondsLeft, setSecondsLeft] = useState(mode === "quick" ? 30 : 60);
+  useEffect(() => {
+    if (secondsLeft <= 0) return;
+    const id = setInterval(() => setSecondsLeft(s => s - 1), 1000);
+    return () => clearInterval(id);
+  }, [secondsLeft]);
 
   return (
     <>
- 
       <style>{`
-        @keyframes floaty {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
-          100% { transform: translateY(0px); }
+        @keyframes bounceSmooth {
+          0%, 100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+          25% { transform: translateY(-6px) scale(1.05) rotate(-3deg); opacity: 0.9; }
+          50% { transform: translateY(-12px) scale(1.1) rotate(3deg); opacity: 1; }
+          75% { transform: translateY(-6px) scale(1.05) rotate(-2deg); opacity: 0.95; }
+        }
+        .animate-bounce-smooth {
+          animation: bounceSmooth 2s ease-in-out infinite;
         }
         @keyframes pulseDots {
           0%, 80%, 100% { opacity: .2; }
@@ -25,61 +39,25 @@ export default function LoadingOverlay({ message = "Analyzing weather…" }) {
         }
       `}</style>
 
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label="Loading"
-        className="
-          fixed inset-0 z-[3000] 
-          flex items-center justify-center 
-          bg-black/40 backdrop-blur-sm
-          pointer-events-auto
-        "
-      >
-        <div className="rounded-2xl bg-white shadow-xl p-6 w-[min(92vw,360px)]">
-          {/* Cloud icon */}
-
-          <div className="mx-auto mb-4 w-20 h-20"
-          style={{animation: "floaty 2.2s ease-in-out infinite" }}>
-
-          <img src={loadingIcon}
-           className="w-full h-full"/>
-
+      <div className="fixed inset-0 z-[3000] flex items-center justify-center bg-black/40 backdrop-blur-sm pointer-events-auto">
+        <div className="rounded-2xl bg-white/90 shadow-xl p-6 w-[min(92vw,360px)] text-center">
+          
+          {/* GIF Icon with bounce animation */}
+          <div className="mx-auto mb-4 w-20 h-20 flex items-center justify-center animate-bounce-smooth">
+            <img src={loadingIcon} alt="Loading" className="w-full h-full" />
           </div>
 
+          {/* Loading message */}
+          <div className="text-sm font-medium text-gray-800">{message}</div>
+          <div className="mt-2 text-xs text-gray-500">
+            Fetching historical NASA data
+            <span style={{ animation: "pulseDots 1.4s infinite" }}>.</span>
+            <span style={{ animation: "pulseDots 1.4s .2s infinite" }}>.</span>
+            <span style={{ animation: "pulseDots 1.4s .4s infinite" }}>.</span>
 
-          {/* <div
-            className="mx-auto mb-4 w-20 h-20"
-            style={{ animation: "floaty 2.2s ease-in-out infinite" }}
-          >
-            <svg viewBox="0 0 64 64" className="w-full h-full">
-              <defs>
-                <linearGradient id="g1" x1="0" x2="1">
-                  <stop offset="0" stopColor="#60a5fa" />
-                  <stop offset="1" stopColor="#7c3aed" />
-                </linearGradient>
-              </defs>
-              <path
-                d="M22 48h22a10 10 0 0 0 0-20h-1.2A14 14 0 1 0 22 48Z"
-                fill="url(#g1)"
-              />
-               drizzle lines
-              <g stroke="#334155" strokeWidth="2" strokeLinecap="round" opacity=".35">
-                <line x1="25" y1="50" x2="25" y2="56" />
-                <line x1="33" y1="50" x2="33" y2="56" />
-                <line x1="41" y1="50" x2="41" y2="56" />
-              </g>
-            </svg>
-          </div>  */}
-
-          {/* Message */}
-          <div className="text-center">
-            <div className="text-sm font-medium text-gray-800">{message}</div>
-            <div className="mt-2 text-xs text-gray-500">
-              Fetching historical NASA data
-              <span style={{ animation: "pulseDots 1.4s infinite" }}>.</span>
-              <span style={{ animation: "pulseDots 1.4s .2s infinite" }}>.</span>
-              <span style={{ animation: "pulseDots 1.4s .4s infinite" }}>.</span>
+            {/* Countdown */}
+            <div className="mt-3 text-sm font-semibold text-gray-700">
+              {secondsLeft > 0 ? `${secondsLeft}s remaining` : "Almost done…"}
             </div>
           </div>
         </div>

@@ -5,7 +5,6 @@ export default function ResultsPanel({
   result,
   loading,
   error,
-  selectedDate,
   addressLabel,
   mode, // "quick" | "detailed"
 }) {
@@ -35,10 +34,10 @@ export default function ResultsPanel({
     stats?.wind?.speed ??
     (typeof stats?.wind === "number" ? stats?.wind : null);
 
-  const tempRange = {
-    max: stats?.temperature.average_range?.max ?? null,
-    min: stats?.temperature.average_range?.min ?? null,
-  };
+const tempRange = {
+  max: stats?.temperature?.average_range?.max ?? "-",
+  min: stats?.temperature?.average_range?.min ?? "-",
+};
 
 
 
