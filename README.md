@@ -8,6 +8,8 @@ Read the API documentation here: [DOCS](https://github.com/SoAp9035/selcuk-space
 
 Read the analysis here: [ANALYSIS](https://github.com/SoAp9035/selcuk-space-app/blob/main/ANALYSIS.md)
 
+Presentation file: [PRESENTATION](https://github.com/SoAp9035/selcuk-space-app/blob/main/PRESENTATION.md)
+
 ## Getting Started
 
 You will need to install [uv](https://docs.astral.sh/uv/) and [Node.js](https://nodejs.org/en/download) in your system.
