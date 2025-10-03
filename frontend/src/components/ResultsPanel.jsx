@@ -35,6 +35,12 @@ export default function ResultsPanel({
     stats?.wind?.speed ??
     (typeof stats?.wind === "number" ? stats?.wind : null);
 
+  const tempRange = {
+    max: stats?.temperature.average_range?.max ?? null,
+    min: stats?.temperature.average_range?.min ?? null,
+  };
+
+
 
 
 
@@ -98,7 +104,11 @@ export default function ResultsPanel({
                 {typeof temp === "number" ? `${temp.toFixed(0)}°C` : "No Data."}
               </div>
               <div className="flex flex-col items-center mt-auto space-y-1">
-                <div className="text-md">{selectedDate || "0"}</div>
+                <div className="text-sm items-center">
+                  <span>
+                    max: {tempRange.min ?? "-"}° - min: {tempRange.max ?? "-"}°
+                  </span>
+                </div>
                 <div className="text-xs opacity-80">{placeShort}</div>
               </div>
             </div>
