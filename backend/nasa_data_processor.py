@@ -31,45 +31,45 @@ def get_climate_zone(lat: float, lon: float):
         return "tropical"
 
 
-def get_thresholds_by_climate_zone(climate_zone: str) -> dict[str, int]:
+def get_thresholds_by_climate_zone(climate_zone: str) -> dict[str, dict[str, any]]:
     """
     İklim bölgesine göre eşik değerleri döndürür.
     """
     thresholds = {
         "polar": {
-            "comfortable_max": 10,
-            "very_hot": 15,
-            "very_cold": -25,
-            "heavy_precipitation": 5,
-            "very_windy": 20,
+            "comfort_temp_max": {"value": 10, "unit": "°C"},
+            "very_hot": {"value": 18, "unit": "°C"},
+            "very_cold": {"value": -25, "unit": "°C"},
+            "heavy_precipitation": {"value": 10, "unit": "mm/day"},
+            "very_windy": {"value": 14, "unit": "m/s"},
         },
         "subarctic": {
-            "comfortable_max": 20,
-            "very_hot": 25,
-            "very_cold": -20,
-            "heavy_precipitation": 8,
-            "very_windy": 16,
+            "comfort_temp_max": {"value": 20, "unit": "°C"},
+            "very_hot": {"value": 25, "unit": "°C"},
+            "very_cold": {"value": -20, "unit": "°C"},
+            "heavy_precipitation": {"value": 8, "unit": "mm/day"},
+            "very_windy": {"value": 12, "unit": "m/s"},
         },
         "temperate": {
-            "comfortable_max": 25,
-            "very_hot": 32,
-            "very_cold": -5,
-            "heavy_precipitation": 10,
-            "very_windy": 14,
+            "comfort_temp_max": {"value": 25, "unit": "°C"},
+            "very_hot": {"value": 32, "unit": "°C"},
+            "very_cold": {"value": -5, "unit": "°C"},
+            "heavy_precipitation": {"value": 10, "unit": "mm/day"},
+            "very_windy": {"value": 10, "unit": "m/s"},
         },
         "subtropical": {
-            "comfortable_max": 30,
-            "very_hot": 38,
-            "very_cold": 5,
-            "heavy_precipitation": 15,
-            "very_windy": 18,
+            "comfort_temp_max": {"value": 30, "unit": "°C"},
+            "very_hot": {"value": 38, "unit": "°C"},
+            "very_cold": {"value": 5, "unit": "°C"},
+            "heavy_precipitation": {"value": 15, "unit": "mm/day"},
+            "very_windy": {"value": 12, "unit": "m/s"},
         },
         "tropical": {
-            "comfortable_max": 32,
-            "very_hot": 40,
-            "very_cold": 15,
-            "heavy_precipitation": 20,
-            "very_windy": 24,
+            "comfort_temp_max": {"value": 32, "unit": "°C"},
+            "very_hot": {"value": 40, "unit": "°C"},
+            "very_cold": {"value": 15, "unit": "°C"},
+            "heavy_precipitation": {"value": 30, "unit": "mm/day"},
+            "very_windy": {"value": 14, "unit": "m/s"},
         },
     }
 
@@ -77,30 +77,39 @@ def get_thresholds_by_climate_zone(climate_zone: str) -> dict[str, int]:
 
 
 ### Veri normalizasyonu
-def choose_mean_or_median(df: pd.DataFrame, col: str):
-    Q1 = df[col].quantile(0.25)
-    Q3 = df[col].quantile(0.75)
+def choose_mean_or_median(valid_data: pd.Series) -> str:
+    if len(valid_data) == 0:
+        return "mean"
+
+    Q1 = valid_data.quantile(0.25)
+    Q3 = valid_data.quantile(0.75)
     IQR = Q3 - Q1
     lower = Q1 - 1.5 * IQR
     upper = Q3 + 1.5 * IQR
     
-    outliers = df[(df[col] < lower) | (df[col] > upper)]
-    outlier_ratio = len(outliers) / len(df)
+    outliers = valid_data[(valid_data < lower) | (valid_data > upper)]
+    outlier_ratio = len(outliers) / len(valid_data)
     
-    if outlier_ratio < 0.1:
-        return "mean"
-    else:
-        return "median"
+    return "mean" if outlier_ratio < 0.1 else "median"
 
 def replace_neg999(df: pd.DataFrame) -> pd.DataFrame:
+    cols_to_drop = []
+
     for col in df.columns:
         if df[col].dtype in ["float64", "int64"]:
-            if choose_mean_or_median(df, col) == "mean":
-                val = float(df[df[col] != -999.0][col].mean())
+            valid_data = df.loc[df[col] != -999.0, col]
+
+            if valid_data.empty:
+                cols_to_drop.append(col)
+                continue
             else:
-                val = float(df[df[col] != -999.0][col].median())
+                if choose_mean_or_median(valid_data) == "mean":
+                    val = float(valid_data.mean())
+                else:
+                    val = float(valid_data.median())
             df.loc[df[col] == -999.0, col] = val
 
+    df = df.drop(columns=cols_to_drop)
     return df
 
 def round_values(df: pd.DataFrame, decimals: int = 2) -> pd.DataFrame:
@@ -135,7 +144,7 @@ def avg_temperature(df: pd.DataFrame) -> float | None:
     else:
         return None
 
-def avg_temperature_range(df: pd.DataFrame) -> list[float] | None:
+def avg_temperature_range(df: pd.DataFrame) -> dict[str, float] | None:
     """
     Sıcaklık aralığı
     """
@@ -144,7 +153,9 @@ def avg_temperature_range(df: pd.DataFrame) -> list[float] | None:
     
     max_value = float(round(df.T2M_MAX.mean(), 1))
     min_value = float(round(df.T2M_MIN.mean(), 1))
-    return [min_value, max_value]
+    if max_value < min_value:
+        min_value, max_value = max_value, min_value
+    return {"min": min_value, "max": max_value}
 
 def avg_humidity(df: pd.DataFrame) -> float | None:
     """
@@ -159,8 +170,8 @@ def avg_wind_speed(df: pd.DataFrame) -> float | None:
     """
     Ortalama rüzgar hızı
     """
-    if "WS10M_MAX" in df.columns:
-        return float(round(df.WS10M_MAX.mean(), 1))
+    if "WS10M" in df.columns:
+        return float(round(df.WS10M.mean() * 3.6, 1))
     else:
         return None
 
@@ -173,7 +184,7 @@ def avg_cloud(df: pd.DataFrame) -> float | None:
     else:
         return None
     
-def avg_fog_status(df: pd.DataFrame) -> float | None:
+def avg_fog_status(df: pd.DataFrame) -> dict[str, int | str] | None:
     """
     Ortalama sis durumu
     """
@@ -184,13 +195,14 @@ def avg_fog_status(df: pd.DataFrame) -> float | None:
     humidity = df.RH2M.mean()
 
     if temp_diff <= 1 and humidity >= 80:
-        return 3
+        return {"scale": 3, "status": "Heavy fog"}
     elif temp_diff <= 2 and humidity >= 70:
-        return 2
+        return {"scale": 2, "status": "Moderate fog"}
     elif temp_diff <= 3 and humidity >= 60:
-        return 1
+        return {"scale": 1, "status": "Light fog"}
     else:
-        return 0
+        return {"scale": 0, "status": "No fog"}
+
 
 def rain_prob(df: pd.DataFrame) -> float | None:
     """
@@ -220,9 +232,9 @@ def very_uncomfortable_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> 
     Çok rahatsız edici gün olma olasılığı
     """
     if "T2MDEW" not in df.columns:
-        return 0
+        return None
     
-    percent = (df["T2MDEW"] >= thresholds["comfortable_max"]).mean() * 100
+    percent = (df["T2MDEW"] >= thresholds["comfort_temp_max"]["value"]).mean() * 100
     return int(round(percent))
 
 def very_hot_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> int:
@@ -230,9 +242,9 @@ def very_hot_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> int:
     Çok sıcak gün olma olasılığı
     """
     if "T2M_MAX" not in df.columns:
-        return 0
+        return None
     
-    percent = (df["T2M_MAX"] >= thresholds["very_hot"]).mean() * 100
+    percent = (df["T2M_MAX"] >= thresholds["very_hot"]["value"]).mean() * 100
     return int(round(percent))
 
 def very_cold_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> int:
@@ -240,9 +252,9 @@ def very_cold_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> int:
     Çok soğuk gün olma olasılığı
     """
     if "T2M_MIN" not in df.columns:
-        return 0
+        return None
     
-    percent = (df["T2M_MIN"] <= thresholds["very_cold"]).mean() * 100
+    percent = (df["T2M_MIN"] <= thresholds["very_cold"]["value"]).mean() * 100
     return int(round(percent))
 
 def heavy_precipitation_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> int:
@@ -250,9 +262,9 @@ def heavy_precipitation_percent(df: pd.DataFrame, thresholds: dict[str, int]) ->
     Çok yağışlı gün olma olasılığı
     """
     if "PRECTOTCORR" not in df.columns:
-        return 0
+        return None
     
-    percent = (df["PRECTOTCORR"] >= thresholds["heavy_precipitation"]).mean() * 100
+    percent = (df["PRECTOTCORR"] >= thresholds["heavy_precipitation"]["value"]).mean() * 100
     return int(round(percent))
 
 def heavy_snowfall_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> int:
@@ -260,9 +272,9 @@ def heavy_snowfall_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> int:
     Çok kar yağışlı gün olma olasılığı
     """
     if "PRECSNOLAND" not in df.columns:
-        return 0
+        return None
     
-    percent = (df["PRECSNOLAND"] >= thresholds["heavy_precipitation"]).mean() * 100
+    percent = (df["PRECSNOLAND"] >= thresholds["heavy_precipitation"]["value"]).mean() * 100
     return int(round(percent))
 
 def very_windy_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> int:
@@ -270,9 +282,9 @@ def very_windy_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> int:
     Çok kar yağışlı gün olma olasılığı
     """
     if "WS10M_MAX" not in df.columns:
-        return 0
+        return None
     
-    percent = (df["WS10M_MAX"] >= thresholds["very_windy"]).mean() * 100
+    percent = (df["WS10M_MAX"] >= thresholds["very_windy"]["value"]).mean() * 100
     return int(round(percent))
 
 
@@ -294,20 +306,18 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
     ### HESAPLAMALAR ###
 
     # Temel istatistikler
-    temp_range = avg_temperature_range(df)
-
     stats = {
         "temperature": {
-            "unit": "Celcius",
+            "unit": "°C",
             "average": avg_temperature(df),
-            "average_range": {"min": temp_range[0], "max": temp_range[1]}
+            "average_range": avg_temperature_range(df) or {"min": 0, "max": 0}
         },
         "humidity": {
             "unit": "%",
             "average": avg_humidity(df)
         },
         "wind": {
-            "unit": "m/s",
+            "unit": "km/h",
             "average_speed": avg_wind_speed(df)
         },
         "cloud": {
@@ -316,7 +326,7 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
         },
         "fog": {
             "unit": "0-3 scale",
-            "status": avg_fog_status(df)
+            **(avg_fog_status(df) or {"scale": 0, "status": "No fog"})
         },
         "rain": {
             "unit": "%",
@@ -369,7 +379,7 @@ def calculate_daily_avg(df: pd.DataFrame) -> pd.DataFrame | None:
         agg_dict = {}
         for col in ["T2M", "T2M_MAX", "T2M_MIN", "T2MDEW", "RH2M", "PRECTOTCORR", 
                "PRECSNOLAND", "SNODP", "WS10M", "WS10M_MAX", "CLOUD_AMT"]:
-            method = choose_mean_or_median(df, col)
+            method = choose_mean_or_median(df[col])
             agg_dict[col] = method
         
         df_grouped = df.groupby(["Month", "Day"]).agg(agg_dict).reset_index()
@@ -392,11 +402,11 @@ def find_suitable_days(df: pd.DataFrame, thresholds: dict[str, int]) -> list | N
     if df is None or df.empty:
         return None
     
-    comfort_ok = df["T2MDEW"] <= thresholds["comfortable_max"]
-    temp_hot_ok = df["T2M_MAX"] <= thresholds["very_hot"]
-    temp_cold_ok = df["T2M_MIN"] >= thresholds["very_cold"]
-    precipitation_ok = df["PRECTOTCORR"] <= thresholds["heavy_precipitation"]
-    wind_ok = df["WS10M_MAX"] <= thresholds["very_windy"]
+    comfort_ok = df["T2MDEW"] <= thresholds["comfort_temp_max"]["value"]
+    temp_hot_ok = df["T2M_MAX"] <= thresholds["very_hot"]["value"]
+    temp_cold_ok = df["T2M_MIN"] >= thresholds["very_cold"]["value"]
+    precipitation_ok = df["PRECTOTCORR"] <= thresholds["heavy_precipitation"]["value"]
+    wind_ok = df["WS10M_MAX"] <= thresholds["very_windy"]["value"]
     cloud_ok = df["CLOUD_AMT"] <= 80
 
     suitable = df[comfort_ok & temp_hot_ok & temp_cold_ok & precipitation_ok & wind_ok & cloud_ok]
