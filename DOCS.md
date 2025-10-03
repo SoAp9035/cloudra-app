@@ -12,10 +12,6 @@ This endpoint retrieves weather data for a specific location and date range, the
 - `month` (int, required): Month number (1-12)
 - `day` (int, required): Day of the month
 - `analysis_mode` (string, required): Analysis mode, either `detailed_analysis` or `quick_analysis`
-<!-- - `day_range` (int, required): Number of days to include in the range
-- `years_back` (int, required): Number of years back to look for historical data -->
-<!-- - `parameters` (string, required): Comma-separated list of weather parameters to retrieve -->
-<!-- - `format` (string, required): Data format specification -->
 
 ### Response
 
