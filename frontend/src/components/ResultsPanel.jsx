@@ -1,5 +1,12 @@
 // src/components/ResultsPanel.jsx
 import React from "react";
+import rainGif from "../assets/logo/rain.gif";
+import windGif from "../assets/logo/wind.gif";
+import fogGif from "../assets/logo/fog.gif";
+import humidityGif from "../assets/logo/humidity.gif";
+import cloudGif from "../assets/logo/cloud.gif";
+import snowGif from "../assets/logo/snow.gif";
+import degreeGif from "../assets/logo/degree.gif";
 
 export default function ResultsPanel({
   result,
@@ -35,16 +42,13 @@ export default function ResultsPanel({
     stats?.wind?.speed ??
     (typeof stats?.wind === "number" ? stats?.wind : null);
 
-
-
-
   // detailed extras
-
   const cloud =
     stats?.cloud?.average ??
     stats?.cloud?.cover ??
     stats?.cloudiness ??
     null;
+
   const snowProb =
     probs?.snow ??
     stats?.snow_cover_probability ??
@@ -62,24 +66,20 @@ export default function ResultsPanel({
   const dataPoints = result?.analysis_summary?.data_points ?? null;
   const placeShort = addressLabel ? addressLabel.split(",")[0] : "0";
 
-    return (
-      <aside
-     /* style={{ backgroundColor: "oklch(28.2% 0.091 267.935 / 0.4" }}*/
-        className="
-
-          absolute right-0 top-0 z-[1001]
-          h-full w-[340px] max-w-[88vw]
-          backdrop-blur
-          border-l border-gray-200
-          shadow-xl flex flex-col
-        "
+  return (
+    <aside
+      className="
+        absolute right-0 top-0 z-[1001]
+        h-full w-[340px] max-w-[88vw]
+        backdrop-blur
+        border-l border-gray-200
+        shadow-xl flex flex-col
+      "
     >
-      {/* Header (smaller spacing) */}
+      {/* Header */}
       <div className="px-4 pt-4 pb-2 border-b border-gray-100">
         <h2 className="text-base font-bold text-gray-800">
-          <span className="text-2xl">
-            Weather Details
-          </span>
+          <span className="text-2xl">Weather Details</span>
         </h2>
         <p className="text-[11px] text-gray-500 leading-snug">
           {addressLabel || "Please choose a location."}
@@ -89,37 +89,44 @@ export default function ResultsPanel({
       {/* Body */}
       <div className="p-4 flex-1 flex flex-col items-center justify-start overflow-y-auto">
         {loading && <div className="text-xs text-gray-600 mb-2">Analyzing…</div>}
-        {error && !loading && <div className="text-sm text-red-600 mb-2"  >Error: {error}</div>}
+        {error && !loading && <div className="text-sm text-red-600 mb-2">Error: {error}</div>}
 
         {!loading && !error && result && (
           <>
             {/* Hero compact */}
-            <div className="flex p-5 flex-col mb-5 items-center justify-between w-50 h-60 p-4 bg-gradient-to-br from-sky-500 to-indigo-500 text-white rounded-2xl shadow">
-              <div className="text-4xl mt-3 mb-7">🌧️</div>
-              <div className="text-4xl font-bold">
-                {typeof temp === "number" ? `${temp.toFixed(0)}°C` : "No Data."}
-              </div>
-              <div className="flex flex-col items-center mt-auto space-y-1">
-                <div className="text-md">{selectedDate || "0"}</div>
-                <div className="text-xs opacity-80">{placeShort}</div>
-              </div>
-            </div>
-
+            <div className="flex  flex-col mb-5 items-center justify-between w-50 h-60 p-4 bg-gradient-to-br from-sky-500 to-indigo-500 text-white rounded-2xl shadow">
+             
+  <div className="text-4xl mt-10 mb-7">
+    <img src={degreeGif} alt="Temperature" className="w-12 h-12"  style={{ backgroundColor: "transparent" }}/>
+  </div>
+  <div className="text-4xl font-bold -mt-4">
+    {typeof temp === "number" ? `${temp.toFixed(0)}°C` : "No Data."}
+  </div>
+  <div className="flex flex-col items-center mt-auto space-y-1">
+    <div className="text-md">{selectedDate || "0"}</div>
+    <div className="text-xs opacity-80">{placeShort}</div>
+  </div>
+</div>
 
             {/* QUICK: tiny metric cards (2 columns) */}
             {mode === "quick" && (
               <>
                 <div className="grid grid-cols-2 gap-3">
-                  <MiniMetric icon="🌧️" label="Rain" value={
-                    nOrDashPct(rainProb)
-                  } />
-                  <MiniMetric icon="🌬️" label="Wind" value={
-                    typeof windMs === "number" ? `${windMs} m/s` : "0"
-                  } />
-
-                  <MiniMetric icon="💧" label="Humidity" value={
-                    nOrDashPct(humidity)
-                  } />
+                  <MiniMetric
+                    icon={<img src={rainGif} alt="Rain" className="w-4 h-4" />}
+                    label="Rain"
+                    value={nOrDashPct(rainProb)}
+                  />
+                  <MiniMetric
+                    icon={<img src={windGif} alt="Wind" className="w-4 h-4" />}
+                    label="Wind"
+                    value={typeof windMs === "number" ? `${windMs} m/s` : "0"}
+                  />
+                  <MiniMetric
+                    icon={<img src={humidityGif} alt="Humidity" className="w-4 h-4" />}
+                    label="Humidity"
+                    value={nOrDashPct(humidity)}
+                  />
                 </div>
 
                 <FooterLine dataPoints={dataPoints} mode={mode} />
@@ -131,33 +138,43 @@ export default function ResultsPanel({
               <>
                 {/* core */}
                 <div className="grid mb-5 grid-cols-2 gap-2">
-                  <MiniMetric icon="🌧️" label="Rain" value={nOrDashPct(rainProb)} />
-                  <MiniMetric icon="🌬️" label="Wind" value={
-                    typeof windMs === "number" ? `${windMs.toFixed(1)} m/s` : "0"
-                  } />
-
-
                   <MiniMetric
-                    icon="🌫️"
+                    icon={<img src={rainGif} alt="Rain" className="w-4 h-4" />}
+                    label="Rain"
+                    value={nOrDashPct(rainProb)}
+                  />
+                  <MiniMetric
+                    icon={<img src={windGif} alt="Wind" className="w-4 h-4" />}
+                    label="Wind"
+                    value={typeof windMs === "number" ? `${windMs.toFixed(1)} m/s` : "0"}
+                  />
+                  <MiniMetric
+                    icon={<img src={fogGif} alt="Fog" className="w-4 h-4" />}
                     label="Fog"
                     value={
                       typeof stats?.fog?.status === "number"
                         ? `${stats.fog.status}/3`
                         : "0"
                     }
-
-
                   />
-                  <MiniMetric icon="💧" label="Humidity" value={nOrDashPct(humidity)} />
-                  <MiniMetric icon="☁️" label="Cloud" value={nOrDashPct(cloud)} />
-                  <MiniMetric icon="❄️" label="Snow Cover" value={nOrDashPct(snowProb)} />
-
+                  <MiniMetric
+                    icon={<img src={humidityGif} alt="Humidity" className="w-4 h-4" />}
+                    label="Humidity"
+                    value={nOrDashPct(humidity)}
+                  />
+                  <MiniMetric
+                    icon={<img src={cloudGif} alt="Cloud" className="w-4 h-4" />}
+                    label="Cloud"
+                    value={nOrDashPct(cloud)}
+                  />
+                  <MiniMetric
+                    icon={<img src={snowGif} alt="Snow" className="w-4 h-4" />}
+                    label="Snow Cover"
+                    value={nOrDashPct(snowProb)}
+                  />
                 </div>
 
-
-
-
-                {/* Extremes badges (very small) */}
+                {/* Extremes badges */}
                 <SectionTitle>Extremes</SectionTitle>
                 <div className="flex flex-wrap gap-1.5">
                   {Object.entries(extremes)
@@ -165,22 +182,25 @@ export default function ResultsPanel({
                     .map(([k, v]) => (
                       <Badge key={k} label={`${k}`} value={`${Math.round(v)}%`} />
                     ))}
-                  {Object.entries(extremes).every(([, v]) => !(typeof v === "number" && v > 0)) && (
+                  {Object.entries(extremes).every(
+                    ([, v]) => !(typeof v === "number" && v > 0)
+                  ) && (
                     <div className="text-[11px] text-gray-500">No notable extremes.</div>
                   )}
                 </div>
 
-                {/* Context (tiny text) */}
+                {/* Context */}
                 <div className="rounded-xl border border-gray-200 bg-gray-50 p-3 space-y-2">
                   <div className="text-xs">
                     <span className="text-gray-600">Climate:</span>{" "}
-                    <span className="font-semibold text-gray-900">{thresholds?.climate_zone ?? "—"}</span>
+                    <span className="font-semibold text-gray-900">
+                      {thresholds?.climate_zone ?? "—"}
+                    </span>
                   </div>
 
                   <div className="text-xs">
                     <div className="text-gray-600 mb-1">Thresholds:</div>
                     <div className="flex flex-wrap gap-1.5">
-
                       {Object.entries(thresholds?.thresholds_used || {}).map(([k, v]) => (
                         <span
                           key={k}
@@ -190,14 +210,9 @@ export default function ResultsPanel({
                           {prettyKey(k)}: <span className="font-semibold">{v}</span>
                         </span>
                       ))}
-
-
                     </div>
                   </div>
                 </div>
-
-
-
 
                 <FooterLine dataPoints={dataPoints} mode={mode} />
               </>
@@ -251,7 +266,6 @@ function FooterLine({ dataPoints, mode }) {
 function nOrDashPct(n) {
   return typeof n === "number" ? `${n}%` : "0";
 }
-
 
 function prettyKey(k) {
   const map = {
