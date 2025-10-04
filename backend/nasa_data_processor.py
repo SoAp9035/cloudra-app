@@ -133,18 +133,16 @@ def data_normalization(df: pd.DataFrame) -> pd.DataFrame:
 
 
 ### Kullanıcıya gösterilecek ortalama veriler
+# TODO: Ortalama değerlerin hepsi test edilip doğru formüller ile değiştirilecek
 
 def avg_temperature(df: pd.DataFrame) -> float | None:
     """
     Ortalama sıcaklık
     """
-    if "T2M" not in df.columns:
-        return None
-
-    if choose_mean_or_median(df.T2M) == "mean":
+    if "T2M" in df.columns:
         return float(round(df.T2M.mean(), 1))
     else:
-        return float(round(df.T2M.median(), 1))
+        return None
 
 def avg_temperature_range(df: pd.DataFrame) -> dict[str, float] | None:
     """
@@ -153,13 +151,8 @@ def avg_temperature_range(df: pd.DataFrame) -> dict[str, float] | None:
     if "T2M_MAX" not in df.columns or "T2M_MIN" not in df.columns:
         return None
     
-    if choose_mean_or_median(df.T2M_MAX) == "median" and choose_mean_or_median(df.T2M_MIN) == "median":
-        max_value = float(round(df.T2M_MAX.median(), 1))
-        min_value = float(round(df.T2M_MIN.median(), 1))
-    else: 
-        max_value = float(round(df.T2M_MAX.mean(), 1))
-        min_value = float(round(df.T2M_MIN.mean(), 1))
-
+    max_value = float(round(df.T2M_MAX.mean(), 1))
+    min_value = float(round(df.T2M_MIN.mean(), 1))
     if max_value < min_value:
         min_value, max_value = max_value, min_value
     return {"min": min_value, "max": max_value}
@@ -168,47 +161,38 @@ def avg_humidity(df: pd.DataFrame) -> float | None:
     """
     Ortalama nem
     """
-    if "RH2M" not in df.columns:
-        return None
-    
-    if choose_mean_or_median(df.RH2M) == "mean":
+    if "RH2M" in df.columns:
         return float(round(df.RH2M.mean(), 1))
     else:
-        return float(round(df.RH2M.median(), 1))
+        return None
 
 def avg_wind_speed(df: pd.DataFrame) -> float | None:
     """
     Ortalama rüzgar hızı
     """
-    if "WS10M" not in df.columns:
-        return None
-    
-    if choose_mean_or_median(df.WS10M) == "mean":
+    if "WS10M" in df.columns:
         return float(round(df.WS10M.mean() * 3.6, 1))
     else:
-        return float(round(df.WS10M.median() * 3.6, 1))
+        return None
 
 def avg_cloud(df: pd.DataFrame) -> float | None:
     """
     Ortalama bulutluluk
     """
-    if "CLOUD_AMT" not in df.columns:
-        return None
-    
-    if choose_mean_or_median(df.CLOUD_AMT) == "mean":
+    if "CLOUD_AMT" in df.columns:
         return float(round(df.CLOUD_AMT.mean(), 1))
     else:
-        return float(round(df.CLOUD_AMT.median(), 1))
+        return None
     
 def avg_fog_status(df: pd.DataFrame) -> dict[str, int | str] | None:
     """
     Ortalama sis durumu
     """
-    if "T2M" not in df.columns or "T2MDEW" not in df.columns:
+    if "T2M" not in df.columns or "T2MDEW" not in df.columns or "RH2M" not in df.columns:
         return None
 
     temp_diff = (df.T2M - df.T2MDEW).mean()
-    humidity = avg_humidity(df)
+    humidity = df.RH2M.mean()
 
     if temp_diff <= 1 and humidity >= 80:
         return {"scale": 3, "status": "Heavy fog"}
