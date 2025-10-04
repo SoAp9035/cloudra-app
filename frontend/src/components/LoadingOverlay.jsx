@@ -1,10 +1,8 @@
-// src/components/LoadingOverlay.jsx
 import React, { useEffect, useState } from "react";
 import loadingIcon from "../assets/icons/loadingIcon.gif";
 
 export default function LoadingOverlay({
   message = "Analyzing weather…",
-  mode = "quick" // "quick" or "detailed"
 }) {
   // Lock scroll
   useEffect(() => {
@@ -13,13 +11,20 @@ export default function LoadingOverlay({
     return () => (document.body.style.overflow = prev);
   }, []);
 
-  // Countdown timer
-  const [secondsLeft, setSecondsLeft] = useState(mode === "quick" ? 30 : 60);
-  useEffect(() => {
-    if (secondsLeft <= 0) return;
-    const id = setInterval(() => setSecondsLeft(s => s - 1), 1000);
-    return () => clearInterval(id);
-  }, [secondsLeft]);
+ const [secondsLeft, setSecondsLeft] = useState(60); // دائمًا يبدأ من 60
+useEffect(() => {
+  const intervalId = setInterval(() => {
+    setSecondsLeft(prev => {
+      if (prev <= 0) {
+        clearInterval(intervalId);
+        return 0;
+      }
+      return prev - 1;
+    });
+  }, 1000);
+
+  return () => clearInterval(intervalId);
+}, []);
 
   return (
     <>
