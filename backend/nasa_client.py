@@ -102,7 +102,7 @@ class NASAPowerAPI:
                 print(f"Something went wrong with NASAPowerAPI/get_historical_data. Error: {e}")
                 continue
 
-            time.sleep(.1) # API'den banlanmamak için gecikme
+            time.sleep(.2) # API'den banlanmamak için gecikme
 
         if not all_data:
             print("get_multi_year_data_for_day: No data returned by API.")

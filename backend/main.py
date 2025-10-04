@@ -1,3 +1,4 @@
+import time
 from flask_cors import CORS
 from flask import Flask, request, jsonify
 from nasa_client import NASAPowerAPI, POWER_PARAMETERS
@@ -7,7 +8,7 @@ from nasa_data_processor import analyze_weather_probability, check_day_and_sugge
 # Flask ayarları
 app = Flask(__name__)
 app.secret_key = "cloudra"
-CORS(app) # Flask ile React kullanabilmek için gerekli
+CORS(app) # Flask ile React kullanabilmek için gerekli TODO: Güncellenecek.
 
 # NASA POWER API'si
 power_api = NASAPowerAPI()
@@ -47,6 +48,8 @@ def weather_probability():
         else:
             years_back = 10
 
+        start_time = time.time()
+
         power_data = power_api.get_multi_year_data_for_day(
             lat=lat,
             lon=lon,
@@ -57,10 +60,13 @@ def weather_probability():
             parameters=parameters
         )
 
-        if not power_api:
+        if power_data is None:
             return jsonify({"error": "No data available for the specified location and date."})
         
         analysis = analyze_weather_probability(power_data, lat, lon)
+
+        end_time = time.time()
+        time_taken = end_time - start_time
 
         response = {
             "query": {
@@ -73,6 +79,7 @@ def weather_probability():
                 "analysis_mode": analysis_mode if analysis_mode == "detailed_analysis" else "quick_analysis",
                 "data_source": "NASA POWER MERRA-2 Dataset",
                 "data_points": analysis["data_points"],
+                "time_taken": round(time_taken, 1)
             },
             "weather_probabilities": {
                 "statistics": analysis["statistics"],
@@ -133,7 +140,7 @@ def find_optimal_days():
             parameters=parameters
         )
 
-        if not power_api:
+        if power_data is None:
             return jsonify({"error": "No data available for the specified location and date."})
         
         optimal_days = check_day_and_suggest(power_data, lat, lon)
