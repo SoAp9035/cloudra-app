@@ -9,7 +9,8 @@ export default function Sidebar({
   onAnalyze,        // explicit analyze trigger from App
   dateValue,
   onDateChange,
-  mode,             // null | "quick" | "detailed"  (starts EMPTY)
+  mode,             // null | "quick" 
+  
   onModeChange,
   analyzeLoading,
   analyzeError,
