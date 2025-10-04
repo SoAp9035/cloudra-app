@@ -8,39 +8,37 @@ export default function Sidebar({
   onSearch,
   dateValue,
   onDateChange,
-  mode,             // "quick" | "detailed"
+  mode, // "quick" | "detailed"
   onModeChange,
   onAnalyze,
   analyzeLoading,
   analyzeError,
 }) {
-  // سنقفل الوضع بعد أول تحليل ناجح
-  const [lockedMode, setLockedMode] = useState(null); // null | "quick" | "detailed"
+  // Kullanıcı ilk başarılı analizden sonra mode kilitlenecek
+  const [lockedMode, setLockedMode] = useState(null);
 
-  // نحتاج نعرف متى ينتهي التحميل (من true -> false)
+  // Önceki yükleme durumunu takip et
   const prevLoadingRef = useRef(analyzeLoading);
   useEffect(() => {
     const wasLoading = prevLoadingRef.current;
     const nowLoading = analyzeLoading;
     prevLoadingRef.current = nowLoading;
 
-    // التحميل انتهى الآن
+    // Yükleme bittiğinde kontrol et
     if (wasLoading && !nowLoading) {
-      // إذا لم يحدث خطأ → اعتبر التحليل ناجحًا واقفل الوضع الحالي
       if (!analyzeError && !lockedMode) {
-        setLockedMode(mode); // اقفل على الوضع الذي كان مُختارًا وقت انتهاء التحليل
+        setLockedMode(mode); // başarıyla biten mod kilitlenir
       }
     }
   }, [analyzeLoading, analyzeError, mode, lockedMode]);
 
   const handleAnalyze = () => {
     onAnalyze?.();
-    // لا نقفل هنا — ننتظر التأكد من نجاح التحليل (انتهاء التحميل بدون أخطاء)
+    // Kilitlemeyi direkt burada yapmıyoruz, sonuçtan emin olunca yapılıyor
   };
 
   const handleModeChange = (value) => {
-    // إذا تم القفل بالفعل ووضع مختلف → امنع التغيير
-    if (lockedMode && lockedMode !== value) return;
+    if (lockedMode && lockedMode !== value) return; // kilitliyse değişime izin verme
     onModeChange?.(value);
   };
 
@@ -54,8 +52,8 @@ export default function Sidebar({
       className="
         absolute z-[1001]
         w-[320px] max-w-[90vw] h-full
-        backdrop-blur
-        shadow-lg overflow-y-auto rounded-tr-70 rounded-br-70
+        backdrop-blur shadow-lg overflow-y-auto
+        rounded-tr-70 rounded-br-70
         pointer-events-auto flex flex-col
       "
     >
@@ -92,18 +90,20 @@ export default function Sidebar({
 
         {/* Date */}
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1">Date</label>
+          <label className="block text-xs font-medium text-gray-600 mb-1">
+            Date
+          </label>
           <DatePicker value={dateValue} onChange={onDateChange} />
         </div>
 
         {/* Analysis Mode */}
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-2">Analysis Mode</label>
+          <label className="block text-xs font-medium text-gray-600 mb-2">
+            Analysis Mode
+          </label>
           <div className="flex flex-wrap gap-2">
             {options.map((o) => {
               const isActive = mode === o.key;
-
-              // عطّل أثناء التحميل + عطّل الخيار الآخر بعد القفل
               const isDisabled =
                 analyzeLoading || (lockedMode && o.key !== lockedMode);
 
@@ -113,14 +113,9 @@ export default function Sidebar({
                   className={
                     "px-3 py-1.5 text-sm rounded-full transition " +
                     (isActive
-                      ? "text-white shadow"
+                      ? "text-white shadow bg-gradient-to-r from-blue-600 via-sky-400 to-cyan-200"
                       : "bg-gray-50 text-gray-700 hover:bg-gray-100") +
                     (isDisabled ? " opacity-60 cursor-not-allowed" : "")
-                  }
-                  style={
-                    isActive
-                      ? { background: "linear-gradient(90deg,  #2563EB, #38BDF8, #A0E7FF)" }
-                      : {}
                   }
                 >
                   <input
@@ -138,26 +133,27 @@ export default function Sidebar({
             })}
           </div>
 
-          {/* رسائل حالة بسيطة (اختيارية) */}
+          {/* Status messages */}
           {analyzeLoading && (
             <p className="mt-2 text-[11px] text-gray-500">Analyzing…</p>
           )}
           {!analyzeLoading && lockedMode && (
             <p className="mt-2 text-[11px] text-gray-500">
-              Mode locked to <span className="font-semibold">{lockedMode}</span>.
+              Mode locked to{" "}
+              <span className="font-semibold">{lockedMode}</span>.
             </p>
           )}
         </div>
       </div>
 
-      {/* Footer (Analyze) */}
+      {/* Footer */}
       <div className="p-5 border-t border-gray-100">
         <button
           type="button"
           onClick={handleAnalyze}
           disabled={analyzeLoading}
           className={
-            "w-full rounded-xl text-white py-2.5 text-sm font-medium shadow " +
+            "w-full rounded-xl py-2.5 text-sm font-medium shadow " +
             (analyzeLoading
               ? "bg-gray-400 text-white cursor-not-allowed"
               : "bg-gradient-to-r from-blue-600 via-blue-400 to-cyan-300 text-white shadow")
@@ -167,7 +163,9 @@ export default function Sidebar({
         </button>
 
         {analyzeError && (
-          <div className="mt-2 text-xs text-red-600">Error: {analyzeError}</div>
+          <div className="mt-2 text-xs text-red-600">
+            Error: {analyzeError}
+          </div>
         )}
       </div>
     </aside>

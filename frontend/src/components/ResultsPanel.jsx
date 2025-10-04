@@ -71,25 +71,27 @@ const snowProb =
       </div>
 
       {/* Body */}
-      <div className="p-4 flex-1 flex flex-col items-stretch justify-start overflow-y-auto">
+      <div className="p-4 flex-1 flex flex-col items-center justify-start overflow-y-auto">
         {loading && <div className="text-xs text-gray-600 mb-2">Analyzing…</div>}
         {error && !loading && <div className="text-sm text-red-600 mb-2">Error: {error}</div>}
 
         {!loading && !error && result && (
           <>
-            {/* Hero */}
-            <div className="flex flex-col mb-5 items-center justify-between w-50 h-60 p-4 bg-gradient-to-br from-sky-500 to-indigo-500 text-white rounded-2xl shadow">
-              <div className="text-4xl mt-10 mb-7">
-                <img src={degreeGif} alt="Temperature" className="w-12 h-12" />
-              </div>
-              <div className="text-4xl font-bold -mt-4">
-                {typeof temp === "number" ? `${Math.round(temp)}°C` : "No Data."}
-              </div>
-              <div className="flex flex-col items-center mt-auto space-y-1">
-                <div className="text-md">{selectedDate || "—"}</div>
-                <div className="text-xs opacity-80">{placeShort}</div>
-              </div>
-            </div>
+           {/* Hero */}
+<div className="flex flex-col mb-5 items-center justify-center w-60 h-72 p-4 bg-gradient-to-br from-sky-500 to-indigo-500 text-white rounded-2xl shadow">
+  <div className="-translate-y-4.5 flex flex-col items-center">   
+    <div className="text-4xl mt-10 mb-7">
+      <img src={degreeGif} alt="Temperature" className="w-20 h-20" />
+    </div>
+    <div className="text-4xl font-bold -mt-4">
+      {typeof temp === "number" ? `${Math.round(temp)}°C` : "No Data."}
+    </div>
+    <div className="flex flex-col items-center mt-auto space-y-1">
+      <div className="text-md">{selectedDate || "—"}</div>
+      <div className="text-xs opacity-80">{placeShort}</div>
+    </div>
+  </div>
+</div>
 
              
             <div className="grid mb-4 grid-cols-1 gap-2">
@@ -211,7 +213,7 @@ function Modal({ open, onClose, title, children }) {
 /* ---------- UI Elements ---------- */
 function MiniMetric({ icon, label, value, sub }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-2.5 shadow-sm">
+    <div className="w-60 rounded-xl border border-gray-200 bg-white p-2.5 shadow-sm">
       <div className="flex items-center justify-between">
         <span className="text:[11px] text-gray-600 flex items-center gap-1">
           <span className="text-xs leading-none">{icon}</span>
