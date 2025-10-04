@@ -304,6 +304,22 @@ def very_windy_percent(df: pd.DataFrame, thresholds: dict[str, int]) -> int:
     return int(round(percent))
 
 
+# Grafikler
+def get_data_for_visualizations(df: pd.DataFrame):
+    """
+    Grafikler için gerekli verileri düzenli bir şekilde döndürür
+    """
+    if "T2M" not in df.columns:
+        return None
+
+    return {
+        "temperature": {
+            "years": df.index.year.to_list(),
+            "temperatures": df.T2M.to_list()
+        }
+    }
+
+
 # Analiz sonuçlarının hesaplanıp gönderileceği fonksiyon
 def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
     """
@@ -367,6 +383,8 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
     ### GÖRSELLEŞTİRME İÇİN VERİLERİN HAZIRLANMASI ###
     # TODO: TARİH - VERİ ikilileri oluşturulacak
 
+    visualizations = get_data_for_visualizations(df)
+
     ### VERİLERİN GÖNDERİLMESİ ###
 
     analysis = {
@@ -374,6 +392,7 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
         "thresholds_used": thresholds,
         "statistics": stats,
         "probabilities": probabilities,
+        "visualizations": visualizations,
         "data_points": len(df)
     }
 

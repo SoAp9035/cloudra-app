@@ -64,6 +64,10 @@ Returns JSON object with:
     - `very_cold_percent` (int): Very cold weather probability
     - `very_hot_percent` (int): Very hot weather probability
     - `very_windy_percent` (int): Very windy weather probability
+- `visualizations` (object): Data for visualizations
+  - `temperature` (object): Temperature visualization data
+    - `years` (array): List of years
+    - `temperatures` (array): Corresponding list of temperatures for each year
 - `thresholds_info` (object): Information about analysis thresholds
   - `climate_zone` (string): Climate zone classification (polar, subarctic, temperate, subtropical, tropical)
   - `thresholds_used` (object): Threshold values used in analysis
@@ -155,6 +159,12 @@ GET /api/weather_probability?lat=40.7589&lon=-73.9851&month=6&day=15&analysis_mo
       "very_cold_percent": 0,
       "very_hot_percent": 0,
       "very_windy_percent": 0
+    }
+  },
+  "visualizations": {
+    "temperature": {
+      "years": [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024],
+      "temperatures": [15.1, 16.3, 14.8, 15.6, 16.0, 17.2, 15.9, 16.5, 15.4, 16.1, 17.0, 16.8, 15.7, 16.4, 17.1, 16.2, 15.9, 16.6, 17.3, 16.5, 15.8, 16.7, 17.4, 16.9, 15.6, 16.8, 17.5, 16.3, 15.7, 16.4]
     }
   },
   "thresholds_info": {
