@@ -1,4 +1,4 @@
-// src/components/ResultsPanel.jsx
+
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import rainGif from "../assets/logo/rain.gif";
@@ -14,7 +14,7 @@ export default function ResultsPanel({
   loading,
   error,
   addressLabel,
-  mode, 
+  mode,
   selectedDate,
 }) {
   const stats = result?.weather_probabilities?.statistics || {};
@@ -26,11 +26,11 @@ export default function ResultsPanel({
 
   const tempObj = stats?.temperature || null;
   const temp = pickNumber(tempObj);
-const rainProb = result?.weather_probabilities?.statistics?.rain?.probability ?? null;
+  const rainProb = result?.weather_probabilities?.statistics?.rain?.probability ?? null;
 
-const snowProb =
-  pickNumber(stats?.snow_cover) ??
-  pickNumber(probs?.snow ?? stats?.snow_cover_probability);  const humidity = pickNumber(stats?.humidity);
+  const snowProb =
+    pickNumber(stats?.snow_cover) ??
+    pickNumber(probs?.snow ?? stats?.snow_cover_probability); const humidity = pickNumber(stats?.humidity);
   const cloud = pickNumber(stats?.cloud);
   const windVal = pickNumber(stats?.wind);
   const windUnit = unitOf(stats?.wind, "m/s");
@@ -51,12 +51,27 @@ const snowProb =
 
   return (
     <aside
+
+
+
+
+      // absolute z-[1001]
+      // w-[350px] max-w-[90vw] h-full
+      // backdrop-blur
+      //  shadow-lg overflow-y-auto rounded-tr-70 rounded-br-70
+      // pointer-events-auto flex flex-col
+
+
+
+
+
+
       className="
         absolute right-0 top-0 z-[1001]
         h-full w-[340px] max-w-[88vw]
         backdrop-blur
         border-l border-gray-200
-        bg-white/95
+        
         shadow-xl flex flex-col
       "
     >
@@ -71,27 +86,29 @@ const snowProb =
       </div>
 
       {/* Body */}
-      <div className="p-4 flex-1 flex flex-col items-stretch justify-start overflow-y-auto">
+      <div className="p-4 flex-1 flex flex-col items-center justify-start overflow-y-auto">
         {loading && <div className="text-xs text-gray-600 mb-2">Analyzing…</div>}
         {error && !loading && <div className="text-sm text-red-600 mb-2">Error: {error}</div>}
 
         {!loading && !error && result && (
           <>
             {/* Hero */}
-            <div className="flex flex-col mb-5 items-center justify-between w-50 h-60 p-4 bg-gradient-to-br from-sky-500 to-indigo-500 text-white rounded-2xl shadow">
-              <div className="text-4xl mt-10 mb-7">
-                <img src={degreeGif} alt="Temperature" className="w-12 h-12" />
-              </div>
-              <div className="text-4xl font-bold -mt-4">
-                {typeof temp === "number" ? `${Math.round(temp)}°C` : "No Data."}
-              </div>
-              <div className="flex flex-col items-center mt-auto space-y-1">
-                <div className="text-md">{selectedDate || "—"}</div>
-                <div className="text-xs opacity-80">{placeShort}</div>
+            <div className="flex flex-col mb-5 items-center justify-center w-60 h-72 p-4 bg-gradient-to-br from-sky-500 to-indigo-500 text-white rounded-2xl shadow">
+              <div className="-translate-y-4.5 flex flex-col items-center">
+                <div className="text-4xl mt-10 mb-7">
+                  <img src={degreeGif} alt="Temperature" className="w-20 h-20" />
+                </div>
+                <div className="text-4xl font-bold -mt-4">
+                  {typeof temp === "number" ? `${Math.round(temp)}°C` : "No Data."}
+                </div>
+                <div className="flex flex-col items-center mt-auto space-y-1">
+                  <div className="text-md">{selectedDate || "—"}</div>
+                  <div className="text-xs opacity-80">{placeShort}</div>
+                </div>
               </div>
             </div>
 
-             
+
             <div className="grid mb-4 grid-cols-1 gap-2">
               <MiniMetric icon={<img src={rainGif} alt="Rain" className="w-4 h-4" />} label="Rain" value={nOrDashPct(rainProb)} />
               <MiniMetric icon={<img src={windGif} alt="Wind" className="w-4 h-4" />} label="Wind" value={formatWind(windVal, windUnit, true)} />
@@ -101,16 +118,22 @@ const snowProb =
               <MiniMetric icon={<img src={snowGif} alt="Snow" className="w-4 h-4" />} label="Snow Cover" value={nOrDashPct(snowProb)} />
             </div>
 
-            
+
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={() => setModal("combined")}
-                className="flex-1 rounded-lg bg-indigo-600 text-white text-xs py-2 shadow hover:bg-indigo-500"
+                className=" flex-1 rounded-lg
+                 bg-gradient-to-r
+                  from-blue-600 via-sky-400 to-cyan-200
+                   text-white text-xs py-1.5 px-3 shadow hover:bg-indigo-500"
               >
                 View Details
               </button>
             </div>
+
+
+
 
             <FooterLine dataPoints={dataPoints} mode={mode} />
           </>
@@ -211,7 +234,7 @@ function Modal({ open, onClose, title, children }) {
 /* ---------- UI Elements ---------- */
 function MiniMetric({ icon, label, value, sub }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-2.5 shadow-sm">
+    <div className="w-60  border border-gray-200 bg-white p-2.5 shadow-sm">
       <div className="flex items-center justify-between">
         <span className="text:[11px] text-gray-600 flex items-center gap-1">
           <span className="text-xs leading-none">{icon}</span>

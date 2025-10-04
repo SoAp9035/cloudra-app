@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import loadingIcon from "../assets/icons/loadingIcon.gif";
+import cloudnetwork from "../assets/logo/cloudnetwork.gif";
 
 export default function LoadingOverlay({
   message = "Analyzing weather…",
@@ -11,7 +11,7 @@ export default function LoadingOverlay({
     return () => (document.body.style.overflow = prev);
   }, []);
 
- const [secondsLeft, setSecondsLeft] = useState(60); // دائمًا يبدأ من 60
+ const [secondsLeft, setSecondsLeft] = useState(60);  
 useEffect(() => {
   const intervalId = setInterval(() => {
     setSecondsLeft(prev => {
@@ -49,7 +49,7 @@ useEffect(() => {
           
           {/* GIF Icon with bounce animation */}
           <div className="mx-auto mb-4 w-20 h-20 flex items-center justify-center animate-bounce-smooth">
-            <img src={loadingIcon} alt="Loading" className="w-full h-full" />
+            <img src={cloudnetwork} alt="Loading" className="w-full h-full" />
           </div>
 
           {/* Loading message */}

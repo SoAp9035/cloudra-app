@@ -17,13 +17,13 @@ export default function SearchBox({
       className={
         "flex items-center w-full px-3 py-2 rounded-full border border-[#1E3A8A] " +
         "bg-stone-50 shadow-lg focus-within:ring-2 focus-within:ring-[#1E3A8A] " +
-        className
+        className 
       }
     >
-      {/* search icon */}
+      {/* Smaller icon to match height */}
       <FiSearch className="text-gray-400 mr-2 text-2xl" />
 
-      {/* input field */}
+      {/* Input fills the wrapper height; no extra vertical padding */}
       <input
         type="text"
         placeholder={placeholder}
