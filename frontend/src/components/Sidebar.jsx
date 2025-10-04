@@ -1,8 +1,6 @@
-// src/components/Sidebar.jsx
 import SearchBox from "./SearchBox.jsx";
 import DatePicker from "./DatePicker.jsx";
 import logoClose from "../assets/logo/logoClose.png";
-import { Link } from "react-router-dom";
 
 export default function Sidebar({
   onSearch,
@@ -30,7 +28,6 @@ export default function Sidebar({
       "
     >
 
-
       {/* Header */}
       <div className="px-5 pt-5 pb-3 border-b border-gray-100">
         <div className="flex items-center gap-2">
@@ -46,13 +43,13 @@ export default function Sidebar({
         </div>
       </div>
 
-
-
       {/* Body */}
       <div className="p-5 space-y-5 flex-1">
         {/* Location */}
         <div>
-          <label className="block text-center text-xs font-medium text-emerald-100 mb-2">Enter your desired location</label>
+          <label className="block text-center text-xs font-medium text-emerald-100 mb-2">
+            Enter your desired location
+          </label>
           <SearchBox onEnter={onSearch} />
         </div>
 
@@ -69,7 +66,6 @@ export default function Sidebar({
             {options.map((o) => (
               <label
                 key={o.key}
-                // onClick={() => onModeChange?.(o.key)}
                 className={
                   "px-3 py-1.5 text-sm rounded-full transition " +
                   (mode === o.key
@@ -81,7 +77,7 @@ export default function Sidebar({
                   type="radio"
                   name="analysisMode"
                   value={o.key}
-                  checked={mode == o.key}
+                  checked={mode === o.key}
                   onChange={(e) => onModeChange?.(e.target.value)}
                   className="mr-2"
                 />
@@ -92,20 +88,17 @@ export default function Sidebar({
         </div>
       </div>
 
-
-      {/* About & Contact Page */}
-
-      <div className="p-2 space-y-2 ">
+      {/* About & Contact (استبدلنا Link بعناصر عادية) */}
+      <div className="p-2 space-y-2">
         <div className="text-center flex justify-center gap-4">
-          <Link to="/about" className="block hover:underline text-white">
-          About Us
-          </Link>
-          <Link to="/contact" className="block hover:underline text-white">
-          Contact Us
-          </Link>
+          <a href="#about" className="block hover:underline text-white">
+            About Us
+          </a>
+          <a href="#contact" className="block hover:underline text-white">
+            Contact Us
+          </a>
         </div>
       </div>
-
 
       {/* Footer (Analyze) */}
       <div className="p-5 border-t border-gray-100">
@@ -127,9 +120,6 @@ export default function Sidebar({
           <div className="mt-2 text-xs text-red-600">Error: {analyzeError}</div>
         )}
       </div>
-
-
-
 
     </aside>
   );
