@@ -30,28 +30,26 @@ export default function Sidebar({
       "
     >
       {/* Header */}
-      <div className="px-5 pt-5 pb-3 border-b border-gray-100">
-        <div className="flex items-center gap-2">
-          <img src={logoClose} className="w-14 h-14 object-cover rounded-full -mt-2" />
-          <div className="flex flex-col">
-            <h4 className="text-5xl font-poppins font-bold">
-              <span
-                style={{
-                  background: "linear-gradient(90deg, #0D1321, #1E3A8A, #2563EB, #38BDF8, #A0E7FF)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  display: "inline-block",
-                }}
-              >
-                Cloudra
-              </span>
-            </h4>
-            <p className="text-sm font-bold mt-1 text-black">
-              Wanna know the weather?
-            </p>
-          </div>
-        </div>
-      </div>
+<div className="px-5 pt-5 pb-3 border-b border-gray-100">
+  <div className="flex items-center gap-3">
+    <img
+      src={logoClose}
+      className="w-14 h-14 object-cover rounded-full shrink-0"
+      alt="Cloudra logo"
+    />
+    <div className="flex flex-col">
+      <h4 className="text-5xl font-poppins font-bold leading-none">
+        <span className="inline-block bg-[linear-gradient(90deg,#0D1321,#1E3A8A,#2563EB,#38BDF8,#A0E7FF)] bg-clip-text text-transparent">
+          Cloudra
+        </span>
+      </h4>
+      <p className="text-sm font-bold mt-1 text-black">
+        Wanna know the weather?
+      </p>
+    </div>
+  </div>
+</div>
+
 
       {/* Body */}
       <div className="p-5 space-y-5 flex-1">
