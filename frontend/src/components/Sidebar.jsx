@@ -2,6 +2,7 @@
 import SearchBox from "./SearchBox.jsx";
 import DatePicker from "./DatePicker.jsx";
 import logoClose from "../assets/logo/logoClose.png";
+import { Link } from "react-router-dom";
 
 export default function Sidebar({
   onSearch,
@@ -82,7 +83,7 @@ export default function Sidebar({
                   value={o.key}
                   checked={mode == o.key}
                   onChange={(e) => onModeChange?.(e.target.value)}
-                  className="mr-2" 
+                  className="mr-2"
                 />
                 {o.label}
               </label>
@@ -90,6 +91,21 @@ export default function Sidebar({
           </div>
         </div>
       </div>
+
+
+      {/* About & Contact Page */}
+
+      <div className="p-2 space-y-2 ">
+        <div className="text-center flex justify-center gap-4">
+          <Link to="/about" className="block hover:underline text-white">
+          About Us
+          </Link>
+          <Link to="/contact" className="block hover:underline text-white">
+          Contact Us
+          </Link>
+        </div>
+      </div>
+
 
       {/* Footer (Analyze) */}
       <div className="p-5 border-t border-gray-100">
@@ -111,6 +127,10 @@ export default function Sidebar({
           <div className="mt-2 text-xs text-red-600">Error: {analyzeError}</div>
         )}
       </div>
+
+
+
+
     </aside>
   );
 }
