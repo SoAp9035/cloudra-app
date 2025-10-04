@@ -1,10 +1,8 @@
 // src/components/Sidebar.jsx
 import { useEffect, useRef, useState } from "react";
-import SearchBox from "./SearchBox.jsx";
 import DatePicker from "./DatePicker.jsx";
 import logoClose from "../assets/logo/logoClose.png";
 import { FaSearch } from "react-icons/fa";
-
 
 export default function Sidebar({
   onSearch,
@@ -17,7 +15,7 @@ export default function Sidebar({
   analyzeError,
 }) {
   // Lock selected mode after a successful analysis (optional UX rule)
- const [lockedMode, setLockedMode] = useState(null);// null | "quick" | "detailed"
+  const [lockedMode, setLockedMode] = useState(null); // null | "quick" | "detailed"
 
   // Track analyzeLoading transitions to detect "analysis finished"
   const prevLoadingRef = useRef(analyzeLoading);
@@ -53,8 +51,7 @@ export default function Sidebar({
   // NEW: when clicking a mode button => set mode then run analyze
   const handleModeButtonClick = (value) => {
     // respect locking + loading
-    const isDisabled =
-      analyzeLoading || (lockedMode && lockedMode !== value);
+    const isDisabled = analyzeLoading || (lockedMode && lockedMode !== value);
     if (isDisabled) return;
 
     // 1) set the mode
@@ -75,7 +72,7 @@ export default function Sidebar({
         absolute z-[1001]
         w-[350px] max-w-[90vw] h-full
         backdrop-blur
-         shadow-lg overflow-y-auto rounded-tr-70 rounded-br-70
+        shadow-lg overflow-y-auto rounded-tr-70 rounded-br-70
         pointer-events-auto flex flex-col
       "
     >
@@ -109,38 +106,34 @@ export default function Sidebar({
           </label>
 
           {/* Search row with an Analyze button next to the input */}
-  <div className="relative w-full">
-    
-    <input
-      type="text"
-      placeholder="Search..."
-      onKeyDown={(e) => {
-        if (e.key === "Enter") handleSearchEnter(e.target.value);
-      }}
-      className="w-full rounded-full bg-white border border-[#1E3A8A] px-3 py-2 pr-12 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
+          <div className="relative w-full">
+            <input
+              type="text"
+              placeholder="Search..."
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSearchEnter(e.target.value);
+              }}
+              className="w-full rounded-full bg-white border border-[#1E3A8A] px-3 py-2 pr-12 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
 
-    {/*      bg-stone-50 shadow-lg focus-within:ring-2 focus-within:ring-[#1E3A8A]  */}
-
-  
-  <button
-    type="button"
-    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black disabled:opacity-50"
-    onClick={() => onAnalyze?.()}
-    disabled={analyzeLoading || !mode}
-    title={
-      mode
-        ? "Run analysis for current selection"
-        : 'Choose a mode ("quick" or "detailed") first'
-    }
-  >
-    {analyzeLoading ? (
-      <span className="animate-spin">⏳</span>
-    ) : (
-      <FaSearch size={18} />
-    )}
-  </button>
-</div>
+            <button
+              type="button"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black disabled:opacity-50"
+              onClick={() => onAnalyze?.()}
+              disabled={analyzeLoading || !mode}
+              title={
+                mode
+                  ? "Run analysis for current selection"
+                  : 'Choose a mode ("quick" or "detailed") first'
+              }
+            >
+              {analyzeLoading ? (
+                <span className="animate-spin">⏳</span>
+              ) : (
+                <FaSearch size={18} />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Date */}
@@ -157,7 +150,7 @@ export default function Sidebar({
             Analysis Mode
           </label>
 
-          {/* REPLACED: radio options -> buttons that also trigger analyze */}
+          {/* Buttons that also trigger analyze */}
           <div className="flex flex-wrap gap-2" role="group" aria-label="Analysis Mode">
             {MODE_BUTTONS.map((b) => {
               const isActive = mode === b.key;
@@ -178,7 +171,6 @@ export default function Sidebar({
                       : "text-white shadow bg-gradient-to-r from-blue-600 via-sky-400 to-cyan-200") +
                     (isDisabled ? " opacity-60 cursor-not-allowed" : "")
                   }
- 
                   title={
                     isDisabled && lockedMode && b.key !== lockedMode
                       ? `Mode locked to ${lockedMode}`
