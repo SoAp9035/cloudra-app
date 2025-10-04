@@ -1,9 +1,7 @@
-// src/App.jsx
-
 import { fetchWeatherProbability } from "./components/apiClient";
 import ResultsPanel from "./components/ResultsPanel.jsx";
 import LoadingOverlay from "./components/LoadingOverlay.jsx";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -14,16 +12,15 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-
 import Sidebar from "./components/Sidebar.jsx";
 
-// fallback center
+// Fallback center (San Francisco)
 const FALLBACK = { lat: 37.7749, lng: -122.4194 };
 
-// simple ISO today
+// Simple ISO today (YYYY-MM-DD)
 const todayISO = () => new Date().toISOString().slice(0, 10);
 
-// red marker
+// Red marker icon
 const redIcon = L.icon({
   iconUrl:
     "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
@@ -34,7 +31,7 @@ const redIcon = L.icon({
   shadowSize: [41, 41],
 });
 
-// keep map in sync with center
+// Keeps the map view in sync with `center`
 function Recenter({ center }) {
   const map = useMap();
   useEffect(() => {
@@ -44,186 +41,236 @@ function Recenter({ center }) {
 }
 
 export default function App() {
-  // map state
+  // Map state
   const [center, setCenter] = useState(null);
-  const [markerClick, setMarkerClick] = useState(null);
-  const [markerSearch, setMarkerSearch] = useState(null);
+  const [markerPosition, setMarkerPosition] = useState(null);
+
+  // Controls result panel visibility
+  const [hasSelectedLocation, setHasSelectedLocation] = useState(false);
 
   // UI state
   const [addressLabel, setAddressLabel] = useState("");
   const [selectedDate, setSelectedDate] = useState(todayISO());
-  const [mode, setMode] = useState("quick"); // "quick" | "detailed"
+  const [mode, setMode] = useState(null); // <-- start EMPTY; user must choose "quick" | "detailed"
 
   // API state
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  function mapAnalysisMode(uiMode) {
-    return uiMode === "quick" ? "quick_analysis" : "detailed_analysis";
-  }
+  // Map UI mode -> API mode, or null when not chosen yet
+  const analysisMode = useMemo(() => {
+    if (mode === "quick") return "quick_analysis";
+    if (mode === "detailed") return "detailed_analysis";
+    return null; // no mode selected yet
+  }, [mode]);
 
-  // helper: split ISO date
-  function splitIso(iso /* "YYYY-MM-DD" */) {
+  // Helper to split an ISO date string into month/day numbers
+  const splitIso = useCallback((iso) => {
     if (!iso) return { month: null, day: null };
     const [, m, d] = iso.split("-");
     return { month: Number(m), day: Number(d) };
-  }
+  }, []);
 
-  // Analyze action
-  async function onAnalyze() {
-    const point = (markerClick ?? markerSearch) || center;
-    if (!point) return alert("Pick a location first.");
+  // Perform analysis (safe to be called from effects or UI)
+  const onAnalyze = useCallback(async () => {
+    // Guard: require marker and mode and date
+    if (!markerPosition) {
+      setError("Pick a location first.");
+      return;
+    }
+    if (!analysisMode) {
+      setError('Choose a mode: "quick" or "detailed".');
+      return;
+    }
     const { month, day } = splitIso(selectedDate);
-    if (!month || !day) return alert("Pick a date first.");
+    if (!month || !day) {
+      setError("Pick a date first.");
+      return;
+    }
 
-    const analysisMode = mapAnalysisMode(mode);
     setLoading(true);
     setError("");
     try {
       const json = await fetchWeatherProbability({
-        lat: point.lat,
-        lon: point.lng,
+        lat: markerPosition.lat,
+        lon: markerPosition.lng,
         month,
         day,
         analysisMode,
       });
-      console.log("API result:", json);
+      console.log("API result:", json); // Debug log
       setResult(json);
     } catch (e) {
-      console.error(e);
-      setError(e.message || "API request failed.");
+      setError(e?.message || "API request failed.");
+      setResult(null);
     } finally {
       setLoading(false);
     }
-  }
+  }, [markerPosition, selectedDate, analysisMode, splitIso]);
 
-  // reverse geocode (coords -> address)
-  async function reverseGeocode(coords) {
+  // Reverse geocode selected coordinates to a human-readable address
+  const reverseGeocode = useCallback(async (coords) => {
     if (!coords) return;
     const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.lat}&lon=${coords.lng}`;
     try {
-      const res = await fetch(url, { headers: { "Accept-Language": "en" } });
+      const res = await fetch(url, {
+        headers: {
+          "Accept-Language": "en",
+          // Friendly UA for Nominatim usage policy
+          "User-Agent": "weather-probability-app/1.0 (mailto:you@example.com)",
+        },
+      });
       const data = await res.json();
       setAddressLabel(data?.display_name || "No address found");
-    } catch (e) {
-      console.error("Reverse error:", e);
+    } catch {
       setAddressLabel("Reverse geocode failed");
     }
-  }
-
-  // one path for chosen point
-  function pickPoint(coords, source) {
-    if (source === "click") setMarkerClick(coords);
-    if (source === "search") setMarkerSearch(coords);
-    setCenter(coords);
-    reverseGeocode(coords);
-    console.log("chosen:", coords, "date:", selectedDate, "mode:", mode);
-  }
-
-  // geolocation once
-  useEffect(() => {
-    if (!navigator.geolocation) {
-      setCenter(FALLBACK);
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(
-      (pos) =>
-        setCenter({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      () => setCenter(FALLBACK),
-      { enableHighAccuracy: true, timeout: 8000 }
-    );
   }, []);
 
-  // map click
+  // Select a point: set marker + center + address + show results panel
+  const pickPoint = useCallback(
+    (coords) => {
+      setMarkerPosition(coords);
+      setCenter(coords);
+      reverseGeocode(coords);
+      setHasSelectedLocation(true); // Show panel after first deliberate pick/search
+    },
+    [reverseGeocode]
+  );
+
+  // One-time geolocation on mount (does NOT auto-open panel)
+  useEffect(() => {
+    let cancelled = false;
+
+    const useCoords = (coords) => {
+      if (cancelled) return;
+      setCenter(coords);
+      setMarkerPosition(coords);
+    };
+
+    if (!navigator.geolocation) {
+      useCoords(FALLBACK);
+      return () => {};
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        useCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+      },
+      () => {
+        useCoords(FALLBACK);
+      },
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Auto re-run analysis only when:
+  // - the user has deliberately selected a location, AND
+  // - a dependency changes (marker/date/mode)
+  useEffect(() => {
+    if (!hasSelectedLocation) return;
+    if (!analysisMode) return; // do not auto-run until user chooses a mode
+    onAnalyze();
+  }, [hasSelectedLocation, onAnalyze, analysisMode]);
+
+  // Map click handler component
   function ClickToSetMarker() {
     useMapEvents({
       click(e) {
-        pickPoint({ lat: e.latlng.lat, lng: e.latlng.lng }, "click");
+        pickPoint({ lat: e.latlng.lat, lng: e.latlng.lng });
       },
     });
     return null;
   }
 
-  // Nominatim search
+  // Search by text using Nominatim
   async function onSearch(query) {
+    if (!query?.trim()) return;
     const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1&q=${encodeURIComponent(
       query
     )}`;
     try {
-      const res = await fetch(url, { headers: { "Accept-Language": "en" } });
+      const res = await fetch(url, {
+        headers: {
+          "Accept-Language": "en",
+          "User-Agent": "weather-probability-app/1.0 (mailto:you@example.com)",
+        },
+      });
       const data = await res.json();
-      if (!data?.length) {
-        alert("No results");
-        return;
-      }
-      const first = data[0];
+      if (!data?.length) return alert("No results");
       const coords = {
-        lat: parseFloat(first.lat),
-        lng: parseFloat(first.lon),
+        lat: parseFloat(data[0].lat),
+        lng: parseFloat(data[0].lon),
       };
-      pickPoint(coords, "search");
+      pickPoint(coords);
     } catch (err) {
       console.error("Search error:", err);
+      alert("Search failed.");
     }
   }
 
-  if (!center) return <div className="grid h-screen place-items-center">Loading…</div>;
+  if (!center)
+    return <div className="grid h-screen place-items-center">Loading…</div>;
 
-  return (<>
+  return (
+    <>
       {loading && <LoadingOverlay message="Analyzing weather…" />}
-    <div className="relative h-screen w-full">
-
-      {/* Controls sidebar (left) */}
-      <Sidebar
-        onSearch={onSearch}
-        dateValue={selectedDate}
-        onDateChange={setSelectedDate}
-        mode={mode}
-        onModeChange={setMode}
-        onAnalyze={onAnalyze}
-        analyzeLoading={loading}
-        analyzeError={error}
-      />
-
- 
-      {/* Results panel (right) */}
-      <ResultsPanel
-        result={result}
-        loading={loading}
-        error={error}
-        selectedDate={selectedDate}
-        addressLabel={addressLabel}
-        mode={mode}
-        onViewFullReport={() => {
-          console.log("open full report");
-        }}
-      />
-
-      {/* Map */}
-      <MapContainer
-        center={[center.lat, center.lng]}
-        zoom={12}
-        zoomControl={false}
-        scrollWheelZoom
-        className="h-full w-full"
-      >
-        <ZoomControl position="bottomright" />
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      <div className="relative h-screen w-full">
+        {/* Sidebar: now receives current mode (can be null) and an Analyze button callback */}
+        <Sidebar
+          onSearch={onSearch}
+          dateValue={selectedDate}
+          onDateChange={setSelectedDate}
+          mode={mode}                // null | "quick" | "detailed"
+          onModeChange={setMode}
+          onAnalyze={onAnalyze}      // Manual analyze on button click
+          analyzeLoading={loading}
+          analyzeError={error}
         />
-        <Recenter center={center} />
-        <ClickToSetMarker />
 
-        {markerClick && (
-          <Marker position={[markerClick.lat, markerClick.lng]} icon={redIcon} />
+        {/* Results panel only after the first deliberate location pick/search */}
+        {hasSelectedLocation && (
+          <ResultsPanel
+            result={result}
+            loading={loading}
+            error={error}
+            selectedDate={selectedDate}
+            addressLabel={addressLabel}
+            mode={mode}
+            onViewFullReport={() => {
+              console.log("open full report");
+            }}
+          />
         )}
-        {markerSearch && (
-          <Marker position={[markerSearch.lat, markerSearch.lng]} icon={redIcon} />
-        )}
-      </MapContainer>
-    </div>
+
+        {/* Map */}
+        <MapContainer
+          center={[center.lat, center.lng]}
+          zoom={12}
+          zoomControl={false}
+          scrollWheelZoom
+          className="h-full w-full"
+        >
+          <ZoomControl position="bottomright" />
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <Recenter center={center} />
+          <ClickToSetMarker />
+          {markerPosition && (
+            <Marker
+              position={[markerPosition.lat, markerPosition.lng]}
+              icon={redIcon}
+            />
+          )}
+        </MapContainer>
+      </div>
     </>
   );
 }
