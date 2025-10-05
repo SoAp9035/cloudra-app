@@ -13,6 +13,7 @@ import {
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import Sidebar from "./components/Sidebar.jsx";
+import { Link } from "react-router-dom";
 
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement } from "chart.js";
 
