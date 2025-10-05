@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import earth_degree from "../assets/logo/degree.gif";
 
-export default function LoadingOverlay() {
-  // Lock scroll
+export default function LoadingOverlay({ mode = "quick" }) {
+  // Scroll kilidi
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => (document.body.style.overflow = prev);
   }, []);
 
-  const DURATION = 25; // toplam süre (sn)
+  // Süre: quick → 25 sn, detailed → 85 sn
+  const DURATION = mode === "detailed" ? 85 : 25;
+
   const [secondsPassed, setSecondsPassed] = useState(0);
 
   useEffect(() => {
@@ -24,7 +26,7 @@ export default function LoadingOverlay() {
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [DURATION]);
 
   const progress = Math.min((secondsPassed / DURATION) * 100, 100);
 
@@ -56,6 +58,8 @@ export default function LoadingOverlay() {
               <span style={{ animation: "pulseDots 1.4s .4s infinite" }}>.</span>
             </div>
           </div>
+          
+          
 
           {/* Info text */}
           <div className="mt-2 text-xs text-gray-500">
@@ -84,4 +88,4 @@ export default function LoadingOverlay() {
     </>
   );
 }
-
+   
