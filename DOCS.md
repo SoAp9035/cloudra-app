@@ -68,6 +68,12 @@ Returns JSON object with:
   - `temperature` (object): Temperature visualization data
     - `years` (array): List of years
     - `temperatures` (array): Corresponding list of temperatures for each year
+  - `humidity` (object): Humidity visualization data (if applicable)
+    - `years` (array): List of years
+    - `humidity_levels` (array): Corresponding list of humidity levels for each year
+  - `rain` (object): Rain visualization data (if applicable)
+    - `years` (array): List of years
+    - `rain_probabilities` (array): Corresponding list of rain probabilities for each year
 - `thresholds_info` (object): Information about analysis thresholds
   - `climate_zone` (string): Climate zone classification (polar, subarctic, temperate, subtropical, tropical)
   - `thresholds_used` (object): Threshold values used in analysis
@@ -165,6 +171,14 @@ GET /api/weather_probability?lat=40.7589&lon=-73.9851&month=6&day=15&analysis_mo
     "temperature": {
       "years": [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024],
       "temperatures": [15.1, 16.3, 14.8, 15.6, 16.0, 17.2, 15.9, 16.5, 15.4, 16.1, 17.0, 16.8, 15.7, 16.4, 17.1, 16.2, 15.9, 16.6, 17.3, 16.5, 15.8, 16.7, 17.4, 16.9, 15.6, 16.8, 17.5, 16.3, 15.7, 16.4]
+    },
+    "humidity": {
+      "years": [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024],
+      "humidity_levels": [48.5, 50.2, 47.8, 49.1, 50.0, 51.3, 49.5, 50.7, 48.9, 50.1, 51.0, 50.5, 49.3, 50.6, 51.2, 50.4, 49.8, 50.9, 51.4, 50.7, 49.6, 50.8, 51.5, 50.3, 49.2, 50.4, 51.6, 50.1, 49.4, 50.5]
+    },
+    "rain": {
+      "years": [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024],
+      "rain_probabilities": [30.2, 35.1, 28.4, 32.0, 34.5, 36.7, 31.8, 33.2, 29.9, 34.0, 37.1, 35.5, 30.8, 33.5, 36.0, 34.2, 31.5, 35.3, 37.5, 33.8, 30.6, 34.1, 37.8, 35.0, 29.7, 33.0, 38.0, 34.3, 30.4, 33.6]
     }
   },
   "thresholds_info": {
