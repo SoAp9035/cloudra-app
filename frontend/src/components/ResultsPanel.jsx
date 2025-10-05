@@ -110,7 +110,7 @@ export default function ResultsPanel({
 
 
             <div className="grid mb-4 grid-cols-1 gap-2">
-              <MiniMetric icon={<img src={rainGif} alt="Rain" className="w-4 h-4" />} label="Rain" value={nOrDashPct(rainProb)} />
+              <MiniMetric icon={<img src={rainGif} alt="Rain" className="w-4 h-4 " />} label="Rain" value={nOrDashPct(rainProb)} />
               <MiniMetric icon={<img src={windGif} alt="Wind" className="w-4 h-4" />} label="Wind" value={formatWind(windVal, windUnit, true)} />
               <MiniMetric icon={<img src={fogGif} alt="Fog" className="w-4 h-4" />} label="Fog" value={fogScale != null ? `${fogScale}/3` : (fogText ?? "—")} />
               <MiniMetric icon={<img src={humidityGif} alt="Humidity" className="w-4 h-4" />} label="Humidity" value={nOrDashPct(humidity)} />
@@ -246,7 +246,7 @@ function Modal({ open, onClose, title, children }) {
 /* ---------- UI Elements ---------- */
 function MiniMetric({ icon, label, value, sub }) {
   return (
-    <div className="w-60  border border-gray-200 bg-white p-2.5 shadow-sm">
+    <div className="w-60  border border-gray-200 bg-white p-2.5 shadow-sm rounded-full">
       <div className="flex items-center justify-between">
         <span className="text:[11px] text-gray-600 flex items-center gap-1">
           <span className="text-xs leading-none">{icon}</span>
