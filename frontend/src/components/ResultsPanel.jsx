@@ -6,8 +6,7 @@ import fogGif from "../assets/logo/fog.gif";
 import humidityGif from "../assets/logo/humidity.gif";
 import cloudGif from "../assets/logo/cloud.gif";
 import snowGif from "../assets/logo/snow.gif";
-import sunGif from "../assets/logo/sun.gif";
-
+import cloudyGif from "../assets/logo/cloudy.gif";
 export default function ResultsPanel({
   result,
   loading,
@@ -79,9 +78,9 @@ export default function ResultsPanel({
           <>
             {/* Hero */}
             <div className="flex flex-col mb-5 items-center justify-center w-55 h-48 p-4 bg-gradient-to-br from-sky-500 to-indigo-500 text-white rounded-2xl shadow">
-              <div className="-translate-y-4.5 flex flex-col items-center">
+              <div className="-translate-y-4 flex flex-col items-center">
                 <div className="text-4xl mt-10 mb-7">
-                  <img src={sunGif} alt="Temperature" className="w-20 h-20" />
+                  <img src={cloudyGif} alt="Temperature" className="w-20 h-20" />
                 </div>
                 <div className="text-4xl font-bold -mt-4">
                   {typeof temp === "number" ? `${Math.round(temp)}°C` : "No Data."}
