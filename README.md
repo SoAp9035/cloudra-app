@@ -10,6 +10,15 @@ Read the analysis here: [ANALYSIS](https://github.com/SoAp9035/selcuk-space-app/
 
 Presentation file: [PRESENTATION](https://github.com/SoAp9035/selcuk-space-app/blob/main/PRESENTATION.md)
 
+## Screenshots
+
+![Demo 1](screenshots/demo-1.png)
+![Demo 2](screenshots/demo-2.png)
+![Demo 3](screenshots/demo-3.png)
+![Demo 4](screenshots/demo-4.png)
+![Demo 5](screenshots/demo-5.png)
+![Demo 6](screenshots/demo-6.png)
+
 ## Getting Started
 
 You will need to install [uv](https://docs.astral.sh/uv/) and [Node.js](https://nodejs.org/en/download) in your system.
