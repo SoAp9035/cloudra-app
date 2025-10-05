@@ -105,7 +105,7 @@ export default function ResultsPanel({
   type="button"
   onClick={() => setModal("combined")}
   className="flex-1 rounded-xl
-   bg-gradient-to-r from-blue-600 via-sky-400 to-cyan-200
+   bg-gradient-to-br from-sky-500 to-indigo-500 
    text-white text-base font-semibold py-2.5 px-7
    shadow-md hover:shadow-lg hover:scale-[1.03] active:scale-[0.98] transition-all"
 >

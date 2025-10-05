@@ -54,7 +54,7 @@ export default function Sidebar({
           />
           <div className="flex flex-col">
             <h4 className="text-5xl font-poppins font-bold leading-none">
-              <span className="inline-block bg-[linear-gradient(90deg,#0D1321,#1E3A8A,#2563EB,#38BDF8,#A0E7FF)] bg-clip-text text-transparent">
+              <span className="inline-block bg-gradient-to-br from-sky-500 to-indigo-500  bg-clip-text text-transparent">
                 Cloudra
               </span>
             </h4>
@@ -131,7 +131,7 @@ export default function Sidebar({
               const base =
                 "w-full flex flex-col items-center justify-center px-6 py-2 rounded-full text-sm transition border";
               const active =
-                "text-white shadow bg-gradient-to-r from-blue-600 via-sky-400 to-cyan-300 border-transparent";
+                "text-white shadow bg-gradient-to-br from-sky-500 to-indigo-500  border-transparent";
               const inactive =
                 "text-gray-800 bg-white border-gray-300 hover:border-blue-400 hover:shadow";
 
@@ -184,7 +184,7 @@ export default function Sidebar({
               className={
                 "w-full rounded-full px-6 py-3 text-sm font-semibold transition  " +
                 (readyToRun && dirty && !analyzeLoading
-                  ? "text-white shadow bg-gradient-to-r from-blue-600 via-sky-400 to-cyan-300 cursor-pointer"
+                  ? "text-white shadow bg-gradient-to-br from-sky-500 to-indigo-500  cursor-pointer"
                   : "text-white shadow bg-gradient-to-r from-blue-600 via-sky-400 to-cyan-300 opacity-60 cursor-not-allowed")
               }
             >
