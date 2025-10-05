@@ -2,8 +2,6 @@
 
 Read about the project before getting started: [ABOUT THE PROJECT](https://github.com/SoAp9035/selcuk-space-app/blob/main/PROJECT.md)
 
-Read the notes taken by team members: [NOTES](https://github.com/SoAp9035/selcuk-space-app/blob/main/NOTES.md)
-
 Read the API documentation here: [DOCS](https://github.com/SoAp9035/selcuk-space-app/blob/main/DOCS.md)
 
 Read the analysis here: [ANALYSIS](https://github.com/SoAp9035/selcuk-space-app/blob/main/ANALYSIS.md)
@@ -69,3 +67,9 @@ git push -u origin main
 ```
 
 Warning: Before pushing, please pull the project first.
+
+## Citations
+
+- NASA POWER API data has been used (NASA Langley Research Center, https://power.larc.nasa.gov).
+- OpenStreetMap map data and map search service have been used (OpenStreetMap, https://www.openstreetmap.org).
+- Leaflet JavaScript library is used for interactive maps (Leaflet, https://leafletjs.com).

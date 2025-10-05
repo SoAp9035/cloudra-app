@@ -1,208 +1,208 @@
-# **"Will It Rain On My Parade?" - Proje Sunumu**
+# **"Will It Rain On My Parade?" - Project Presentation**
 
-## 🎯 **1. GİRİŞ (Problem)**
+## 🎯 **1. INTRODUCTION (Problem)**
 
-**"Hiç önemli bir açık hava etkinliği planlarken havanın nasıl olacağını merak ettiniz mi?"**
+**"Have you ever wondered what the weather will be like when planning an important outdoor event?"**
 
-Düğün, konser, piknik, açık hava festivali veya tarımsal faaliyetler planlıyorsunuz. Ancak etkinliğiniz 6 ay sonra. Klasik hava tahmin uygulamaları sadece 7-14 gün sonrasını gösteriyor. **Peki 6 ay sonra seçtiğiniz tarihteki hava nasıl olacak?**
+You're planning a wedding, concert, picnic, outdoor festival, or agricultural activities. But your event is 6 months away. Traditional weather forecast apps only show 7-14 days ahead. **So what will the weather be like on your chosen date 6 months from now?**
 
-- Yağmur yağacak mı?
-- Aşırı sıcak olacak mı?
-- Rüzgarlı bir gün mü olacak?
+- Will it rain?
+- Will it be extremely hot?
+- Will it be a windy day?
 
-**İşte tam da burada "Will It Rain On My Parade?" devreye giriyor!**
-
----
-
-## 💡 **2. ÇÖZÜM: Projemiz Nasıl Bir Çözüm Getiriyor?**
-
-Bu proje, **hava tahmini yapmaz** - bundan daha akıllı bir şey yapar: **İstatistiksel olasılıklar sunar!**
-
-### **Ana Özellikler:**
-
-✅ **Geçmiş Verilere Dayalı Analiz**: NASA'nın son 10-30 yıllık meteoroloji verilerini kullanarak, belirli bir tarih ve konumdaki hava koşullarının **olasılığını** hesaplar.
-
-✅ **Detaylı Olasılık Raporları**:
-- 🌡️ Çok sıcak olma olasılığı: %65
-- 💨 Çok rüzgarlı olma olasılığı: %12
-- 🌧️ Yağmur yağma olasılığı: %15
-- ❄️ Kar örtüsü olasılığı: %2
-
-✅ **İklim Bölgesine Özel Eşik Değerleri**: Kutup bölgelerinde 15°C "çok sıcak" sayılırken, tropik bölgelerde 40°C eşik değeri kullanılır.
-
-✅ **İki Analiz Modu**:
-- **Hızlı Analiz**: Son 10 yılın verisi
-- **Detaylı Analiz**: Son 30 yılın verisi
+**This is exactly where "Will It Rain On My Parade?" comes in!**
 
 ---
 
-## 🖥️ **3. NASIL ÇALIŞIR? (Kullanıcı Deneyimi)**
+## 💡 **2. SOLUTION: How Does Our Project Provide a Solution?**
 
-### **Adım 1: Konum Seçimi** 📍
-- Kullanıcı harita üzerinde **herhangi bir noktaya tıklayarak** konum seçer
-- Veya arama kutusuna **şehir/adres yazarak** arama yapabilir
-- Konum otomatik olarak tersine coğrafi kodlama ile adrese dönüşür
+This project **doesn't forecast weather** - it does something smarter: **It provides statistical probabilities!**
 
-### **Adım 2: Tarih Seçimi** 📅
-- Yılın belirli bir gününü seçer (örnek: 2 Ağustos)
-- Sistem o tarihe ait geçmiş yıllardaki verileri toplar
+### **Key Features:**
 
-### **Adım 3: Analiz Modunu Seçme** ⚙️
-- **Quick Analysis**: Hızlı sonuç için 10 yıllık veri
-- **Detailed Analysis**: Daha kapsamlı sonuç için 30 yıllık veri
+✅ **Historical Data-Based Analysis**: Using NASA's 10-30 years of meteorological data, it calculates the **probability** of weather conditions at a specific date and location.
 
-### **Adım 4: Sonuçları Görüntüleme** 📊
-Kullanıcı şunları görür:
-- Ortalama sıcaklık, nem, rüzgar hızı
-- Yağmur, kar, sis olasılıkları
-- Aşırı hava olayları olasılıkları (çok sıcak, çok soğuk, çok rüzgarlı)
-- İklim bölgesi bilgisi ve kullanılan eşik değerleri
+✅ **Detailed Probability Reports**:
+- 🌡️ Probability of very hot weather: 65%
+- 💨 Probability of very windy conditions: 12%
+- 🌧️ Probability of rain: 15%
+- ❄️ Probability of snow cover: 2%
 
-### **Adım 5: Veri İndirme** 💾
-- Sonuçları CSV veya JSON formatında indirebilir
-- Kendi analizleri için ham verilere erişebilir
+✅ **Climate Zone-Specific Thresholds**: While 15°C is considered "very hot" in polar regions, 40°C is the threshold in tropical regions.
+
+✅ **Two Analysis Modes**:
+- **Quick Analysis**: Last 10 years of data
+- **Detailed Analysis**: Last 30 years of data
 
 ---
 
-## 🔬 **4. KULLANILAN TEKNOLOJİ**
+## 🖥️ **3. HOW DOES IT WORK? (User Experience)**
 
-### **🛰️ NASA POWER MERRA-2 Veri Seti**
-- **MERRA-2 (Modern-Era Retrospective analysis for Research and Applications)**: NASA'nın en kapsamlı iklim yeniden analiz veri setidir
-- **43 yıllık veri** (1980-2023) içerir
-- Parametreler:
-  - Sıcaklık (T2M, T2M_MAX, T2M_MIN)
-  - Nem (RH2M)
-  - Yağış (PRECTOTCORR)
-  - Kar (PRECSNOLAND, SNODP)
-  - Rüzgar (WS10M, WS10M_MAX)
-  - Bulutluluk (CLOUD_AMT)
-  - Çiğ Noktası (T2MDEW)
+### **Step 1: Location Selection** 📍
+- User selects location by **clicking anywhere on the map**
+- Or can search by typing **city/address** in the search box
+- Location is automatically converted to address via reverse geocoding
 
-### **🔧 Backend Teknolojileri:**
-- **Python 3.13** - Ana programlama dili
+### **Step 2: Date Selection** 📅
+- Selects a specific day of the year (example: August 2)
+- System collects historical data for that date from previous years
+
+### **Step 3: Choose Analysis Mode** ⚙️
+- **Quick Analysis**: 10 years of data for fast results
+- **Detailed Analysis**: 30 years of data for comprehensive results
+
+### **Step 4: View Results** 📊
+User sees:
+- Average temperature, humidity, wind speed
+- Rain, snow, fog probabilities
+- Extreme weather event probabilities (very hot, very cold, very windy)
+- Climate zone information and thresholds used
+
+### **Step 5: Data Download** 💾
+- Can download results in CSV or JSON format
+- Access raw data for their own analysis
+
+---
+
+## 🔬 **4. TECHNOLOGY USED**
+
+### **🛰️ NASA POWER MERRA-2 Dataset**
+- **MERRA-2 (Modern-Era Retrospective analysis for Research and Applications)**: NASA's most comprehensive climate reanalysis dataset
+- Contains **43 years of data** (1980-2023)
+- Parameters:
+    - Temperature (T2M, T2M_MAX, T2M_MIN)
+    - Humidity (RH2M)
+    - Precipitation (PRECTOTCORR)
+    - Snow (PRECSNOLAND, SNODP)
+    - Wind (WS10M, WS10M_MAX)
+    - Cloud Cover (CLOUD_AMT)
+    - Dew Point (T2MDEW)
+
+### **🔧 Backend Technologies:**
+- **Python 3.13** - Main programming language
 - **Flask** - RESTful API framework
-- **Pandas** - Veri işleme ve analiz
-- **UV** - Modern Python paket yöneticisi
-- **CORS desteği** - Frontend-backend iletişimi
+- **Pandas** - Data processing and analysis
+- **UV** - Modern Python package manager
+- **CORS support** - Frontend-backend communication
 
-### **🎨 Frontend Teknolojileri:**
-- **React 19** - Modern kullanıcı arayüzü
-- **Leaflet & React-Leaflet** - Interaktif harita sistemi
-- **Vite** - Hızlı geliştirme ortamı
-- **TailwindCSS** - Modern ve responsive tasarım
-- **OpenStreetMap Nominatim API** - Coğrafi kodlama
+### **🎨 Frontend Technologies:**
+- **React 19** - Modern user interface
+- **Leaflet & React-Leaflet** - Interactive map system
+- **Vite** - Fast development environment
+- **TailwindCSS** - Modern and responsive design
+- **OpenStreetMap Nominatim API** - Geocoding
 
-### **📡 API Mimarisi:**
+### **📡 API Architecture:**
 ```
 Frontend (React) 
-    ↓ HTTP GET Request
+        ↓ HTTP GET Request
 Backend (Flask API)
-    ↓ NASA POWER API çağrısı
-NASA POWER MERRA-2 Veri Seti
-    ↓ JSON Response
-Backend (Veri İşleme & Analiz)
-    ↓ İstatistiksel Hesaplamalar
-Frontend (Sonuçların Görselleştirilmesi)
+        ↓ NASA POWER API call
+NASA POWER MERRA-2 Dataset
+        ↓ JSON Response
+Backend (Data Processing & Analysis)
+        ↓ Statistical Calculations
+Frontend (Results Visualization)
 ```
 
-### **🧮 İstatistiksel Analiz:**
-- **Veri Normalizasyonu**: Eksik verilerin (-999) ortalama/medyan ile doldurulması
-- **Outlier Tespiti**: IQR yöntemi ile aykırı değerlerin belirlenmesi
-- **İklim Bölgesi Sınıflandırması**: 5 farklı iklim bölgesi (kutup, subarktik, ılıman, subtropikal, tropikal)
-- **Olasılık Hesaplamaları**: Eşik değerlerini aşan günlerin yüzdesi
+### **🧮 Statistical Analysis:**
+- **Data Normalization**: Filling missing data (-999) with mean/median
+- **Outlier Detection**: Identifying outliers using IQR method
+- **Climate Zone Classification**: 5 different climate zones (polar, subarctic, temperate, subtropical, tropical)
+- **Probability Calculations**: Percentage of days exceeding threshold values
 
 ---
 
-## 🎬 **5. ÖRNEK SENARYO**
+## 🎬 **5. EXAMPLE SCENARIO**
 
-### **Kullanıcı Profili:**
-**Ayşe**, İstanbul'da Haziran ayının 15'inde açık hava düğünü planlıyor. Etkinlik 6 ay sonra ve bahçe düğünü yapıp yapmayacağına karar verememiş.
+### **User Profile:**
+**Ayşe** is planning an outdoor wedding in Istanbul on June 15th. The event is 6 months away and she's undecided about whether to have a garden wedding.
 
-### **Uygulama Kullanımı:**
+### **Application Usage:**
 
-**1. Konum Seçimi:**
-- Ayşe harita üzerinde İstanbul'daki düğün bahçesinin konumunu işaretler
-- Koordinatlar: 41.0082°N, 28.9784°E
+**1. Location Selection:**
+- Ayşe marks the location of the wedding garden in Istanbul on the map
+- Coordinates: 41.0082°N, 28.9784°E
 
-**2. Tarih ve Mod Seçimi:**
-- Tarih: 15 Haziran
-- Mod: Detailed Analysis (30 yıllık veri için)
+**2. Date and Mode Selection:**
+- Date: June 15
+- Mode: Detailed Analysis (for 30 years of data)
 
-**3. Analiz Butonu:**
-- "Analyze" butonuna tıklar
-- Backend NASA verilerini çeker ve işler
+**3. Analysis Button:**
+- Clicks the "Analyze" button
+- Backend fetches and processes NASA data
 
-**4. Sonuçlar:**
+**4. Results:**
 ```
-📊 Hava Olasılıkları (15 Haziran, İstanbul)
+📊 Weather Probabilities (June 15, Istanbul)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🌡️ Ortalama Sıcaklık: 26°C (22-30°C arası)
-💧 Ortalama Nem: %65
-💨 Ortalama Rüzgar: 10.2 km/s
-☁️ Bulutluluk: %45
+🌡️ Average Temperature: 26°C (22-30°C range)
+💧 Average Humidity: 65%
+💨 Average Wind: 10.2 km/s
+☁️ Cloud Cover: 45%
 
-📈 Olasılıklar:
-🌧️ Yağmur: %18
-❄️ Kar: %0
+📈 Probabilities:
+🌧️ Rain: 18%
+❄️ Snow: 0%
 
-❔ Aşırı Hava Olayları:
-🔥 Çok Sıcak (>32°C): %12
-🌊 Rahatsız Edici Nem: %35
-💨 Çok Rüzgarlı: %8
+❔ Extreme Weather Events:
+🔥 Very Hot (>32°C): 12%
+🌊 Uncomfortable Humidity: 35%
+💨 Very Windy: 8%
 
-🌍 İklim Bölgesi: Temperate
-📦 Analiz Edilen Veri: 30 yıl
+🌍 Climate Zone: Temperate
+📦 Data Analyzed: 30 years
 ```
 
-**5. Karar:**
-Ayşe, yağmur olasılığının düşük (%18) ve hava koşullarının genel olarak uygun olduğunu görür. Ancak %18'lik yağmur riski için:
-- ✅ Bahçe düğünü planı yapıyor
-- ✅ Plan B olarak kapalı salon rezervasyonu da tutuyor
-- ✅ Misafirler için şemsiye hazırlığı yapıyor
+**5. Decision:**
+Ayşe sees that the probability of rain is low (18%) and weather conditions are generally suitable. However, for the 18% rain risk:
+- ✅ Makes garden wedding plans
+- ✅ Also reserves an indoor venue as Plan B
+- ✅ Prepares umbrellas for guests
 
 ---
 
-## 🌟 **6. KAPANIŞ: Projenin Önemi ve Potansiyeli**
+## 🌟 **6. CONCLUSION: Importance and Potential of the Project**
 
-### **Neden Bu Proje Önemli?**
+### **Why Is This Project Important?**
 
-✅ **Öngörülebilirlik Sağlar**: İnsanların uzun vadeli planlar yaparken bilinçli kararlar almasına yardımcı olur
+✅ **Provides Predictability**: Helps people make informed decisions when making long-term plans
 
-✅ **Bilime Dayalıdır**: 30-40 yıllık NASA verileri ile desteklenen güvenilir istatistikler
+✅ **Science-Based**: Reliable statistics supported by 30-40 years of NASA data
 
-✅ **Gerçekçi Beklentiler**: "Tahmin" değil "olasılık" sunarak kullanıcıları yanıltmaz
+✅ **Realistic Expectations**: Doesn't mislead users by providing "probability" rather than "forecast"
 
-✅ **Evrensel Kullanım**: Dünyanın her noktası için çalışır
+✅ **Universal Use**: Works for any point on Earth
 
-### **Kullanım Alanları:**
+### **Use Cases:**
 
-🎉 **Etkinlik Planlama**: Düğün, konser, festival organizasyonları
+🎉 **Event Planning**: Wedding, concert, festival organizations
 
-🌾 **Tarım**: Ekim, hasat, sulama zamanlaması
+🌾 **Agriculture**: Planting, harvesting, irrigation timing
 
-✈️ **Turizm**: Tatil planlaması, seyahat danışmanlığı
+✈️ **Tourism**: Vacation planning, travel consulting
 
-🏗️ **İnşaat**: Açık alan çalışmaları için planlama
+🏗️ **Construction**: Planning for outdoor work
 
-📸 **Fotoğrafçılık**: Doğa ve açık hava çekimleri için ideal günleri bulma
+📸 **Photography**: Finding ideal days for nature and outdoor shoots
 
-### **Gelecek Potansiyeli:**
+### **Future Potential:**
 
-🚀 **Mobil Uygulama**: iOS ve Android versiyonları
+🚀 **Mobile Application**: iOS and Android versions
 
-📧 **Bildirim Sistemi**: Seçilen tarihe yaklaşıldığında e-posta/SMS
+📧 **Notification System**: Email/SMS as selected date approaches
 
-🤖 **AI Entegrasyonu**: Makine öğrenmesi ile daha gelişmiş tahminler
+🤖 **AI Integration**: More advanced predictions with machine learning
 
-📊 **İş Analitiği Dashboard**: Kurumsal müşteriler için gelişmiş raporlama
+📊 **Business Analytics Dashboard**: Advanced reporting for corporate customers
 
-🌐 **Çoklu Dil Desteği**: Global kullanıcılar için yerelleştirme
+🌐 **Multi-language Support**: Localization for global users
 
 ---
 
-### **Son Söz:**
+### **Final Words:**
 
-**"Will It Rain On My Parade?"** sadece bir hava durumu uygulaması değil - uzun vadeli planlama yapan herkes için **bilime dayalı bir karar destek sistemi**dir. NASA'nın on yıllarca biriktirdiği verileri, sıradan insanların günlük hayatlarına değer katan bir araç haline getiriyoruz.
+**"Will It Rain On My Parade?"** is not just a weather app - it's a **science-based decision support system** for anyone making long-term plans. We're turning decades of data accumulated by NASA into a tool that adds value to ordinary people's daily lives.
 
-**Çünkü bazen bilmek, tahmin etmekten daha iyidir! 🌤️**
+**Because sometimes knowing is better than guessing! 🌤️**
