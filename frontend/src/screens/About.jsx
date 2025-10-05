@@ -2,10 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import InfoCard from "../components/infoCard";
 
-// TODO: ADD THE PICTURES TO GITIGNORE FILE 
+// * import the profile pictures we are going to use
+import razanPic from "../assets/pictures/razanPic.jpg"
+import seyfPic from "../assets/pictures/seyfPic.jpg"
+import ahmetPic from "../assets/pictures/ahmetPic.jpg"
+import melekPic from "../assets/pictures/melekPic.jpg"
+import aysegulPic from "../assets/pictures/aysegulPic.jpg"
 
-// import the profile pictures we are going to use
-import razanPic from "../assets/pictures/razanpic.jpeg"
 
 
 // a VERY bad code coming :
@@ -28,51 +31,47 @@ function About() {
         </h1>
       </section>
 
-        // TODO: WRITE SMTHING ABOUT OUR TEAM/PROJECT
-      <section className="bg-gray-300 text-center w-full py-8 px-5 shadow-sm">
-        bro lets end this already
-      </section>
-
       {/* Creators Grid */}
 
       <section className="min-h-screen flex flex-col items-center justify-start bg-gray-50 py-16">
         <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-5xl ">
           <div className="grid grid-cols-2 gap-6">
             <InfoCard
-              image={razanPic}
-              name="1"
+              image={ahmetPic}
+              name="Ahmet Burhan Kayalı"
+              email="ahmetburhan1703@gmail.com"
+              gsm="536 443 04 57"
+            />
+
+            <InfoCard
+              image={seyfPic}
+              name="Seyf JAMAL"
+              email="ssaaiiffjjaammaall@gmail.com"
+              gsm="534 453 39 88"
+            />
+
+            <InfoCard
+              image={aysegulPic}
+              name="Ayşegül KAYA"
               email="razansteifdev@gmail.com"
-              gsm="551 397 53 97"
+              gsm="537 562 00 13"
             />
 
             <InfoCard
               image={razanPic}
-              name="2"
-              email="razansteifdev@gmail.com"
+              name="Razan STEIF"
+              email="razansteifschool@gmail.com"
               gsm="551 397 53 97"
             />
 
             <InfoCard
-              image={razanPic}
-              name="3"
-              email="razansteifdev@gmail.com"
-              gsm="551 397 53 97"
+              image={melekPic}
+              name="Melek GÜNGÜL"
+              email="mmelekgungul5104@gmail.com"
+              gsm="545 162 24 51"
             />
 
-            <InfoCard
-              image={razanPic}
-              name="4"
-              email="razansteifdev@gmail.com"
-              gsm="551 397 53 97"
-            />
-
-            <InfoCard
-              image={razanPic}
-              name="5"
-              email="razansteifdev@gmail.com"
-              gsm="551 397 53 97"
-            />
-
+              {/* //TODO: ZEHRA BİLGİLERİ */}
             <InfoCard
               image={razanPic}
               name="6"
