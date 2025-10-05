@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import rainGif from "../assets/logo/rain.gif";
@@ -36,6 +35,7 @@ export default function ResultsPanel({
   const windUnit = unitOf(stats?.wind, "m/s");
   const fogScale = stats?.fog?.scale ?? null;
   const fogText = stats?.fog?.status ?? null;
+ 
 
   const extremesRaw = {
     "Heavy rain": probs?.heavy_rain ?? probs?.heavy_precipitation_percent,
@@ -47,25 +47,10 @@ export default function ResultsPanel({
   };
   const extremes = Object.entries(extremesRaw).map(([k, v]) => [k, pickNumber(v)]);
 
-  const [modal, setModal] = useState(null); // null | "combined"
+  const [modal, setModal] = useState(null);  
 
   return (
     <aside
-
-
-
-
-      // absolute z-[1001]
-      // w-[350px] max-w-[90vw] h-full
-      // backdrop-blur
-      //  shadow-lg overflow-y-auto rounded-tr-70 rounded-br-70
-      // pointer-events-auto flex flex-col
-
-
-
-
-
-
       className="
         absolute right-0 top-0 z-[1001]
         h-full w-[340px] max-w-[88vw]
@@ -93,7 +78,7 @@ export default function ResultsPanel({
         {!loading && !error && result && (
           <>
             {/* Hero */}
-            <div className="flex flex-col mb-5 items-center justify-center w-60 h-72 p-4 bg-gradient-to-br from-sky-500 to-indigo-500 text-white rounded-2xl shadow">
+            <div className="flex flex-col mb-5 items-center justify-center w-55 h-52 p-4 bg-gradient-to-br from-sky-500 to-indigo-500 text-white rounded-2xl shadow">
               <div className="-translate-y-4.5 flex flex-col items-center">
                 <div className="text-4xl mt-10 mb-7">
                   <img src={sunGif} alt="Temperature" className="w-20 h-20" />
@@ -116,22 +101,7 @@ export default function ResultsPanel({
               <MiniMetric icon={<img src={humidityGif} alt="Humidity" className="w-4 h-4" />} label="Humidity" value={nOrDashPct(humidity)} />
               <MiniMetric icon={<img src={cloudGif} alt="Cloud" className="w-4 h-4" />} label="Cloud" value={nOrDashPct(cloud)} />
               <MiniMetric icon={<img src={snowGif} alt="Snow" className="w-4 h-4" />} label="Snow Cover" value={nOrDashPct(snowProb)} />
-            </div>
-
-
-            {/* <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setModal("combined")}
-                className=" flex-1 rounded-lg
-                 bg-gradient-to-r
-                  from-blue-600 via-sky-400 to-cyan-200
-                   text-white text-xs py-1.5 px-3 shadow hover:bg-indigo-500"
-              >
-                View Details
-              </button>
-            </div> */}
-            
+            </div>            
             <button
   type="button"
   onClick={() => setModal("combined")}
@@ -142,16 +112,10 @@ export default function ResultsPanel({
 >
   View Details
 </button>
-
-
-
-
-
             <FooterLine dataPoints={dataPoints} mode={mode} />
           </>
         )}
       </div>
-
       {/* Combined Modal */}
       <Modal open={modal === "combined"} onClose={() => setModal(null)} title="Weather Details">
         <div className="space-y-4">

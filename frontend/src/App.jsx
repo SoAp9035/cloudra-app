@@ -14,10 +14,8 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import Sidebar from "./components/Sidebar.jsx";
 
-// Fallback center (San Francisco)
 const FALLBACK = { lat: 37.7749, lng: -122.4194 };
 
-// Simple ISO today (YYYY-MM-DD)
 const todayISO = () => new Date().toISOString().slice(0, 10);
 
 // Red marker icon
@@ -45,36 +43,36 @@ export default function App() {
   const [center, setCenter] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
 
-  // Controls result panel visibility
+
   const [hasSelectedLocation, setHasSelectedLocation] = useState(false);
 
   // UI state
   const [addressLabel, setAddressLabel] = useState("");
   const [selectedDate, setSelectedDate] = useState(todayISO());
-  const [mode, setMode] = useState(null); // <-- start EMPTY; user must choose "quick" | "detailed"
+  const [mode, setMode] = useState(null); // "quick" | "detailed" | null
 
   // API state
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Map UI mode -> API mode, or null when not chosen yet
+
   const analysisMode = useMemo(() => {
     if (mode === "quick") return "quick_analysis";
     if (mode === "detailed") return "detailed_analysis";
-    return null; // no mode selected yet
+    return null;
   }, [mode]);
 
-  // Helper to split an ISO date string into month/day numbers
+
   const splitIso = useCallback((iso) => {
     if (!iso) return { month: null, day: null };
     const [, m, d] = iso.split("-");
     return { month: Number(m), day: Number(d) };
   }, []);
 
-  // Perform analysis (safe to be called from effects or UI)
+
   const onAnalyze = useCallback(async () => {
-    // Guard: require marker and mode and date
+
     if (!markerPosition) {
       setError("Pick a location first.");
       return;
@@ -99,17 +97,24 @@ export default function App() {
         day,
         analysisMode,
       });
-      console.log("API result:", json); // Debug log
       setResult(json);
+
+
+      lastRunRef.current = {
+        lat: markerPosition.lat,
+        lng: markerPosition.lng,
+        mode,
+        date: selectedDate,
+      };
     } catch (e) {
       setError(e?.message || "API request failed.");
       setResult(null);
     } finally {
       setLoading(false);
     }
-  }, [markerPosition, selectedDate, analysisMode, splitIso]);
+  }, [markerPosition, selectedDate, analysisMode, mode, splitIso]);
 
-  // Reverse geocode selected coordinates to a human-readable address
+
   const reverseGeocode = useCallback(async (coords) => {
     if (!coords) return;
     const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.lat}&lon=${coords.lng}`;
@@ -117,7 +122,7 @@ export default function App() {
       const res = await fetch(url, {
         headers: {
           "Accept-Language": "en",
-          // Friendly UA for Nominatim usage policy
+
           "User-Agent": "weather-probability-app/1.0 (mailto:you@example.com)",
         },
       });
@@ -128,18 +133,17 @@ export default function App() {
     }
   }, []);
 
-  // Select a point: set marker + center + address + show results panel
+
   const pickPoint = useCallback(
     (coords) => {
       setMarkerPosition(coords);
       setCenter(coords);
       reverseGeocode(coords);
-      setHasSelectedLocation(true); // Show panel after first deliberate pick/search
+      setHasSelectedLocation(true); // show panel after first deliberate choice
     },
     [reverseGeocode]
   );
 
-  // One-time geolocation on mount (does NOT auto-open panel)
   useEffect(() => {
     let cancelled = false;
 
@@ -151,7 +155,7 @@ export default function App() {
 
     if (!navigator.geolocation) {
       useCoords(FALLBACK);
-      return () => {};
+      return () => { };
     }
 
     navigator.geolocation.getCurrentPosition(
@@ -169,16 +173,24 @@ export default function App() {
     };
   }, []);
 
-  // Auto re-run analysis only when:
-  // - the user has deliberately selected a location, AND
-  // - a dependency changes (marker/date/mode)
-  useEffect(() => {
-    if (!hasSelectedLocation) return;
-    if (!analysisMode) return; // do not auto-run until user chooses a mode
-    onAnalyze();
-  }, [hasSelectedLocation, onAnalyze, analysisMode]);
+  const lastRunRef = React.useRef(null);
+  const readyToRun = !!markerPosition && !!mode && !!selectedDate;
 
-  // Map click handler component
+
+  const isDirty = React.useMemo(() => {
+    if (!readyToRun) return false;
+    const currentSig = {
+      lat: markerPosition?.lat ?? null,
+      lng: markerPosition?.lng ?? null,
+      mode,
+      date: selectedDate,
+    };
+
+    if (!lastRunRef.current) return true;
+    return JSON.stringify(currentSig) !== JSON.stringify(lastRunRef.current);
+  }, [readyToRun, markerPosition, mode, selectedDate]);
+
+
   function ClickToSetMarker() {
     useMapEvents({
       click(e) {
@@ -188,7 +200,7 @@ export default function App() {
     return null;
   }
 
-  // Search by text using Nominatim
+
   async function onSearch(query) {
     if (!query?.trim()) return;
     const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1&q=${encodeURIComponent(
@@ -221,19 +233,20 @@ export default function App() {
     <>
       {loading && <LoadingOverlay message="Analyzing weather…" />}
       <div className="relative h-screen w-full">
-        {/* Sidebar: now receives current mode (can be null) and an Analyze button callback */}
         <Sidebar
           onSearch={onSearch}
           dateValue={selectedDate}
           onDateChange={setSelectedDate}
-          mode={mode}                // null | "quick" | "detailed"
+          mode={mode}
           onModeChange={setMode}
-          onAnalyze={onAnalyze}      // Manual analyze on button click
+          onAnalyze={onAnalyze}
           analyzeLoading={loading}
           analyzeError={error}
+          readyToRun={readyToRun}
+          dirty={isDirty}
         />
 
-        {/* Results panel only after the first deliberate location pick/search */}
+
         {hasSelectedLocation && (
           <ResultsPanel
             result={result}
