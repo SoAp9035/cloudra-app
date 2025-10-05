@@ -1,7 +1,7 @@
 import React from 'react'
 import ContactForm from '../components/ContactForm/ContactForm.jsx'
 import { Link } from "react-router-dom";
-import Swal from 'sweetalert2'
+ 
 
 function Contact() {
   return (
