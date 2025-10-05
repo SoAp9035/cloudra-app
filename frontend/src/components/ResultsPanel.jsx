@@ -7,8 +7,6 @@ import humidityGif from "../assets/logo/humidity.gif";
 import cloudGif from "../assets/logo/cloud.gif";
 import snowGif from "../assets/logo/snow.gif";
 import sunGif from "../assets/logo/sun.gif";
-import sunGif from "../assets/logo/sun.gif";
-
 
 export default function ResultsPanel({
   result,
