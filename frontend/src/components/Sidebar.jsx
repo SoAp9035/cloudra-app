@@ -12,24 +12,20 @@ export default function Sidebar({
   onModeChange,
   onAnalyze,
   analyzeLoading,
-  analyzeError,
   readyToRun,
   dirty,
 }) {
-
   const [query, setQuery] = useState("");
   const handleModeSelect = (value) => {
     if (analyzeLoading) return;
     if (mode === value) return;
     onModeChange?.(value);
   };
-
   const handleSearchClick = () => {
     const trimmed = query.trim();
     if (!trimmed || analyzeLoading) return;
     onSearch?.(trimmed);
   };
-
   const MODE_BUTTONS = [
     { key: "quick", label: "Quick Analysis", subText: "10 years ≈ 25 seconds" },
     { key: "detailed", label: "Detailed Analysis", subText: "30 years ≈ 85 seconds" },
@@ -65,7 +61,6 @@ export default function Sidebar({
           </div>
         </div>
       </div>
-
       {/* Body */}
       <div className="p-5 flex-1 flex flex-col justify-between">
         <div className="space-y-5">
@@ -74,16 +69,20 @@ export default function Sidebar({
             <label className="block text-xs font-medium text-gray-600 mb-2 pl-3">
               Enter location
             </label>
-
             <div className="relative w-full">
-              <input
-                type="text"
-                placeholder="Search..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="w-full rounded-full bg-white border border-[#1E3A8A] px-3 py-2 pr-12 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-
+        <input
+      type="text"
+      placeholder="Search..."
+      value={query}
+      onChange={(e) => setQuery(e.target.value)}
+      onKeyDown={(e) => {
+        if (e.key !== "Enter" && e.key !== "NumpadEnter") return;
+        e.preventDefault();
+        if (!query.trim() || analyzeLoading) return;
+        handleSearchClick();
+      }}
+      className="w-full rounded-full bg-white border border-[#1E3A8A] px-3 py-2 pr-12 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
               {/* Search trigger (magnifier) */}
               <button
                 type="button"
@@ -106,7 +105,6 @@ export default function Sidebar({
               </button>
             </div>
           </div>
-
           {/* Date */}
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1 pl-3">
@@ -115,42 +113,34 @@ export default function Sidebar({
             <DatePicker value={dateValue} onChange={onDateChange} />
           </div>
         </div>
-
           {/* routers   */}
         <div>
           <div className="flex justify-center gap-4 mt-4">
             <Link to="/about" className="text-blue-600 hover:underline">
               About Us
             </Link>
-
             <Link to="/contact" className="text-blue-600 hover:underline">
               Contact Us
             </Link>
           </div>
         </div>
-
-
-
         {/* Footer Buttons */}
         <div className="mt-5 w-full">
           {/* Tip / Guidance */}
           <p className="block text-left text-xs font-medium text-gray-600 mb-1 pl-3">
             Choose analysis type:
           </p>
-
           {/* Mode Buttons */}
           <div className="flex flex-col gap-3 w-full cursor-pointer" role="group" aria-label="Analysis Mode">
             {MODE_BUTTONS.map((b) => {
               const isActive = mode === b.key;
               const isDisabled = !!analyzeLoading;
-
               const base =
                 "w-full flex flex-col items-center justify-center px-6 py-2 rounded-full text-sm transition border";
               const active =
                 "text-white shadow bg-gradient-to-br from-sky-500 to-indigo-500  border-transparent";
               const inactive =
                 "text-gray-800 bg-white border-gray-300 hover:border-blue-400 hover:shadow";
-
               return (
                 <button
                   key={b.key}
@@ -181,7 +171,6 @@ export default function Sidebar({
               );
             })}
           </div>
-
           {/* Run Analysis Button */}
           <div className="mt-3">
             <button
@@ -206,7 +195,6 @@ export default function Sidebar({
             >
               {analyzeLoading ? "Analyzing…" : "Run Analysis"}
             </button>
-
             {readyToRun && !analyzeLoading && dirty && (
               <p className="mt-1 text-[11px] text-center text-amber-600">
                 Changes detected — click "Run Analysis".
@@ -218,13 +206,6 @@ export default function Sidebar({
               </p>
             )}
           </div>
-
-          {/* Errors */}
-          {analyzeError && (
-            <div className="mt-2 text-xs text-red-600 text-center">
-              Error: {analyzeError}
-            </div>
-          )}
         </div>
       </div>
     </aside>
