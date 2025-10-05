@@ -118,7 +118,7 @@ export default function Sidebar({
         {/* Footer Buttons */}
         <div className="mt-5 w-full">
           {/* Tip / Guidance */}
-          <p className="block text-left text-sm font-medium text-gray-600 mb-1">
+          <p className="block text-left text-xs font-medium text-gray-600 mb-1 pl-3">
             Choose analysis type:
           </p>
 
