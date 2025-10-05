@@ -410,7 +410,7 @@ def calculate_daily_avg(df: pd.DataFrame) -> pd.DataFrame | None:
         df["Month"] = df["DATE"].dt.month
         df["Day"] = df["DATE"].dt.day
 
-        # Create aggregation dictionary dynamically
+        # TODO: DATE değeri hariç tüm kolonlara uygulanacak
         agg_dict = {}
         for col in ["T2M", "T2M_MAX", "T2M_MIN", "T2MDEW", "RH2M", "PRECTOTCORR", 
                "PRECSNOLAND", "SNODP", "WS10M", "WS10M_MAX", "CLOUD_AMT"]:
@@ -421,6 +421,7 @@ def calculate_daily_avg(df: pd.DataFrame) -> pd.DataFrame | None:
 
         df_grouped["DATE"] = pd.to_datetime(df_grouped[["Month", "Day"]].assign(Year=datetime.now().year))
 
+        # NOT: Eğer üstteki sorun halledilirse bu satıra gerek kalmayacak
         df_grouped = df_grouped[["DATE", "T2M", "T2M_MAX", "T2M_MIN", "T2MDEW", "RH2M", 
                                  "PRECTOTCORR", "PRECSNOLAND", "SNODP", "WS10M", "WS10M_MAX", "CLOUD_AMT"]]
 
@@ -437,6 +438,7 @@ def find_suitable_days(df: pd.DataFrame, thresholds: dict[str, int]) -> list | N
     if df is None or df.empty:
         return None
     
+    # TODO: Bazı sütunlar eksik gelebilir, bunların kontrol edilmesi gerekiyor
     comfort_ok = df["T2MDEW"] <= thresholds["comfort_temp_max"]["value"]
     temp_hot_ok = df["T2M_MAX"] <= thresholds["very_hot"]["value"]
     temp_cold_ok = df["T2M_MIN"] >= thresholds["very_cold"]["value"]
