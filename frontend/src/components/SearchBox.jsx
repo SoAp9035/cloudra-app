@@ -5,13 +5,13 @@ export default function SearchBox({
   placeholder = "Search…",
   className = "",
 }) {
-  function handleKeyDown(e) {
-    if (e.key !== "Enter") return;
-    const q = e.currentTarget.value.trim();
-    if (!q) return;
-    onEnter?.(q);
-  }
-
+function handleKeyDown(e) {
+  if (e.key !== "Enter" && e.key !== "NumpadEnter") return;
+  e.preventDefault(); 
+  const q = e.currentTarget.value.trim();
+  if (!q) return;
+  onEnter?.(q);
+}
   return (
     <div
       className={
@@ -20,10 +20,7 @@ export default function SearchBox({
         className 
       }
     >
-      {/* Smaller icon to match height */}
       <FiSearch className="text-gray-400 mr-2 text-2xl" />
-
-      {/* Input fills the wrapper height; no extra vertical padding */}
       <input
         type="text"
         placeholder={placeholder}

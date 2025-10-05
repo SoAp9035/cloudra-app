@@ -1,6 +1,7 @@
 import { fetchWeatherProbability } from "./components/apiClient";
 import ResultsPanel from "./components/ResultsPanel.jsx";
 import LoadingOverlay from "./components/LoadingOverlay.jsx";
+import earth_degree from "../src/assets/logo/degree.gif";
 import React, { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import {
   MapContainer,
@@ -14,27 +15,11 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import Sidebar from "./components/Sidebar.jsx";
 import { Link } from "react-router-dom";
-
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement } from "chart.js";
-
+//  Chatjs daate must be added
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement);
-
-const FALLBACK = { lat: 37.7749, lng: -122.4194 };
-
 const todayISO = () => new Date().toISOString().slice(0, 10);
-
-// Red marker icon
-const redIcon = L.icon({
-  iconUrl:
-    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
-
-// Keeps the map view in sync with `center`
+// Keeps the map view in center
 function Recenter({ center }) {
   const map = useMap();
   useEffect(() => {
@@ -42,37 +27,30 @@ function Recenter({ center }) {
   }, [center, map]);
   return null;
 }
-
 export default function App() {
   // Map state
   const [center, setCenter] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [hasSelectedLocation, setHasSelectedLocation] = useState(false);
-
   // UI state
   const [addressLabel, setAddressLabel] = useState("");
   const [selectedDate, setSelectedDate] = useState(todayISO());
   const [mode, setMode] = useState(null); // "quick" | "detailed" | null
-
   // API state
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
   const lastRunRef = useRef(null);
-
   const analysisMode = useMemo(() => {
     if (mode === "quick") return "quick_analysis";
     if (mode === "detailed") return "detailed_analysis";
     return null;
   }, [mode]);
-
   const splitIso = useCallback((iso) => {
     if (!iso) return { month: null, day: null };
     const [, m, d] = iso.split("-");
     return { month: Number(m), day: Number(d) };
   }, []);
-
   const pickPoint = useCallback(
     (coords) => {
       setMarkerPosition(coords);
@@ -82,11 +60,6 @@ export default function App() {
     },
     []
   );
-
-
-
-
-   
   const reverseGeocode = useCallback(async (coords) => {
     if (!coords) return;
     const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.lat}&lon=${coords.lng}`;
@@ -126,18 +99,15 @@ export default function App() {
 
     try {
       const json = await fetchWeatherProbability({
-        
-
         lat: markerPosition.lat,
         lon: markerPosition.lng,
         month,
         day,
         analysisMode,
-      }); 
-      console.log("API raw response:", json);
-
+      });
+      // test api respone  
+      console.log("API", json);
       setResult(json);
-
       lastRunRef.current = {
         lat: markerPosition.lat,
         lng: markerPosition.lng,
@@ -151,7 +121,6 @@ export default function App() {
       setLoading(false);
     }
   }, [markerPosition, selectedDate, analysisMode, mode, splitIso]);
-
   const readyToRun = !!markerPosition && !!mode && !!selectedDate;
   const isDirty = useMemo(() => {
     if (!readyToRun) return false;
@@ -173,7 +142,6 @@ export default function App() {
     });
     return null;
   }
-
   async function onSearch(query) {
     if (!query?.trim()) return;
     const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1&q=${encodeURIComponent(
@@ -198,7 +166,6 @@ export default function App() {
       alert("Search failed.");
     }
   }
-
   // Auto-detect user location
   useEffect(() => {
     let cancelled = false;
@@ -209,10 +176,7 @@ export default function App() {
       setMarkerPosition(coords);
     };
 
-    if (!navigator.geolocation) {
-      useCoords(FALLBACK);
-      return () => {};
-    }
+
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -230,7 +194,18 @@ export default function App() {
   }, []);
 
   if (!center)
-    return <div className="grid h-screen place-items-center">Loading…</div>;
+    return <div className="grid h-screen place-items-center">
+
+      <div className="text-sm font-medium text-gray-800">
+              <div className="mx-auto mb-4 w-20 h-20 flex items-center justify-center">
+        <img src={earth_degree} alt="Loading" className="w-full h-full" />
+      </div>
+        Analyzing weather
+        <span style={{ animation: "pulseDots 1.4s infinite" }}>.</span>
+        <span style={{ animation: "pulseDots 1.4s .2s infinite" }}>.</span>
+        <span style={{ animation: "pulseDots 1.4s .4s infinite" }}>.</span>
+      </div>
+    </div>;
 
   return (
     <>
@@ -262,7 +237,6 @@ export default function App() {
             onViewFullReport={() => console.log("open full report")}
           />
         )}
-
         {/* Map */}
         <MapContainer
           center={[center.lat, center.lng]}
@@ -279,7 +253,7 @@ export default function App() {
           <Recenter center={center} />
           <ClickToSetMarker />
           {markerPosition && (
-            <Marker position={[markerPosition.lat, markerPosition.lng]} icon={redIcon} />
+            <Marker position={[markerPosition.lat, markerPosition.lng]} />
           )}
         </MapContainer>
       </div>
