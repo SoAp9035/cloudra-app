@@ -78,6 +78,10 @@ export default function App() {
     []
   );
 
+
+
+
+   
   const reverseGeocode = useCallback(async (coords) => {
     if (!coords) return;
     const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.lat}&lon=${coords.lng}`;
