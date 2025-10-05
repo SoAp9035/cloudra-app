@@ -2,6 +2,7 @@ import { useState } from "react";
 import DatePicker from "./DatePicker.jsx";
 import logoClose from "../assets/logo/logoClose.png";
 import { FaSearch } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function Sidebar({
   onSearch,
@@ -114,6 +115,21 @@ export default function Sidebar({
             <DatePicker value={dateValue} onChange={onDateChange} />
           </div>
         </div>
+
+          {/* routers   */}
+        <div>
+          <div className="flex justify-center gap-4 mt-4">
+            <Link to="/about" className="text-blue-600 hover:underline">
+              About Us
+            </Link>
+
+            <Link to="/contact" className="text-blue-600 hover:underline">
+              Contact Us
+            </Link>
+          </div>
+        </div>
+
+
 
         {/* Footer Buttons */}
         <div className="mt-5 w-full">

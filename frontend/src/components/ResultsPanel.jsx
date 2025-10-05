@@ -7,21 +7,26 @@ import humidityGif from "../assets/logo/humidity.gif";
 import cloudGif from "../assets/logo/cloud.gif";
 import snowGif from "../assets/logo/snow.gif";
 import cloudyGif from "../assets/logo/cloudy.gif";
+import TemperatureChart from "./TemperatureChart.jsx";
+
 export default function ResultsPanel({
   result,
   loading,
   error,
   addressLabel,
-  mode,
   selectedDate,
 }) {
+
+// ChartJs prop 
+const vizTemp =    result?.visualizations?.temperature?.temperature
+  ?? result?.visualizations?.temperature
+  ?? null;
+
+
   const stats = result?.weather_probabilities?.statistics || {};
   const probs = result?.weather_probabilities?.probabilities || {};
   const thresholds = result?.thresholds_info || {};
-
   const placeShort = addressLabel ? addressLabel.split(",")[0] : "—";
-  const dataPoints = result?.analysis_summary?.data_points ?? null;
-
   const tempObj = stats?.temperature || null;
   const temp = pickNumber(tempObj);
   const rainProb = stats?.rain?.probability ?? null;
@@ -42,11 +47,27 @@ export default function ResultsPanel({
     "Very hot": probs?.very_hot_percent,
     "Very cold": probs?.very_cold_percent,
     "Very windy": probs?.very_windy_percent,
-    "Very uncomfortable": probs?.very_uncomfortable_percent,
+    // Chart js 
+    "Very uncomfortable": probs?.uncomfortable_percent,
   };
   const extremes = Object.entries(extremesRaw).map(([k, v]) => [k, pickNumber(v)]);
 
   const [modal, setModal] = useState(null);  
+
+
+  // For donwload json files 
+function handleDownloadJSON() {
+  if (!result) return;
+  const safePlace = (addressLabel || "location").split(",")[0].trim().replace(/[^\w\-]+/g, "_");
+  const dateStr = selectedDate || "date";
+  const filename = `weather_${dateStr}_${safePlace}.json`;
+  const json = JSON.stringify(result, null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
 
   return (
     <aside
@@ -111,7 +132,8 @@ export default function ResultsPanel({
 >
   View Details
 </button>
-            <FooterLine dataPoints={dataPoints} mode={mode} />
+            <FooterLine onDownload={handleDownloadJSON} />
+
           </>
         )}
       </div>
@@ -160,6 +182,23 @@ export default function ResultsPanel({
               </div>
             </div>
           </div>
+
+          <div>
+  <h4 className="text-sm font-semibold text-gray-700 mb-1">Temperature trend</h4>
+  {vizTemp?.years?.length && vizTemp?.temperatures?.length ? (
+    <div className="rounded-xl border border-gray-200 bg-white p-3">
+    {/* TEMP: disable chart to isolate issue */}
+<TemperatureChart viz={vizTemp} />
+
+      <div className="text-[10px] text-gray-500 mt-2">
+        Showing {vizTemp.years.length} years.
+      </div>
+    </div>
+  ) : (
+    <div className="text-xs text-gray-500">No temperature data.</div>
+  )}
+</div>
+
         </div>
       </Modal>
     </aside>
@@ -188,7 +227,7 @@ function Modal({ open, onClose, title, children }) {
       role="dialog"
       aria-modal="true"
     >
-      <div className="w-[min(92vw,520px)] rounded-2xl bg-white shadow-xl p-5">
+      <div className="w-[min(95vw,580px)] rounded-2xl bg-white shadow-xl p-5">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
           <button
@@ -230,13 +269,22 @@ function Badge({ label, value }) {
   );
 }
 
-function FooterLine({ dataPoints, mode }) {
+function FooterLine({ onDownload }) {
   return (
     <div className="text-[10px] text-gray-500 mt-3">
-      Data points: {dataPoints ?? "—"} • Mode: {mode}
+      <button
+        type="button"
+        onClick={onDownload}
+        className="text-[10px] text-gray-500 hover:text-gray-700 underline-offset-2"
+        style={{ all: "unset", cursor: "pointer" }}
+        title="Download full JSON response"
+      >
+        Download JSON
+      </button>
     </div>
   );
 }
+
 
 /* ---------- Helpers ---------- */
 function pickNumber(x) {

@@ -13,6 +13,11 @@ import {
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import Sidebar from "./components/Sidebar.jsx";
+import { Link } from "react-router-dom";
+
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement } from "chart.js";
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement);
 
 const FALLBACK = { lat: 37.7749, lng: -122.4194 };
 
@@ -121,12 +126,16 @@ export default function App() {
 
     try {
       const json = await fetchWeatherProbability({
+        
+
         lat: markerPosition.lat,
         lon: markerPosition.lng,
         month,
         day,
         analysisMode,
-      });
+      }); 
+      console.log("API raw response:", json);
+
       setResult(json);
 
       lastRunRef.current = {
