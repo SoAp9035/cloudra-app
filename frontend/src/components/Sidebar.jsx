@@ -71,8 +71,8 @@ export default function Sidebar({
         <div className="space-y-5">
           {/* Location */}
           <div>
-            <label className="block text-center text-base font-bold text-black mb-2">
-              Enter your desired location
+            <label className="block text-xs font-medium text-gray-600 mb-2 pl-3">
+              Enter location
             </label>
 
             <div className="relative w-full">
@@ -109,7 +109,7 @@ export default function Sidebar({
 
           {/* Date */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label className="block text-xs font-medium text-gray-600 mb-1 pl-3">
               Date
             </label>
             <DatePicker value={dateValue} onChange={onDateChange} />
@@ -197,7 +197,7 @@ export default function Sidebar({
             {/* Tiny status text under the button */}
             {readyToRun && !analyzeLoading && dirty && (
               <p className="mt-1 text-[11px] text-center text-amber-600">
-                Changes detected — click “Run Analysis”.
+                Changes detected — click "Run Analysis".
               </p>
             )}
             {readyToRun && !dirty && !analyzeLoading && (

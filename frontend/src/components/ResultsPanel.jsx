@@ -25,21 +25,21 @@ export default function ResultsPanel({
 
   const tempObj = stats?.temperature || null;
   const temp = pickNumber(tempObj);
-  const rainProb = result?.weather_probabilities?.statistics?.rain?.probability ?? null;
+  const rainProb = stats?.rain?.probability ?? null;
 
   const snowProb =
     pickNumber(stats?.snow_cover) ??
     pickNumber(probs?.snow ?? stats?.snow_cover_probability); const humidity = pickNumber(stats?.humidity);
   const cloud = pickNumber(stats?.cloud);
   const windVal = pickNumber(stats?.wind);
-  const windUnit = unitOf(stats?.wind, "m/s");
+  const windUnit = unitOf(stats?.wind, "km/h");
   const fogScale = stats?.fog?.scale ?? null;
   const fogText = stats?.fog?.status ?? null;
  
 
   const extremesRaw = {
-    "Heavy rain": probs?.heavy_rain ?? probs?.heavy_precipitation_percent,
-    "Heavy snowfall": probs?.heavy_snowfall_percent ?? probs?.heavy_snowfall,
+    "Heavy rain": probs?.heavy_precipitation_percent,
+    "Heavy snowfall": probs?.heavy_snowfall_percent,
     "Very hot": probs?.very_hot_percent,
     "Very cold": probs?.very_cold_percent,
     "Very windy": probs?.very_windy_percent,
@@ -97,7 +97,7 @@ export default function ResultsPanel({
             <div className="grid mb-4 grid-cols-1 gap-2">
               <MiniMetric icon={<img src={rainGif} alt="Rain" className="w-4 h-4 " />} label="Rain" value={nOrDashPct(rainProb)} />
               <MiniMetric icon={<img src={windGif} alt="Wind" className="w-4 h-4" />} label="Wind" value={formatWind(windVal, windUnit, true)} />
-              <MiniMetric icon={<img src={fogGif} alt="Fog" className="w-4 h-4" />} label="Fog" value={fogScale != null ? `${fogScale}/3` : (fogText ?? "—")} />
+              <MiniMetric icon={<img src={fogGif} alt="Fog" className="w-4 h-4" />} label="Fog" value={fogScale != null ? (fogText ?? "—") : "—"} />
               <MiniMetric icon={<img src={humidityGif} alt="Humidity" className="w-4 h-4" />} label="Humidity" value={nOrDashPct(humidity)} />
               <MiniMetric icon={<img src={cloudGif} alt="Cloud" className="w-4 h-4" />} label="Cloud" value={nOrDashPct(cloud)} />
               <MiniMetric icon={<img src={snowGif} alt="Snow" className="w-4 h-4" />} label="Snow Cover" value={nOrDashPct(snowProb)} />
