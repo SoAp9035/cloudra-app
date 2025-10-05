@@ -13,6 +13,7 @@ import {
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import Sidebar from "./components/Sidebar.jsx";
+import { Link } from "react-router-dom";
 
 const FALLBACK = { lat: 37.7749, lng: -122.4194 };
 
