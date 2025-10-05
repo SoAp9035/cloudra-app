@@ -78,7 +78,7 @@ export default function ResultsPanel({
         {!loading && !error && result && (
           <>
             {/* Hero */}
-            <div className="flex flex-col mb-5 items-center justify-center w-55 h-52 p-4 bg-gradient-to-br from-sky-500 to-indigo-500 text-white rounded-2xl shadow">
+            <div className="flex flex-col mb-5 items-center justify-center w-55 h-48 p-4 bg-gradient-to-br from-sky-500 to-indigo-500 text-white rounded-2xl shadow">
               <div className="-translate-y-4.5 flex flex-col items-center">
                 <div className="text-4xl mt-10 mb-7">
                   <img src={sunGif} alt="Temperature" className="w-20 h-20" />
