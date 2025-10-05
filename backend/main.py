@@ -85,9 +85,7 @@ def weather_probability():
                 "statistics": analysis["statistics"],
                 "probabilities": analysis["probabilities"],
             },
-            "visualizations": {
-                "temperature": analysis["visualizations"]
-            },
+            "visualizations": analysis["visualizations"],
             "thresholds_info": {
                 "climate_zone": analysis["climate_zone"],
                 "thresholds_used": analysis["thresholds_used"],
