@@ -316,6 +316,14 @@ def get_data_for_visualizations(df: pd.DataFrame):
         "temperature": {
             "years": df.index.year.to_list(),
             "temperatures": df.T2M.to_list()
+        },
+        "humidity": {
+            "years": df.index.year.to_list(),
+            "humidity_levels": df.RH2M.to_list()
+        },
+        "rain": {
+            "years": df.index.year.to_list(),
+            "rain_probabilities": df.PRECTOTCORR.tolist()
         }
     }
 
@@ -381,8 +389,7 @@ def analyze_weather_probability(data: StringIO, lat: float, lon: float) -> dict:
     probabilities["very_windy_percent"] = very_windy_percent(df, thresholds)
 
     ### GÖRSELLEŞTİRME İÇİN VERİLERİN HAZIRLANMASI ###
-    # TODO: TARİH - VERİ ikilileri oluşturulacak
-
+    
     visualizations = get_data_for_visualizations(df)
 
     ### VERİLERİN GÖNDERİLMESİ ###
