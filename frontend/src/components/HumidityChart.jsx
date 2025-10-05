@@ -20,9 +20,9 @@ export default function HumidityChart({ viz }) {
       labels: years,
       datasets: [
         {
-          label: "Rain (mm/day)",             
+          label: "Rain (mm/day)",
           data: values,
-          borderColor: "#3b82f6",           
+          borderColor: "#3b82f6",
           backgroundColor: "rgba(59,130,246,0.15)",
           borderWidth: 2,
           pointRadius: 2,

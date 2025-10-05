@@ -198,12 +198,12 @@ export default function App() {
 
       <div className="text-sm font-medium text-gray-800">
               <div className="mx-auto mb-4 w-20 h-20 flex items-center justify-center">
-        <img src={earth_degree} alt="Loading" className="w-full h-full" />
-      </div>
-        Analyzing weather
+                  <img src={earth_degree} alt="Loading" className="w-full h-full" />
+              </div>
+        <div className="pl-2">Loading
         <span style={{ animation: "pulseDots 1.4s infinite" }}>.</span>
         <span style={{ animation: "pulseDots 1.4s .2s infinite" }}>.</span>
-        <span style={{ animation: "pulseDots 1.4s .4s infinite" }}>.</span>
+        <span style={{ animation: "pulseDots 1.4s .4s infinite" }}>.</span></div>
       </div>
     </div>;
 

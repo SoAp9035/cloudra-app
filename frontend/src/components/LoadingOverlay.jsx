@@ -52,7 +52,7 @@ export default function LoadingOverlay({ mode = "quick" }) {
           {/* Loading message */}
           <div className="text-sm font-medium text-gray-800">
             <div>
-              Analyzing weather
+              Analyzing Weather
               <span style={{ animation: "pulseDots 1.4s infinite" }}>.</span>
               <span style={{ animation: "pulseDots 1.4s .2s infinite" }}>.</span>
               <span style={{ animation: "pulseDots 1.4s .4s infinite" }}>.</span>
