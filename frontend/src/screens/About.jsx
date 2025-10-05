@@ -1,8 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import InfoCard from "../components/infoCard";
-
-
 // * import the profile pictures we are going to use
 import razanPic from "../assets/pictures/razanPic.jpg"
 import seyfPic from "../assets/pictures/seyfPic.jpg"
@@ -45,7 +43,7 @@ function About() {
             <InfoCard
               image={seyfPic}
               name="Seyf JAMAL"
-              email="ssaaiiffjjaammaall@gmail.com"
+              email="contact@daif.top"
               gsm="534 453 39 88"
             />
 
