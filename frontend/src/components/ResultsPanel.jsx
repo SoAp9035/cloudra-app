@@ -17,10 +17,10 @@ export default function ResultsPanel({
   selectedDate,
 }) {
 
-// ChartJs prop 
-const vizTemp =    result?.visualizations?.temperature?.temperature
-  ?? result?.visualizations?.temperature
-  ?? null;
+  // ChartJs prop 
+  const vizTemp = result?.visualizations?.temperature?.temperature
+    ?? result?.visualizations?.temperature
+    ?? null;
 
 
   const stats = result?.weather_probabilities?.statistics || {};
@@ -30,6 +30,16 @@ const vizTemp =    result?.visualizations?.temperature?.temperature
   const tempObj = stats?.temperature || null;
   const temp = pickNumber(tempObj);
   const rainProb = stats?.rain?.probability ?? null;
+  /* const tempRange = {
+    min: stats?.statistics?.temperature?.average_range?.min,
+    max: stats?.statistics?.temperature?.average_range?.max,
+  }; */
+
+  const tempRange = {
+    max: stats?.temperature?.average_range?.max,
+    min: stats?.temperature?.average_range?.min,
+  }
+
 
   const snowProb =
     pickNumber(stats?.snow_cover) ??
@@ -39,7 +49,7 @@ const vizTemp =    result?.visualizations?.temperature?.temperature
   const windUnit = unitOf(stats?.wind, "km/h");
   const fogScale = stats?.fog?.scale ?? null;
   const fogText = stats?.fog?.status ?? null;
- 
+
 
   const extremesRaw = {
     "Heavy rain": probs?.heavy_precipitation_percent,
@@ -52,22 +62,22 @@ const vizTemp =    result?.visualizations?.temperature?.temperature
   };
   const extremes = Object.entries(extremesRaw).map(([k, v]) => [k, pickNumber(v)]);
 
-  const [modal, setModal] = useState(null);  
+  const [modal, setModal] = useState(null);
 
 
   // For donwload json files 
-function handleDownloadJSON() {
-  if (!result) return;
-  const safePlace = (addressLabel || "location").split(",")[0].trim().replace(/[^\w\-]+/g, "_");
-  const dateStr = selectedDate || "date";
-  const filename = `weather_${dateStr}_${safePlace}.json`;
-  const json = JSON.stringify(result, null, 2);
-  const blob = new Blob([json], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
-}
+  function handleDownloadJSON() {
+    if (!result) return;
+    const safePlace = (addressLabel || "location").split(",")[0].trim().replace(/[^\w\-]+/g, "_");
+    const dateStr = selectedDate || "date";
+    const filename = `weather_${dateStr}_${safePlace}.json`;
+    const json = JSON.stringify(result, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <aside
@@ -107,7 +117,10 @@ function handleDownloadJSON() {
                   {typeof temp === "number" ? `${Math.round(temp)}°C` : "No Data."}
                 </div>
                 <div className="flex flex-col items-center mt-auto space-y-1">
-                  <div className="text-md">{selectedDate || "—"}</div>
+                  <div className="text-sm">
+                        max: {tempRange.max} - min: {tempRange.min}
+                  </div>
+
                   <div className="text-xs opacity-80">{placeShort}</div>
                 </div>
               </div>
@@ -121,17 +134,17 @@ function handleDownloadJSON() {
               <MiniMetric icon={<img src={humidityGif} alt="Humidity" className="w-4 h-4" />} label="Humidity" value={nOrDashPct(humidity)} />
               <MiniMetric icon={<img src={cloudGif} alt="Cloud" className="w-4 h-4" />} label="Cloud" value={nOrDashPct(cloud)} />
               <MiniMetric icon={<img src={snowGif} alt="Snow" className="w-4 h-4" />} label="Snow Cover" value={nOrDashPct(snowProb)} />
-            </div>            
+            </div>
             <button
-  type="button"
-  onClick={() => setModal("combined")}
-  className="flex-1 rounded-xl
+              type="button"
+              onClick={() => setModal("combined")}
+              className="flex-1 rounded-xl
    bg-gradient-to-br from-sky-500 to-indigo-500 
    text-white text-base font-semibold py-2.5 px-7
    shadow-md hover:shadow-lg hover:scale-[1.03] active:scale-[0.98] transition-all"
->
-  View Details
-</button>
+            >
+              View Details
+            </button>
             <FooterLine onDownload={handleDownloadJSON} />
 
           </>
@@ -184,20 +197,20 @@ function handleDownloadJSON() {
           </div>
 
           <div>
-  <h4 className="text-sm font-semibold text-gray-700 mb-1">Temperature trend</h4>
-  {vizTemp?.years?.length && vizTemp?.temperatures?.length ? (
-    <div className="rounded-xl border border-gray-200 bg-white p-3">
-    {/* TEMP: disable chart to isolate issue */}
-<TemperatureChart viz={vizTemp} />
+            <h4 className="text-sm font-semibold text-gray-700 mb-1">Temperature trend</h4>
+            {vizTemp?.years?.length && vizTemp?.temperatures?.length ? (
+              <div className="rounded-xl border border-gray-200 bg-white p-3">
+                {/* TEMP: disable chart to isolate issue */}
+                <TemperatureChart viz={vizTemp} />
 
-      <div className="text-[10px] text-gray-500 mt-2">
-        Showing {vizTemp.years.length} years.
-      </div>
-    </div>
-  ) : (
-    <div className="text-xs text-gray-500">No temperature data.</div>
-  )}
-</div>
+                <div className="text-[10px] text-gray-500 mt-2">
+                  Showing {vizTemp.years.length} years.
+                </div>
+              </div>
+            ) : (
+              <div className="text-xs text-gray-500">No temperature data.</div>
+            )}
+          </div>
 
         </div>
       </Modal>
