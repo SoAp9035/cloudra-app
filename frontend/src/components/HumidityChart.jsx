@@ -10,9 +10,9 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend);
-export default function RainChart({ viz }) {
+export default function HumidityChart({ viz }) {
   const years = Array.isArray(viz?.years) ? viz.years : [];
-  const values = Array.isArray(viz?.rain_probabilities) ? viz.rain_probabilities.map(Number) : [];
+  const values = Array.isArray(viz?.humidity_levels) ? viz.humidity_levels.map(Number) : [];
   const hasData = years.length > 0 && years.length === values.length;
   const data = useMemo(() => {
     if (!hasData) return { labels: [], datasets: [] };

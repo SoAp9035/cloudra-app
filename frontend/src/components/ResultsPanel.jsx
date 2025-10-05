@@ -58,13 +58,12 @@ export default function ResultsPanel({
 
   // charts visualizations from API
   const vizTemp =
-    result?.visualizations?.temperature?.temperature ??
     result?.visualizations?.temperature ??
     null;
 
     
     const vizHumidity = result?.visualizations?.humidity ?? null;
-const vizRain = result?.visualizations?.temperature?.rain ?? null;
+const vizRain = result?.visualizations?.rain ?? null;
 
 
 
