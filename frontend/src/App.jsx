@@ -1,7 +1,7 @@
 import { fetchWeatherProbability } from "./components/apiClient";
 import ResultsPanel from "./components/ResultsPanel.jsx";
 import LoadingOverlay from "./components/LoadingOverlay.jsx";
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import React, { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -13,6 +13,7 @@ import {
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import Sidebar from "./components/Sidebar.jsx";
+import { Link } from "react-router-dom";
 
 const FALLBACK = { lat: 37.7749, lng: -122.4194 };
 
@@ -42,8 +43,6 @@ export default function App() {
   // Map state
   const [center, setCenter] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
-
-
   const [hasSelectedLocation, setHasSelectedLocation] = useState(false);
 
   // UI state
@@ -56,6 +55,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const lastRunRef = useRef(null);
 
   const analysisMode = useMemo(() => {
     if (mode === "quick") return "quick_analysis";
@@ -63,16 +63,44 @@ export default function App() {
     return null;
   }, [mode]);
 
-
   const splitIso = useCallback((iso) => {
     if (!iso) return { month: null, day: null };
     const [, m, d] = iso.split("-");
     return { month: Number(m), day: Number(d) };
   }, []);
 
+  const pickPoint = useCallback(
+    (coords) => {
+      setMarkerPosition(coords);
+      setCenter(coords);
+      reverseGeocode(coords);
+      setHasSelectedLocation(true);
+    },
+    []
+  );
+
+
+
+
+   
+  const reverseGeocode = useCallback(async (coords) => {
+    if (!coords) return;
+    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.lat}&lon=${coords.lng}`;
+    try {
+      const res = await fetch(url, {
+        headers: {
+          "Accept-Language": "en",
+          "User-Agent": "weather-probability-app/1.0 (mailto:you@example.com)",
+        },
+      });
+      const data = await res.json();
+      setAddressLabel(data?.display_name || "No address found");
+    } catch {
+      setAddressLabel("Reverse geocode failed");
+    }
+  }, []);
 
   const onAnalyze = useCallback(async () => {
-
     if (!markerPosition) {
       setError("Pick a location first.");
       return;
@@ -89,6 +117,9 @@ export default function App() {
 
     setLoading(true);
     setError("");
+
+    setHasSelectedLocation(true);
+
     try {
       const json = await fetchWeatherProbability({
         lat: markerPosition.lat,
@@ -98,7 +129,6 @@ export default function App() {
         analysisMode,
       });
       setResult(json);
-
 
       lastRunRef.current = {
         lat: markerPosition.lat,
@@ -114,70 +144,8 @@ export default function App() {
     }
   }, [markerPosition, selectedDate, analysisMode, mode, splitIso]);
 
-
-  const reverseGeocode = useCallback(async (coords) => {
-    if (!coords) return;
-    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.lat}&lon=${coords.lng}`;
-    try {
-      const res = await fetch(url, {
-        headers: {
-          "Accept-Language": "en",
-
-          "User-Agent": "weather-probability-app/1.0 (mailto:you@example.com)",
-        },
-      });
-      const data = await res.json();
-      setAddressLabel(data?.display_name || "No address found");
-    } catch {
-      setAddressLabel("Reverse geocode failed");
-    }
-  }, []);
-
-
-  const pickPoint = useCallback(
-    (coords) => {
-      setMarkerPosition(coords);
-      setCenter(coords);
-      reverseGeocode(coords);
-      setHasSelectedLocation(true); // show panel after first deliberate choice
-    },
-    [reverseGeocode]
-  );
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const useCoords = (coords) => {
-      if (cancelled) return;
-      setCenter(coords);
-      setMarkerPosition(coords);
-    };
-
-    if (!navigator.geolocation) {
-      useCoords(FALLBACK);
-      return () => { };
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        useCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-      },
-      () => {
-        useCoords(FALLBACK);
-      },
-      { enableHighAccuracy: true, timeout: 8000 }
-    );
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const lastRunRef = React.useRef(null);
   const readyToRun = !!markerPosition && !!mode && !!selectedDate;
-
-
-  const isDirty = React.useMemo(() => {
+  const isDirty = useMemo(() => {
     if (!readyToRun) return false;
     const currentSig = {
       lat: markerPosition?.lat ?? null,
@@ -185,11 +153,9 @@ export default function App() {
       mode,
       date: selectedDate,
     };
-
     if (!lastRunRef.current) return true;
     return JSON.stringify(currentSig) !== JSON.stringify(lastRunRef.current);
   }, [readyToRun, markerPosition, mode, selectedDate]);
-
 
   function ClickToSetMarker() {
     useMapEvents({
@@ -199,7 +165,6 @@ export default function App() {
     });
     return null;
   }
-
 
   async function onSearch(query) {
     if (!query?.trim()) return;
@@ -226,12 +191,44 @@ export default function App() {
     }
   }
 
+  // Auto-detect user location
+  useEffect(() => {
+    let cancelled = false;
+
+    const useCoords = (coords) => {
+      if (cancelled) return;
+      setCenter(coords);
+      setMarkerPosition(coords);
+    };
+
+    if (!navigator.geolocation) {
+      useCoords(FALLBACK);
+      return () => {};
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        useCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+      },
+      () => {
+        useCoords(FALLBACK);
+      },
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   if (!center)
     return <div className="grid h-screen place-items-center">Loading…</div>;
 
   return (
     <>
-      {loading && <LoadingOverlay message="Analyzing weather…" />}
+      {/* LoadingOverlay modal */}
+      {loading && <LoadingOverlay mode={mode || "quick"} />}
+
       <div className="relative h-screen w-full">
         <Sidebar
           onSearch={onSearch}
@@ -246,7 +243,6 @@ export default function App() {
           dirty={isDirty}
         />
 
-
         {hasSelectedLocation && (
           <ResultsPanel
             result={result}
@@ -255,9 +251,7 @@ export default function App() {
             selectedDate={selectedDate}
             addressLabel={addressLabel}
             mode={mode}
-            onViewFullReport={() => {
-              console.log("open full report");
-            }}
+            onViewFullReport={() => console.log("open full report")}
           />
         )}
 
@@ -277,10 +271,7 @@ export default function App() {
           <Recenter center={center} />
           <ClickToSetMarker />
           {markerPosition && (
-            <Marker
-              position={[markerPosition.lat, markerPosition.lng]}
-              icon={redIcon}
-            />
+            <Marker position={[markerPosition.lat, markerPosition.lng]} icon={redIcon} />
           )}
         </MapContainer>
       </div>

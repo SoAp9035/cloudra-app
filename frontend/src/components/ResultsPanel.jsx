@@ -6,8 +6,7 @@ import fogGif from "../assets/logo/fog.gif";
 import humidityGif from "../assets/logo/humidity.gif";
 import cloudGif from "../assets/logo/cloud.gif";
 import snowGif from "../assets/logo/snow.gif";
-import sunGif from "../assets/logo/sun.gif";
-
+import cloudyGif from "../assets/logo/cloudy.gif";
 export default function ResultsPanel({
   result,
   loading,
@@ -25,21 +24,21 @@ export default function ResultsPanel({
 
   const tempObj = stats?.temperature || null;
   const temp = pickNumber(tempObj);
-  const rainProb = result?.weather_probabilities?.statistics?.rain?.probability ?? null;
+  const rainProb = stats?.rain?.probability ?? null;
 
   const snowProb =
     pickNumber(stats?.snow_cover) ??
     pickNumber(probs?.snow ?? stats?.snow_cover_probability); const humidity = pickNumber(stats?.humidity);
   const cloud = pickNumber(stats?.cloud);
   const windVal = pickNumber(stats?.wind);
-  const windUnit = unitOf(stats?.wind, "m/s");
+  const windUnit = unitOf(stats?.wind, "km/h");
   const fogScale = stats?.fog?.scale ?? null;
   const fogText = stats?.fog?.status ?? null;
  
 
   const extremesRaw = {
-    "Heavy rain": probs?.heavy_rain ?? probs?.heavy_precipitation_percent,
-    "Heavy snowfall": probs?.heavy_snowfall_percent ?? probs?.heavy_snowfall,
+    "Heavy rain": probs?.heavy_precipitation_percent,
+    "Heavy snowfall": probs?.heavy_snowfall_percent,
     "Very hot": probs?.very_hot_percent,
     "Very cold": probs?.very_cold_percent,
     "Very windy": probs?.very_windy_percent,
@@ -78,10 +77,10 @@ export default function ResultsPanel({
         {!loading && !error && result && (
           <>
             {/* Hero */}
-            <div className="flex flex-col mb-5 items-center justify-center w-55 h-52 p-4 bg-gradient-to-br from-sky-500 to-indigo-500 text-white rounded-2xl shadow">
-              <div className="-translate-y-4.5 flex flex-col items-center">
+            <div className="flex flex-col mb-5 items-center justify-center w-55 h-48 p-4 bg-gradient-to-br from-sky-500 to-indigo-500 text-white rounded-2xl shadow">
+              <div className="-translate-y-4 flex flex-col items-center">
                 <div className="text-4xl mt-10 mb-7">
-                  <img src={sunGif} alt="Temperature" className="w-20 h-20" />
+                  <img src={cloudyGif} alt="Temperature" className="w-20 h-20" />
                 </div>
                 <div className="text-4xl font-bold -mt-4">
                   {typeof temp === "number" ? `${Math.round(temp)}°C` : "No Data."}
@@ -97,7 +96,7 @@ export default function ResultsPanel({
             <div className="grid mb-4 grid-cols-1 gap-2">
               <MiniMetric icon={<img src={rainGif} alt="Rain" className="w-4 h-4 " />} label="Rain" value={nOrDashPct(rainProb)} />
               <MiniMetric icon={<img src={windGif} alt="Wind" className="w-4 h-4" />} label="Wind" value={formatWind(windVal, windUnit, true)} />
-              <MiniMetric icon={<img src={fogGif} alt="Fog" className="w-4 h-4" />} label="Fog" value={fogScale != null ? `${fogScale}/3` : (fogText ?? "—")} />
+              <MiniMetric icon={<img src={fogGif} alt="Fog" className="w-4 h-4" />} label="Fog" value={fogScale != null ? (fogText ?? "—") : "—"} />
               <MiniMetric icon={<img src={humidityGif} alt="Humidity" className="w-4 h-4" />} label="Humidity" value={nOrDashPct(humidity)} />
               <MiniMetric icon={<img src={cloudGif} alt="Cloud" className="w-4 h-4" />} label="Cloud" value={nOrDashPct(cloud)} />
               <MiniMetric icon={<img src={snowGif} alt="Snow" className="w-4 h-4" />} label="Snow Cover" value={nOrDashPct(snowProb)} />
@@ -106,7 +105,7 @@ export default function ResultsPanel({
   type="button"
   onClick={() => setModal("combined")}
   className="flex-1 rounded-xl
-   bg-gradient-to-r from-blue-600 via-sky-400 to-cyan-200
+   bg-gradient-to-br from-sky-500 to-indigo-500 
    text-white text-base font-semibold py-2.5 px-7
    shadow-md hover:shadow-lg hover:scale-[1.03] active:scale-[0.98] transition-all"
 >
