@@ -112,7 +112,7 @@ export default function App() {
 
     setLoading(true);
     setError("");
-
+    setHasSelectedLocation(true);
     try {
       const json = await fetchWeatherProbability({
         lat: markerPosition.lat,
