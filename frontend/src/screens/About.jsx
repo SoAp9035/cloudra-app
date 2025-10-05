@@ -1,15 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import InfoCard from "../components/infoCard";
-
-// TODO: ADD THE PICTURES TO GITIGNORE FILE 
-
-// import the profile pictures we are going to use
 import razanPic from "../assets/pictures/razanpic.jpeg"
-
-
-// a VERY bad code coming :
-
 function About() {
   return (
     <div className="min-h-screen bg-gray-100">

@@ -127,7 +127,7 @@ function handleDownloadJSON() {
   onClick={() => setModal("combined")}
   className="flex-1 rounded-xl
    bg-gradient-to-br from-sky-500 to-indigo-500 
-   text-white text-base font-semibold py-2.5 px-7
+   text-white text-base font-semibold py-2 px-15
    shadow-md hover:shadow-lg hover:scale-[1.03] active:scale-[0.98] transition-all"
 >
   View Details
