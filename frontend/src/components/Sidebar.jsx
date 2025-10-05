@@ -6,25 +6,22 @@ import { FaSearch } from "react-icons/fa";
 
 export default function Sidebar({
   onSearch,
-  onAnalyze,        // explicit analyze trigger from App
+  onAnalyze,
   dateValue,
   onDateChange,
-  mode,             // null | "quick" | "detailed"  (starts EMPTY)
+  mode,
   onModeChange,
   analyzeLoading,
   analyzeError,
 }) {
-  // Lock selected mode after a successful analysis (optional UX rule)
-  const [lockedMode, setLockedMode] = useState(null); // null | "quick" | "detailed"
-
-  // Track analyzeLoading transitions to detect "analysis finished"
+  const [lockedMode, setLockedMode] = useState(null);
   const prevLoadingRef = useRef(analyzeLoading);
+
   useEffect(() => {
     const wasLoading = prevLoadingRef.current;
     const nowLoading = analyzeLoading;
     prevLoadingRef.current = nowLoading;
 
-    // When analysis finishes without error, lock the current mode (once)
     if (wasLoading && !nowLoading) {
       if (!analyzeError && !lockedMode) {
         setLockedMode(mode ?? null);
@@ -32,38 +29,26 @@ export default function Sidebar({
     }
   }, [analyzeLoading, analyzeError, mode, lockedMode]);
 
-  // Only allow changing mode if it's not locked or the same as locked
   const handleModeChange = (value) => {
     if (lockedMode && lockedMode !== value) return;
     onModeChange?.(value);
   };
 
-  // SearchBox "Enter" handler:
-  // 1) triggers search
-  // 2) if a mode is selected, triggers analyze as well
   const handleSearchEnter = (query) => {
     onSearch?.(query);
-    if (mode) {
-      onAnalyze?.();
-    }
+    if (mode) onAnalyze?.();
   };
 
-  // NEW: when clicking a mode button => set mode then run analyze
   const handleModeButtonClick = (value) => {
-    // respect locking + loading
     const isDisabled = analyzeLoading || (lockedMode && lockedMode !== value);
     if (isDisabled) return;
-
-    // 1) set the mode
     handleModeChange(value);
-
-    // 2) immediately trigger analyze
     onAnalyze?.();
   };
 
   const MODE_BUTTONS = [
-    { key: "quick", label: "Quick Analysis" },
-    { key: "detailed", label: "Detailed Analysis" },
+    { key: "quick", label: "Quick Analysis", subText: "10 years ≈ 25 seconds" },
+    { key: "detailed", label: "Detailed Analysis", subText: "30 years ≈ 85 seconds" },
   ];
 
   return (
@@ -98,64 +83,68 @@ export default function Sidebar({
       </div>
 
       {/* Body */}
-      <div className="p-5 space-y-5 flex-1">
-        {/* Location */}
-        <div>
-          <label className="block text-center text-base font-bold text-black mb-2">
-            Enter your desired location
-          </label>
+      <div className="p-5 flex-1 flex flex-col justify-between">
+        <div className="space-y-5">
+          {/* Location */}
+          <div>
+            <label className="block text-center text-base font-bold text-black mb-2">
+              Enter your desired location
+            </label>
 
-          {/* Search row with an Analyze button next to the input */}
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="Search..."
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleSearchEnter(e.target.value);
-              }}
-              className="w-full rounded-full bg-white border border-[#1E3A8A] px-3 py-2 pr-12 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="Search..."
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSearchEnter(e.target.value);
+                }}
+                className="w-full rounded-full bg-white border border-[#1E3A8A] px-3 py-2 pr-12 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
 
-            <button
-              type="button"
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black disabled:opacity-50"
-              onClick={() => onAnalyze?.()}
-              disabled={analyzeLoading || !mode}
-              title={
-                mode
-                  ? "Run analysis for current selection"
-                  : 'Choose a mode ("quick" or "detailed") first'
-              }
-            >
-              {analyzeLoading ? (
-                <span className="animate-spin">⏳</span>
-              ) : (
-                <FaSearch size={18} />
-              )}
-            </button>
+              <button
+                type="button"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black disabled:opacity-50"
+                onClick={() => onAnalyze?.()}
+                disabled={analyzeLoading || !mode}
+                title={
+                  mode
+                    ? "Run analysis for current selection"
+                    : 'Choose a mode ("quick" or "detailed") first'
+                }
+              >
+                {analyzeLoading ? (
+                  <span className="animate-spin">⏳</span>
+                ) : (
+                  <FaSearch size={18} />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Date */}
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              Date
+            </label>
+            <DatePicker value={dateValue} onChange={onDateChange} />
           </div>
         </div>
 
-        {/* Date */}
-        <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1">
-            Date
-          </label>
-          <DatePicker value={dateValue} onChange={onDateChange} />
-        </div>
+        {/* Footer Buttons */}
+        <div className="mt-5 w-full">
+          {/* Tip yazısı hemen butonların üstünde */}
+          <p className="text-black font-bold text-[12px] mb-3.5 text-center">
+            {/* Tip: press <kbd>Enter</kbd> after typing a location, or click a mode to run analysis */}
+            Press Enter after typing a location, or click a mode to run analysis.
+          </p>
 
-        {/* Analysis Mode */}
-        <div>
-          <label className="block text-xs font-medium text-gray-600 mb-2">
-            Analysis Mode
-          </label>
-
-          {/* Buttons that also trigger analyze */}
-          <div className="flex flex-wrap gap-2" role="group" aria-label="Analysis Mode">
+          {/* Mode Buttons */}
+          <div className="flex flex-col gap-3 w-full" role="group" aria-label="Analysis Mode">
             {MODE_BUTTONS.map((b) => {
               const isActive = mode === b.key;
-              const isDisabled =
-                analyzeLoading || (lockedMode && b.key !== lockedMode);
+              const isDisabled = analyzeLoading || (lockedMode && b.key !== lockedMode);
+
+              const buttonWidth = b.key === "quick" ? "w-full" : "flex-1";
 
               return (
                 <button
@@ -165,9 +154,9 @@ export default function Sidebar({
                   disabled={isDisabled}
                   aria-pressed={isActive}
                   className={
-                    "px-3 py-1.5 text-sm rounded-full transition " +
+                    `${buttonWidth} flex flex-col items-center justify-center px-6 py-2 rounded-full text-sm transition ` +
                     (isActive
-                      ? "text-white shadow"
+                      ? "text-white shadow bg-gradient-to-r from-blue-600 via-sky-400 to-cyan-200"
                       : "text-white shadow bg-gradient-to-r from-blue-600 via-sky-400 to-cyan-200") +
                     (isDisabled ? " opacity-60 cursor-not-allowed" : "")
                   }
@@ -179,31 +168,24 @@ export default function Sidebar({
                       : `Run ${b.label}`
                   }
                 >
-                  {b.label}
+                  <span className="font-semibold">{b.label}</span>
+                  <span className="text-[10px] text-black mt-0 text-center">{b.subText}</span>
                 </button>
               );
             })}
           </div>
 
-          {/* Inline states */}
           {analyzeLoading && (
-            <p className="mt-2 text-[11px] text-gray-500">Analyzing…</p>
-          )}
-          {!analyzeLoading && lockedMode && (
-            <p className="mt-2 text-[11px] text-gray-500">
-              Mode locked to <span className="font-semibold">{lockedMode}</span>.
-            </p>
+            <p className="mt-2 text-[11px] text-gray-500 text-center">Analyzing…</p>
           )}
           {analyzeError && (
-            <div className="mt-2 text-xs text-red-600">Error: {analyzeError}</div>
+            <div className="mt-2 text-xs text-red-600 text-center">
+              Error: {analyzeError}
+            </div>
           )}
-
-          {/* Helper tip */}
-          <p className="mt-3 text-[11px] text-gray-500">
-            Tip: press <kbd>Enter</kbd> after typing a location to search; or just click one of the mode buttons to run analysis immediately.
-          </p>
         </div>
       </div>
     </aside>
   );
 }
+

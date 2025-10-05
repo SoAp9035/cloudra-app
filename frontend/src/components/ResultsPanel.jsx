@@ -7,7 +7,7 @@ import fogGif from "../assets/logo/fog.gif";
 import humidityGif from "../assets/logo/humidity.gif";
 import cloudGif from "../assets/logo/cloud.gif";
 import snowGif from "../assets/logo/snow.gif";
-import degreeGif from "../assets/logo/degree.gif";
+import sunGif from "../assets/logo/sun.gif";
 
 export default function ResultsPanel({
   result,
@@ -40,10 +40,10 @@ export default function ResultsPanel({
   const extremesRaw = {
     "Heavy rain": probs?.heavy_rain ?? probs?.heavy_precipitation_percent,
     "Heavy snowfall": probs?.heavy_snowfall_percent ?? probs?.heavy_snowfall,
-    "Very hot": probs?.very_hot,
-    "Very cold": probs?.very_cold,
-    "Very windy": probs?.very_windy,
-    "Very uncomfortable": probs?.very_uncomfortable,
+    "Very hot": probs?.very_hot_percent,
+    "Very cold": probs?.very_cold_percent,
+    "Very windy": probs?.very_windy_percent,
+    "Very uncomfortable": probs?.very_uncomfortable_percent,
   };
   const extremes = Object.entries(extremesRaw).map(([k, v]) => [k, pickNumber(v)]);
 
@@ -96,7 +96,7 @@ export default function ResultsPanel({
             <div className="flex flex-col mb-5 items-center justify-center w-60 h-72 p-4 bg-gradient-to-br from-sky-500 to-indigo-500 text-white rounded-2xl shadow">
               <div className="-translate-y-4.5 flex flex-col items-center">
                 <div className="text-4xl mt-10 mb-7">
-                  <img src={degreeGif} alt="Temperature" className="w-20 h-20" />
+                  <img src={sunGif} alt="Temperature" className="w-20 h-20" />
                 </div>
                 <div className="text-4xl font-bold -mt-4">
                   {typeof temp === "number" ? `${Math.round(temp)}°C` : "No Data."}
@@ -110,7 +110,7 @@ export default function ResultsPanel({
 
 
             <div className="grid mb-4 grid-cols-1 gap-2">
-              <MiniMetric icon={<img src={rainGif} alt="Rain" className="w-4 h-4" />} label="Rain" value={nOrDashPct(rainProb)} />
+              <MiniMetric icon={<img src={rainGif} alt="Rain" className="w-4 h-4 " />} label="Rain" value={nOrDashPct(rainProb)} />
               <MiniMetric icon={<img src={windGif} alt="Wind" className="w-4 h-4" />} label="Wind" value={formatWind(windVal, windUnit, true)} />
               <MiniMetric icon={<img src={fogGif} alt="Fog" className="w-4 h-4" />} label="Fog" value={fogScale != null ? `${fogScale}/3` : (fogText ?? "—")} />
               <MiniMetric icon={<img src={humidityGif} alt="Humidity" className="w-4 h-4" />} label="Humidity" value={nOrDashPct(humidity)} />
@@ -119,7 +119,7 @@ export default function ResultsPanel({
             </div>
 
 
-            <div className="flex gap-2">
+            {/* <div className="flex gap-2">
               <button
                 type="button"
                 onClick={() => setModal("combined")}
@@ -130,7 +130,19 @@ export default function ResultsPanel({
               >
                 View Details
               </button>
-            </div>
+            </div> */}
+            
+            <button
+  type="button"
+  onClick={() => setModal("combined")}
+  className="flex-1 rounded-xl
+   bg-gradient-to-r from-blue-600 via-sky-400 to-cyan-200
+   text-white text-base font-semibold py-2.5 px-7
+   shadow-md hover:shadow-lg hover:scale-[1.03] active:scale-[0.98] transition-all"
+>
+  View Details
+</button>
+
 
 
 
@@ -234,7 +246,7 @@ function Modal({ open, onClose, title, children }) {
 /* ---------- UI Elements ---------- */
 function MiniMetric({ icon, label, value, sub }) {
   return (
-    <div className="w-60  border border-gray-200 bg-white p-2.5 shadow-sm">
+    <div className="w-60  border border-gray-200 bg-white p-2.5 shadow-sm rounded-full">
       <div className="flex items-center justify-between">
         <span className="text:[11px] text-gray-600 flex items-center gap-1">
           <span className="text-xs leading-none">{icon}</span>
