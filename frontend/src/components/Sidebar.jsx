@@ -1,49 +1,33 @@
-// src/components/Sidebar.jsx
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import DatePicker from "./DatePicker.jsx";
 import logoClose from "../assets/logo/logoClose.png";
 import { FaSearch } from "react-icons/fa";
 
 export default function Sidebar({
   onSearch,
-  onAnalyze,
   dateValue,
   onDateChange,
   mode,
   onModeChange,
+  onAnalyze,
   analyzeLoading,
   analyzeError,
+  readyToRun,
+  dirty,
 }) {
-  const [lockedMode, setLockedMode] = useState(null);
-  const prevLoadingRef = useRef(analyzeLoading);
 
-  useEffect(() => {
-    const wasLoading = prevLoadingRef.current;
-    const nowLoading = analyzeLoading;
-    prevLoadingRef.current = nowLoading;
-
-    if (wasLoading && !nowLoading) {
-      if (!analyzeError && !lockedMode) {
-        setLockedMode(mode ?? null);
-      }
-    }
-  }, [analyzeLoading, analyzeError, mode, lockedMode]);
-
-  const handleModeChange = (value) => {
-    if (lockedMode && lockedMode !== value) return;
+  const [query, setQuery] = useState("");
+  const handleModeSelect = (value) => {
+    if (analyzeLoading) return;
+    if (mode === value) return;
     onModeChange?.(value);
   };
 
-  const handleSearchEnter = (query) => {
-    onSearch?.(query);
-    if (mode) onAnalyze?.();
-  };
 
-  const handleModeButtonClick = (value) => {
-    const isDisabled = analyzeLoading || (lockedMode && lockedMode !== value);
-    if (isDisabled) return;
-    handleModeChange(value);
-    onAnalyze?.();
+  const handleSearchClick = () => {
+    const trimmed = query.trim();
+    if (!trimmed || analyzeLoading) return;
+    onSearch?.(trimmed);
   };
 
   const MODE_BUTTONS = [
@@ -95,21 +79,23 @@ export default function Sidebar({
               <input
                 type="text"
                 placeholder="Search..."
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleSearchEnter(e.target.value);
-                }}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
                 className="w-full rounded-full bg-white border border-[#1E3A8A] px-3 py-2 pr-12 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
 
+              {/* Search trigger (magnifier) - SEARCH ONLY */}
               <button
                 type="button"
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black disabled:opacity-50"
-                onClick={() => onAnalyze?.()}
-                disabled={analyzeLoading || !mode}
+                onClick={handleSearchClick}
+                disabled={analyzeLoading || !query.trim()}
                 title={
-                  mode
-                    ? "Run analysis for current selection"
-                    : 'Choose a mode ("quick" or "detailed") first'
+                  !query.trim()
+                    ? "Type a location first"
+                    : analyzeLoading
+                      ? "Analysis is running…"
+                      : "Search location"
                 }
               >
                 {analyzeLoading ? (
@@ -132,52 +118,96 @@ export default function Sidebar({
 
         {/* Footer Buttons */}
         <div className="mt-5 w-full">
-          {/* Tip yazısı hemen butonların üstünde */}
+          {/* Tip / Guidance */}
           <p className="text-black font-bold text-[12px] mb-3.5 text-center">
-            {/* Tip: press <kbd>Enter</kbd> after typing a location, or click a mode to run analysis */}
-            Press Enter after typing a location, or click a mode to run analysis.
+            Select a mode, pick a location & date, then click “Run Analysis”.
           </p>
 
-          {/* Mode Buttons */}
-          <div className="flex flex-col gap-3 w-full" role="group" aria-label="Analysis Mode">
+          {/* Mode Buttons: selection-only (never auto-run) */}
+          <div className="flex flex-col gap-3 w-full cursor-pointer" role="group" aria-label="Analysis Mode">
             {MODE_BUTTONS.map((b) => {
               const isActive = mode === b.key;
-              const isDisabled = analyzeLoading || (lockedMode && b.key !== lockedMode);
+              const isDisabled = !!analyzeLoading; // lock switching while loading
 
-              const buttonWidth = b.key === "quick" ? "w-full" : "flex-1";
+              const base =
+                "w-full flex flex-col items-center justify-center px-6 py-2 rounded-full text-sm transition border";
+              const active =
+                "text-white shadow bg-gradient-to-r from-blue-600 via-sky-400 to-cyan-300 border-transparent";
+              const inactive =
+                "text-gray-800 bg-white border-gray-300 hover:border-blue-400 hover:shadow";
 
               return (
                 <button
                   key={b.key}
                   type="button"
-                  onClick={() => handleModeButtonClick(b.key)}
+                  onClick={() => handleModeSelect(b.key)}
                   disabled={isDisabled}
                   aria-pressed={isActive}
-                  className={
-                    `${buttonWidth} flex flex-col items-center justify-center px-6 py-2 rounded-full text-sm transition ` +
-                    (isActive
-                      ? "text-white shadow bg-gradient-to-r from-blue-600 via-sky-400 to-cyan-200"
-                      : "text-white shadow bg-gradient-to-r from-blue-600 via-sky-400 to-cyan-200") +
-                    (isDisabled ? " opacity-60 cursor-not-allowed" : "")
-                  }
+                  className={`${base} ${isActive ? active : inactive} ${isDisabled ? " opacity-60 cursor-not-allowed" : ""
+                    }`}
                   title={
-                    isDisabled && lockedMode && b.key !== lockedMode
-                      ? `Mode locked to ${lockedMode}`
-                      : isDisabled && analyzeLoading
-                      ? "Analysis is running…"
-                      : `Run ${b.label}`
+                    isDisabled
+                      ? "Cannot change mode while analysis is running"
+                      : isActive
+                        ? `${b.label} selected`
+                        : `Select ${b.label}`
                   }
                 >
-                  <span className="font-semibold">{b.label}</span>
-                  <span className="text-[10px] text-black mt-0 text-center">{b.subText}</span>
+                  <span className="font-semibold">
+                    {b.label} {isActive ? "✓" : ""}
+                  </span>
+                  {/* Subtext readable on both backgrounds */}
+                  <span
+                    className={`text-[10px] mt-0 text-center ${isActive ? "text-white/90" : "text-gray-600"
+                      }`}
+                  >
+                    {b.subText}
+                  </span>
                 </button>
               );
             })}
           </div>
 
-          {analyzeLoading && (
-            <p className="mt-2 text-[11px] text-gray-500 text-center">Analyzing…</p>
-          )}
+          {/* Primary explicit Run button - SAME gradient look as active mode */}
+          <div className="mt-3">
+            <button
+              type="button"
+              onClick={() => onAnalyze?.()}
+              disabled={!readyToRun || analyzeLoading || !dirty}
+              title={
+                analyzeLoading
+                  ? "Analysis is running…"
+                  : !readyToRun
+                    ? "Select mode, location, and date first"
+                    : !dirty
+                      ? "No changes since last run"
+                      : "Run analysis"
+              }
+              className={
+                // SAME visual language (gradient) when enabled
+                "w-full rounded-full px-6 py-3 text-sm font-semibold transition  " +
+                (readyToRun && dirty && !analyzeLoading
+                  ? "text-white shadow bg-gradient-to-r from-blue-600 via-sky-400 to-cyan-300 cursor-pointer"
+                  : "text-white shadow bg-gradient-to-r from-blue-600 via-sky-400 to-cyan-300 opacity-60 cursor-not-allowed")
+              }
+            >
+              {analyzeLoading ? "Analyzing…" : "Run Analysis"}
+            </button>
+
+            {/* Tiny status text under the button */}
+            {readyToRun && !analyzeLoading && dirty && (
+              <p className="mt-1 text-[11px] text-center text-amber-600">
+                Changes detected — click “Run Analysis”.
+              </p>
+            )}
+            {readyToRun && !dirty && !analyzeLoading && (
+              <p className="mt-1 text-[11px] text-center text-gray-500">
+                Up to date with last run.
+              </p>
+            )}
+          </div>
+
+          {/* Errors */}
           {analyzeError && (
             <div className="mt-2 text-xs text-red-600 text-center">
               Error: {analyzeError}
@@ -188,4 +218,3 @@ export default function Sidebar({
     </aside>
   );
 }
-
