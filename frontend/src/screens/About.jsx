@@ -37,43 +37,37 @@ function About() {
               image={ahmetPic}
               name="Ahmet Burhan Kayalı"
               email="ahmetburhan1703@gmail.com"
-              gsm="536 443 04 57"
             />
 
             <InfoCard
               image={seyfPic}
               name="Seyf JAMAL"
               email="contact@daif.top"
-              gsm="534 453 39 88"
             />
 
             <InfoCard
               image={aysegulPic}
               name="Ayşegül KAYA"
               email="razansteifdev@gmail.com"
-              gsm="537 562 00 13"
             />
 
             <InfoCard
               image={razanPic}
               name="Razan STEIF"
               email="razansteifschool@gmail.com"
-              gsm="551 397 53 97"
             />
 
             <InfoCard
               image={melekPic}
               name="Melek GÜNGÜL"
               email="mmelekgungul5104@gmail.com"
-              gsm="545 162 24 51"
             />
 
               {/* //TODO: ZEHRA BİLGİLERİ */}
             <InfoCard
-              image={razanPic}
-              name="6"
-              email="razansteifdev@gmail.com"
-              gsm="551 397 53 97"
+              image={""}
+              name="Zehra Balcı"
+              email="zehra@example.com"
             />
           </div>
         </div>
