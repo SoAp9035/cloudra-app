@@ -28,7 +28,7 @@ export default function Sidebar({
   };
   const MODE_BUTTONS = [
     { key: "quick", label: "Quick Analysis", subText: "10 years ≈ 30s" },
-    { key: "detailed", label: "Detailed Analysis", subText: "30 years ≈ 120s " },
+    // { key: "detailed", label: "Detailed Analysis", subText: "30 years ≈ 120s " },
   ];
   return (
     <aside

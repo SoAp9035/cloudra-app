@@ -184,17 +184,9 @@ export default function App() {
       setMarkerPosition(coords);
     };
 
-
-
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        useCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-      },
-      () => {
-        useCoords(FALLBACK);
-      },
-      { enableHighAccuracy: true, timeout: 8000 }
-    );
+    // Use default location without calling geolocation API
+    // This prevents 429 errors from Google's location provider
+    useCoords({ lat: 38.42, lng: 27.1 });
 
     return () => {
       cancelled = true;
