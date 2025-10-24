@@ -1,0 +1,16 @@
+# Render.com deployment configuration
+
+services:
+  - type: web
+    name: cloudra-app
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn main:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120 --log-level info --access-logfile -
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.11.0
+    healthCheckPath: /health

@@ -10,15 +10,40 @@ app = Flask(__name__)
 app.secret_key = "cloudra"
 
 # CORS configuration to allow frontend access
+# Allow both localhost (for development) and Netlify domain (for production)
 CORS(app, resources={
     r"/api/*": {
-        "origins": "*",
+        "origins": [
+            "http://localhost:5173",
+            "http://localhost:3000",
+            "http://127.0.0.1:5173",
+            "https://*.netlify.app",
+            "https://cloudra-app.onrender.com"
+        ],
         "methods": ["GET", "POST", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"],
+        "allow_headers": ["Content-Type", "Authorization", "Accept"],
         "expose_headers": ["Content-Type"],
         "supports_credentials": False
     }
 })
+
+# Health check endpoint for Render
+@app.route("/health", methods=["GET"])
+def health_check():
+    return jsonify({"status": "healthy", "service": "cloudra-api"}), 200
+
+# Root endpoint
+@app.route("/", methods=["GET"])
+def root():
+    return jsonify({
+        "service": "Cloudra Weather API",
+        "version": "1.0",
+        "endpoints": {
+            "/api/weather_probability": "Get weather probabilities for a specific date",
+            "/api/find_optimal_days": "Find optimal days near a target date",
+            "/health": "Health check endpoint"
+        }
+    }), 200
 
 # NASA POWER API'si
 power_api = NASAPowerAPI()
@@ -171,4 +196,5 @@ def find_optimal_days():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # For local development only
+    app.run(debug=True, host='0.0.0.0', port=5001)

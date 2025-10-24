@@ -6,6 +6,10 @@
   # Build command
   command = "npm run build"
 
+# Environment variables (can be overridden in Netlify UI)
+[build.environment]
+  NODE_VERSION = "20"
+
 # Redirects and rewrites for SPA
 [[redirects]]
   from = "/*"
