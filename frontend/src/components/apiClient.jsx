@@ -9,7 +9,7 @@ export async function fetchWeatherProbability({ lat, lon, month, day, analysisMo
   });
   const url = `${base}/api/weather_probability?${qs.toString()}`;
 
-  const res = await fetch(url, { headers: { Accept: "application/json", "Access-Control-Allow-Origin": "*" } });
+  const res = await fetch(url, { headers: { Accept: "application/json" } });
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     throw new Error(`HTTP ${res.status} ${text || res.statusText}`);
