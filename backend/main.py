@@ -17,7 +17,7 @@ CORS(app, resources={
             "http://localhost:5173",
             "http://localhost:3000",
             "http://127.0.0.1:5173",
-            "https://*.netlify.app",
+            "https://clouddra.netlify.app",
             "https://cloudra-app.onrender.com"
         ],
         "methods": ["GET", "POST", "OPTIONS"],

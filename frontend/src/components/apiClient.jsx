@@ -1,5 +1,6 @@
 export async function fetchWeatherProbability({ lat, lon, month, day, analysisMode }) {
-  const base = import.meta.env.VITE_API_BASE;
+  // Remove trailing slash from base URL to avoid double slashes
+  const base = (import.meta.env.VITE_API_BASE || '').replace(/\/+$/, '');
   const qs = new URLSearchParams({
     lat: String(lat),
     lon: String(lon),
