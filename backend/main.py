@@ -8,7 +8,17 @@ from nasa_data_processor import analyze_weather_probability, check_day_and_sugge
 # Flask ayarları
 app = Flask(__name__)
 app.secret_key = "cloudra"
-CORS(app) # Flask ile React kullanabilmek için gerekli TODO: Güncellenecek.
+
+# CORS configuration to allow frontend access
+CORS(app, resources={
+    r"/api/*": {
+        "origins": "*",
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "expose_headers": ["Content-Type"],
+        "supports_credentials": False
+    }
+})
 
 # NASA POWER API'si
 power_api = NASAPowerAPI()
