@@ -27,8 +27,8 @@ export default function Sidebar({
     onSearch?.(trimmed);
   };
   const MODE_BUTTONS = [
-    { key: "quick", label: "Quick Analysis", subText: "10 years ≈ 30s" },
-    // { key: "detailed", label: "Detailed Analysis", subText: "30 years ≈ 120s " },
+    { key: "quick", label: "Quick Analysis", subText: "10 years ≈ 30s", disabled: false },
+    { key: "detailed", label: "Detailed Analysis", subText: "Not available in demo", disabled: true },
   ];
   return (
     <aside
@@ -123,35 +123,37 @@ export default function Sidebar({
           <div className="flex flex-col gap-3 w-full cursor-pointer" role="group" aria-label="Analysis Mode">
             {MODE_BUTTONS.map((b) => {
               const isActive = mode === b.key;
-              const isDisabled = !!analyzeLoading;
+              const isDisabled = !!analyzeLoading || b.disabled;
               const base =
                 "w-full flex flex-col items-center justify-center px-6 py-2 rounded-full text-sm transition border";
               const active =
                 "text-white shadow bg-gradient-to-br from-sky-500 to-indigo-500  border-transparent";
               const inactive =
                 "text-gray-800 bg-white border-gray-300 hover:border-blue-400 hover:shadow";
+              const disabledStyle = b.disabled ? "opacity-50 cursor-not-allowed" : "";
               return (
                 <button
                   key={b.key}
                   type="button"
-                  onClick={() => handleModeSelect(b.key)}
+                  onClick={() => !b.disabled && handleModeSelect(b.key)}
                   disabled={isDisabled}
                   aria-pressed={isActive}
-                  className={`${base} ${isActive ? active : inactive} ${isDisabled ? " opacity-60 cursor-not-allowed" : ""
-                    }`}
+                  className={`${base} ${isActive ? active : inactive} ${isDisabled ? " opacity-60 cursor-not-allowed" : ""} ${disabledStyle}`}
                   title={
-                    isDisabled
-                      ? "Cannot change mode while analysis is running"
-                      : isActive
-                        ? `${b.label} selected`
-                        : `Select ${b.label}`
+                    b.disabled
+                      ? "Not available in demo version"
+                      : isDisabled
+                        ? "Cannot change mode while analysis is running"
+                        : isActive
+                          ? `${b.label} selected`
+                          : `Select ${b.label}`
                   }
                 >
                   <span className="font-semibold">
-                    {b.label} {isActive ? "✓" : ""}
+                    {b.label} {isActive ? "✓" : ""} {b.disabled ? "🔒" : ""}
                   </span>
                   <span
-                    className={`text-[10px] mt-0 text-center ${isActive ? "text-white/90" : "text-gray-600"
+                    className={`text-[10px] mt-0 text-center ${isActive ? "text-white/90" : b.disabled ? "text-red-500 font-medium" : "text-gray-600"
                       }`}
                   >
                     {b.subText}

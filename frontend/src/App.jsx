@@ -213,6 +213,10 @@ export default function App() {
       {loading && <LoadingOverlay mode={mode || "quick"} />}
 
       <div className="relative h-screen w-full">
+        {/* Demo Notice */}
+        <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-[1000] bg-yellow-100 border border-yellow-400 text-yellow-800 px-3 py-1 rounded-md shadow-sm text-xs font-medium">
+          🚧 Demo Version - Not Final Product
+        </div>
         <Sidebar
           onSearch={onSearch}
           dateValue={selectedDate}
