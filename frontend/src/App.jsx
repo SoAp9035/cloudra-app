@@ -183,7 +183,7 @@ export default function App() {
         useCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
       },
       () => {
-        useCoords(FALLBACK);
+        useCoords({ lat: 38.419474, lng: 27.128430 });
       },
       { enableHighAccuracy: true, timeout: 8000 }
     );
