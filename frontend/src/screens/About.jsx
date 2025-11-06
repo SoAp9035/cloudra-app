@@ -63,11 +63,11 @@ function About() {
               email="mmelekgungul5104@gmail.com"
             />
 
-            {/* //TODO: ZEHRA BİLGİLERİ */}
+            {/* TODO: ZEHRA BİLGİLERİ */}
             <InfoCard
-              image={null}
+              image={null} 
               name="Zehra BALCI"
-              email="zehra@example.com"
+              email="balcizehranur779@gmail.com"
             />
           </div>
         </div>
