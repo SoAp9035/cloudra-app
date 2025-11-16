@@ -2,8 +2,6 @@ import React from "react";
 import Swal from 'sweetalert2';
 
 function ContactForm() {
-
-
   const onSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -24,40 +22,36 @@ function ContactForm() {
 
     if (res.success) {
       Swal.fire({
-        title: "Done",
-        text: "Message sent successfully",
-        icon: "success"
+        title: "Success!",
+        text: "Your message has been sent successfully",
+        icon: "success",
+        confirmButtonColor: "#0ea5e9"
       });
+      event.target.reset();
     }
   };
 
-
   return (
-    <section className="flex justify-center items-center min-h-screen bg-gray-100">
+    <section className="flex justify-center items-center py-8">
       {/* Form Container */}
-      <form onSubmit={onSubmit} className="w-full max-w-2xl bg-white shadow-lg rounded-2xl p-10 mx-4">
-        {/* Title */}
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-10">
-          Contact Form
-        </h2>
-
+      <form onSubmit={onSubmit} className="w-full max-w-2xl backdrop-blur bg-white/80 shadow-xl rounded-3xl p-10 mx-4 border border-white/50">
         {/* Full Name */}
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-medium mb-2">
+        <div className="mb-5">
+          <label className="block text-gray-700 text-sm font-semibold mb-2 pl-1">
             Full Name
           </label>
           <input
             type="text"
             placeholder="Enter your name..."
-            name = 'name'
+            name='name'
             required
-            className="w-full h-12 border border-gray-300 rounded-lg px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full h-12 border border-gray-300 rounded-full px-5 text-gray-700 bg-white/90 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
           />
         </div>
 
         {/* Email */}
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-medium mb-2">
+        <div className="mb-5">
+          <label className="block text-gray-700 text-sm font-semibold mb-2 pl-1">
             Email Address
           </label>
           <input
@@ -65,13 +59,13 @@ function ContactForm() {
             placeholder="Enter your email..."
             name="email"
             required
-            className="w-full h-12 border border-gray-300 rounded-lg px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full h-12 border border-gray-300 rounded-full px-5 text-gray-700 bg-white/90 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
           />
         </div>
 
         {/* Message */}
         <div className="mb-8">
-          <label className="block text-gray-700 text-sm font-medium mb-2">
+          <label className="block text-gray-700 text-sm font-semibold mb-2 pl-1">
             Your Message
           </label>
           <textarea
@@ -79,7 +73,7 @@ function ContactForm() {
             required
             name="message"
             rows="5"
-            className="w-full border border-gray-300 rounded-lg p-4 text-gray-700 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border border-gray-300 rounded-2xl p-4 text-gray-700 bg-white/90 resize-none focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
           ></textarea>
         </div>
 
@@ -87,7 +81,7 @@ function ContactForm() {
         <div className="text-center">
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition duration-200"
+            className="w-full rounded-full px-8 py-3 text-white font-semibold bg-gradient-to-br from-sky-500 to-indigo-500 hover:shadow-xl transition duration-300 transform hover:scale-105"
           >
             Send Message
           </button>
